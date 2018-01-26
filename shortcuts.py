@@ -25,7 +25,6 @@ HOT_KEYS_TEMPLATE = """~{5}::
 if GetKeyState("{0}") & GetKeyState("{1}") & GetKeyState("{2}") & GetKeyState("{3}")& GetKeyState("{4}")"""
 
 
-
 class ShortCuts:
     def __init__(self):
         self.__shortcut_sequence = ''
@@ -137,7 +136,7 @@ class ShortCuts:
 
 
     def check_sequence_length(self):
-        sequence_format_list = self.__shortcut_sequence
+        sequence_format_list = self.__shortcut_sequence[:]
         if len(sequence_format_list) < 6:
             for i in range(6-len(sequence_format_list)):
                 sequence_format_list.append(sequence_format_list[-1])
