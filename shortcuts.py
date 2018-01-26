@@ -105,20 +105,21 @@ class ShortCuts:
                 sequence_format_list.append(sequence_format_list[-1])
         return sequence_format_list
 #-------------------------------------------------------------------------------
+
     def delete_shortcut(self, shortcut_type, file_name):
         file_to_delete = self.__current_shortcuts[shortcut_type][file_name][2]
         self.activate_ahk_files(CLOSE_PROCESS_BY_NAME_PATH, file_name)
         os.remove(file_to_delete)
 #-------------------------------------------------------------------------------
-    def add_to_startup(self):
-        pass
-#-------------------------------------------------------------------------------
+
     def show_current_shortcuts(self):
         print self.__current_shortcuts
 #-------------------------------------------------------------------------------
+
     def activate_ahk_files(self, file_path, argument=''):
         subprocess.Popen([HOT_KEYS_PROGRAM_PATH, file_path, argument])
 #-------------------------------------------------------------------------------
+
     def add_to_history(self, shortcut_type, file_name, argument=None):
         self.__current_shortcuts[shortcut_type][file_name] = (argument, self.__shortcut_sequence, self.__shortcut_script_path)
 
