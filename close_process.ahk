@@ -1,4 +1,4 @@
-﻿﻿Script_Name=%1%
+﻿Script_Name=%1%
 Success:=CloseScript(Script_Name)
 return
 

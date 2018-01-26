@@ -2,8 +2,6 @@
 import subprocess
 import os
 
-STARTUP_FOLDER_PATH = 'C:\Users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup'
-
 CLOSE_PROCESS_BY_NAME_PATH = 'E:\USER\Documents\school\cyber\project_2018\close_process.ahk'
 
 HOT_KEYS_PROGRAM_PATH = 'E:\Program Files\AutoHotKey\AutoHotkey.exe'
@@ -130,11 +128,9 @@ def main():
     shortcut.write_new_shortcut(option)
     shortcut.show_current_shortcuts()
 
-
-    option = raw_input('choos option: open folder, open url, open settings, open cmd, open program: ')
-    shortcut.write_new_shortcut(option)
-    shortcut.show_current_shortcuts()
-    shortcut.delete_shortcut('open folder', 'folder0.ahk')
+    a=raw_input('type:')
+    b=raw_input('name:')
+    shortcut.delete_shortcut(a, b)
 
 
 
