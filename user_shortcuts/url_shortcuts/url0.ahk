@@ -1,0 +1,1 @@
+~s::Run, chrome.exe google.com
