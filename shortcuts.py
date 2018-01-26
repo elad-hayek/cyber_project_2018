@@ -8,19 +8,19 @@ CLOSE_PROCESS_BY_NAME_PATH = 'E:\USER\Documents\school\cyber\project_2018\close_
 
 HOT_KEYS_PROGRAM_PATH = 'E:\Program Files\AutoHotKey\AutoHotkey.exe'
 
-FOLDER_SCRIPTS_PATH = r'E:\USER\Documents\school\cyber\project_2018' \
+FOLDER_SCRIPTS_PATH = r'C:\Users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup' \
                       '\user_shortcuts\\folders_shortcuts'
 
-PROGRAM_SCRIPTS_PATH = r'E:\USER\Documents\school\cyber\project_2018' \
+PROGRAM_SCRIPTS_PATH = r'C:\Users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup' \
                        r'\user_shortcuts\programs_shortcuts'
 
-URL_SCRIPTS_PATH = r'E:\USER\Documents\school\cyber\project_2018' \
+URL_SCRIPTS_PATH = r'C:\Users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup' \
                    r'\user_shortcuts\url_shortcuts'
 
-CMD_SCRIPTS_PATH = r'E:\USER\Documents\school\cyber\project_2018' \
+CMD_SCRIPTS_PATH = r'C:\Users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup' \
                    r'\user_shortcuts\cmd_shortcuts'
 
-SETTINGS_SCRIPTS_PATH = r'E:\USER\Documents\school\cyber\project_2018' \
+SETTINGS_SCRIPTS_PATH = r'C:\Users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup' \
                         r'\user_shortcuts\settings_shortcuts'
 
 HOT_KEYS_TEMPLATE = """~{5}::
