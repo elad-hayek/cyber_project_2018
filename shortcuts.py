@@ -111,7 +111,15 @@ class ShortCuts:
 #-------------------------------------------------------------------------------
 
     def show_current_shortcuts(self):
-        print self.__current_shortcuts
+        for key in self.__current_shortcuts:
+            print 'option: ', key
+            for value in self.__current_shortcuts[key]:
+                print '\tfile name: ', value
+                print '\targument: ', self.__current_shortcuts[key][value][0]
+                print '\tsequence: ', self.__current_shortcuts[key][value][1]
+                print ''
+            print ''
+
 #-------------------------------------------------------------------------------
 
     def activate_ahk_files(self, file_path, argument=''):
@@ -124,6 +132,10 @@ class ShortCuts:
 
 def main():
     shortcut = ShortCuts()
+    option = raw_input('choos option: open folder, open url, open settings, open cmd, open program: ')
+    shortcut.write_new_shortcut(option)
+    shortcut.show_current_shortcuts()
+
     option = raw_input('choos option: open folder, open url, open settings, open cmd, open program: ')
     shortcut.write_new_shortcut(option)
     shortcut.show_current_shortcuts()
