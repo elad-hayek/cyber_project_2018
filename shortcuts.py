@@ -22,7 +22,8 @@ SETTINGS_SCRIPTS_PATH = r'C:\Users\USER\AppData\Roaming\Microsoft\Windows\Start 
                         r'\user_shortcuts\settings_shortcuts'
 
 HOT_KEYS_TEMPLATE = """~{5}::
-if GetKeyState("{0}") & GetKeyState("{1}") & GetKeyState("{2}") & GetKeyState("{3}")& GetKeyState("{4}")"""
+if GetKeyState("{0}") & GetKeyState("{1}") & GetKeyState("{2}")
+ & GetKeyState("{3}")& GetKeyState("{4}")"""
 
 
 class ShortCuts:
