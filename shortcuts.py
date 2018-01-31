@@ -44,10 +44,21 @@ class ShortCuts:
         self.__scripts_path = {'folder': FOLDER_SCRIPTS_PATH, 'url': URL_SCRIPTS_PATH, 'program': PROGRAM_SCRIPTS_PATH,
                                     'cmd': CMD_SCRIPTS_PATH, 'settings': SETTINGS_SCRIPTS_PATH}
 
+        self.__user_choice = ''
+
+
 #-------------------------------------------------------------------------------
     def get_shortcut_sequence(self):
-        self.__shortcut_sequence = raw_input('enter your shortcut sequence:')
-        self.__shortcut_sequence = '+'.join(self.__shortcut_sequence).split('+')
+        return self.__shortcut_sequence
+
+#-------------------------------------------------------------------------------
+
+    def set_users_choice(self, choice):
+        self.__user_choice = choice
+#-------------------------------------------------------------------------------
+    def set_shortcut_sequence(self, user_sequence):
+        self.__shortcut_sequence = user_sequence
+        self.__shortcut_sequence = self.__shortcut_sequence.split('+')
 
 #-------------------------------------------------------------------------------
     def run_action_sequence_for_shortcut(self, shortcut_type, argument=''):
@@ -67,25 +78,25 @@ class ShortCuts:
 
 #-------------------------------------------------------------------------------
 
-    def write_new_shortcut(self, shortcut_name):
-        self.get_shortcut_sequence()
+    def write_new_shortcut(self):
+        #self.get_shortcut_sequence()
 
-        if shortcut_name == 'open folder':
+        if self.__user_choice == 'open folder':
             path = raw_input('enter path:')
             self.run_action_sequence_for_shortcut('folder', path)
 
-        elif shortcut_name == 'open url':
+        elif self.__user_choice == 'open url':
             url = raw_input('enter url:')
             self.run_action_sequence_for_shortcut('url', url)
 
-        elif shortcut_name == 'open program':
+        elif self.__user_choice == 'open program':
             path = raw_input('enter path:')
             self.run_action_sequence_for_shortcut('program', path)
 
-        elif shortcut_name == 'open cmd':
+        elif self.__user_choice == 'open cmd':
             self.run_action_sequence_for_shortcut('cmd')
 
-        elif shortcut_name == 'open settings':
+        elif self.__user_choice == 'open settings':
             self.run_action_sequence_for_shortcut('settings')
 
 #-------------------------------------------------------------------------------
@@ -111,15 +122,8 @@ class ShortCuts:
         os.remove(file_to_delete)
 #-------------------------------------------------------------------------------
 
-    def show_current_shortcuts(self):
-        for key in self.__current_shortcuts:
-            print 'option: ', key
-            for value in self.__current_shortcuts[key]:
-                print '\tfile name: ', value
-                print '\targument: ', self.__current_shortcuts[key][value][0]
-                print '\tsequence: ', self.__current_shortcuts[key][value][1]
-                print ''
-            print ''
+    def get_current_shortcuts(self):
+        return self.__current_shortcuts
 
 #-------------------------------------------------------------------------------
 
@@ -132,19 +136,7 @@ class ShortCuts:
 
 
 def main():
-    shortcut = ShortCuts()
-    option = raw_input('choos option: open folder, open url, open settings, open cmd, open program: ')
-    shortcut.write_new_shortcut(option)
-    shortcut.show_current_shortcuts()
-
-    option = raw_input('choos option: open folder, open url, open settings, open cmd, open program: ')
-    shortcut.write_new_shortcut(option)
-    shortcut.show_current_shortcuts()
-
-    a=raw_input('type:')
-    b=raw_input('name:')
-    shortcut.delete_shortcut(a, b)
-
+    pass
 
 
 
