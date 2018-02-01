@@ -14,6 +14,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
     def __init__(self, parent):
         shortcut_menu_wx_skeleton.MainFrame.__init__(self, parent)
         self.__shortcuts_user = ShortCuts()
+        self.__row_selection_number = 0
+        self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
 
 #-------------------------------------------------------------------------------
     def add_new_shortcut_menu(self, event):
@@ -56,6 +58,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.new_shortcut_panel.Hide()
         self.change_shortcut_grid_labels()
         self.add_shortcuts_to_shortcut_grid()
+        self.add_options_to_delete_list()
 
 #-------------------------------------------------------------------------------
     def change_shortcut_grid_labels(self):
@@ -79,6 +82,38 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
                     self.computer_shortcuts_grid.SetCellValue(row, col, sequence)
                     row += 1
                     col = 0
+        self.__row_selection_number = row
+
+#-------------------------------------------------------------------------------
+    def add_options_to_delete_list(self):
+        self.delete_number_choice.Clear()
+        if self.__row_selection_number != 0:
+            for number in range(self.__row_selection_number):
+                self.delete_number_choice.Append(str(number + 1))
+
+#-------------------------------------------------------------------------------
+    def select_shortcut_to_delete(self, event):
+        print self.__row_selection_number
+        action = self.computer_shortcuts_grid.GetCellValue(self.delete_number_choice.GetSelection(), 0)
+        sequence = self.computer_shortcuts_grid.GetCellValue(self.delete_number_choice.GetSelection(), 2)
+        sequence = sequence.split('+')
+        for file_name in self.__shortcuts_user.get_current_shortcuts()[action]:
+            if self.__shortcuts_user.get_current_shortcuts()[action][file_name][1] == sequence:
+                self.__selected_file_name_to_delete['file name'] = file_name
+                self.__selected_file_name_to_delete['action'] = action
+                print self.__selected_file_name_to_delete
+
+        print sequence, action
+
+#-------------------------------------------------------------------------------
+    def clear_shortcuts_grid(self):
+        self.computer_shortcuts_grid.ClearGrid()
+#-------------------------------------------------------------------------------
+    def delete_a_shortcut_from_the_grid(self, event):
+        self.__shortcuts_user.delete_shortcut(self.__selected_file_name_to_delete['action'], self.__selected_file_name_to_delete['file name'])
+        self.clear_shortcuts_grid()
+        self.add_shortcuts_to_shortcut_grid()
+        self.add_options_to_delete_list()
 
 #===============================================================================
     def go_to_home_panel(self, event):

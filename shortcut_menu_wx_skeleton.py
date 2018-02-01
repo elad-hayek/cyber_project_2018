@@ -82,6 +82,8 @@ class MainFrame ( wx.Frame ):
         shortcuts_choicesChoices = []
         self.shortcuts_choices = wx.Choice( self.new_shortcut_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 300,150 ), shortcuts_choicesChoices, 0 )
         self.shortcuts_choices.SetSelection( 0 )
+        self.shortcuts_choices.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
+
         new_shortcut_grid_sizer.Add( self.shortcuts_choices, 1, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
         self.buttons_mapping_list = wx.dataview.DataViewListCtrl( self.new_shortcut_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 200,300 ), wx.dataview.DV_VERT_RULES )
@@ -130,7 +132,20 @@ class MainFrame ( wx.Frame ):
         self.computer_choice.SetSelection( 0 )
         choose_and_delete_sizer.Add( self.computer_choice, 0, wx.ALL, 5 )
 
-        self.delete_button = wx.Button( self.current_shortcuts_panel, wx.ID_ANY, u"Delete", wx.DefaultPosition, wx.Size( 150,70 ), 0 )
+        self.select_row_num_text = wx.StaticText( self.current_shortcuts_panel, wx.ID_ANY, u"Select row number to delete", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.select_row_num_text.Wrap( -1 )
+        self.select_row_num_text.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
+
+        choose_and_delete_sizer.Add( self.select_row_num_text, 0, wx.ALL|wx.ALIGN_BOTTOM, 5 )
+
+        delete_number_choiceChoices = []
+        self.delete_number_choice = wx.Choice( self.current_shortcuts_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 40,-1 ), delete_number_choiceChoices, 0 )
+        self.delete_number_choice.SetSelection( 0 )
+        self.delete_number_choice.SetFont( wx.Font( 11, 74, 90, 90, False, "Arial" ) )
+
+        choose_and_delete_sizer.Add( self.delete_number_choice, 0, wx.ALL, 5 )
+
+        self.delete_button = wx.Button( self.current_shortcuts_panel, wx.ID_ANY, u"Delete", wx.DefaultPosition, wx.Size( 150,50 ), 0 )
         self.delete_button.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
 
         choose_and_delete_sizer.Add( self.delete_button, 0, wx.ALL, 10 )
@@ -209,8 +224,8 @@ class MainFrame ( wx.Frame ):
         self.shortcuts_choices.Bind( wx.EVT_CHOICE, self.save_user_choice )
         self.sequence_text_control.Bind( wx.EVT_TEXT, self.check_sequence_input )
         self.enter_sequence_button.Bind( wx.EVT_BUTTON, self.add_new_shortcut_to_the_list )
+        self.delete_number_choice.Bind( wx.EVT_CHOICE, self.select_shortcut_to_delete )
         self.delete_button.Bind( wx.EVT_BUTTON, self.delete_a_shortcut_from_the_grid )
-        self.computer_shortcuts_grid.Bind( wx.grid.EVT_GRID_CELL_LEFT_CLICK, self.select_shortcut_to_delete )
 
     def __del__( self ):
         pass
@@ -237,10 +252,9 @@ class MainFrame ( wx.Frame ):
     def add_new_shortcut_to_the_list( self, event ):
         event.Skip()
 
-    def delete_a_shortcut_from_the_grid( self, event ):
-        event.Skip()
-
     def select_shortcut_to_delete( self, event ):
         event.Skip()
-	
+
+    def delete_a_shortcut_from_the_grid( self, event ):
+        event.Skip()
 

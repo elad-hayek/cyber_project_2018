@@ -136,6 +136,7 @@ class ShortCuts:
         file_to_delete = self.__current_shortcuts[shortcut_type][file_name][2]
         self.activate_ahk_files(CLOSE_PROCESS_BY_NAME_PATH, file_name)
         os.remove(file_to_delete)
+        self.__current_shortcuts[shortcut_type].__delitem__(file_name)
 #-------------------------------------------------------------------------------
 
     def get_current_shortcuts(self):
