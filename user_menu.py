@@ -19,12 +19,17 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def add_new_shortcut_menu(self, event):
-        self.new_shortcut_panel.Show()
-        self.main_panel.Hide()
-        self.current_shortcuts_panel.Hide()
+        self.show_new_shortcut_panel()
         self.add_special_characters_to_the_add_table()
         self.add_options_to_shortcut_list()
 
+#-------------------------------------------------------------------------------
+    def show_new_shortcut_panel(self):
+        self.new_shortcut_panel.Show()
+        self.main_panel.Hide()
+        self.current_shortcuts_panel.Hide()
+        self.new_shortcut_panel.GetSizer().Layout()
+        self.new_shortcut_panel.GetParent().Layout()
 #-------------------------------------------------------------------------------
     def add_new_shortcut_to_the_list(self, event):
         self.__shortcuts_user.write_new_shortcut()
@@ -53,12 +58,18 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #===============================================================================
     def show_current_shortcuts_menu(self, event):
-        self.main_panel.Hide()
-        self.current_shortcuts_panel.Show()
-        self.new_shortcut_panel.Hide()
+        self.show_current_shortcut_panel()
         self.change_shortcut_grid_labels()
         self.add_shortcuts_to_shortcut_grid()
         self.add_options_to_delete_list()
+
+#-------------------------------------------------------------------------------
+    def show_current_shortcut_panel(self):
+        self.main_panel.Hide()
+        self.new_shortcut_panel.Hide()
+        self.current_shortcuts_panel.Show()
+        self.current_shortcuts_panel.GetSizer().Layout()
+        self.current_shortcuts_panel.GetParent().Layout()
 
 #-------------------------------------------------------------------------------
     def change_shortcut_grid_labels(self):
