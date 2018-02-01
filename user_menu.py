@@ -64,19 +64,21 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def add_shortcuts_to_shortcut_grid(self):
+        print self.__shortcuts_user.get_current_shortcuts()
         row = 0
         for key in self.__shortcuts_user.get_current_shortcuts():
             col = 0
             if self.__shortcuts_user.get_current_shortcuts()[key]:
-                self.computer_shortcuts_grid.SetCellValue(row, col, key)
-                col += 1
                 for file_name in self.__shortcuts_user.get_current_shortcuts()[key]:
-                        argument = self.__shortcuts_user.get_current_shortcuts()[key][file_name][0]
-                        self.computer_shortcuts_grid.SetCellValue(row, col, argument)
-                        col += 1
-                        sequence = '+'.join(self.__shortcuts_user.get_current_shortcuts()[key][file_name][1])
-                        self.computer_shortcuts_grid.SetCellValue(row, col, sequence)
-                row += 1
+                    self.computer_shortcuts_grid.SetCellValue(row, col, key)
+                    col += 1
+                    argument = self.__shortcuts_user.get_current_shortcuts()[key][file_name][0]
+                    self.computer_shortcuts_grid.SetCellValue(row, col, argument)
+                    col += 1
+                    sequence = '+'.join(self.__shortcuts_user.get_current_shortcuts()[key][file_name][1])
+                    self.computer_shortcuts_grid.SetCellValue(row, col, sequence)
+                    row += 1
+                    col = 0
 
 #===============================================================================
     def go_to_home_panel(self, event):
