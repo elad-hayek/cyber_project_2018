@@ -13,7 +13,6 @@ SHORTCUT_OPTIONS = ['open folder', 'open url', 'open program', 'open cmd', 'open
 SHORTCUT_GRID_LABELS = {0: 'Action', 1: 'Argument', 2: 'Sequence'}
 SEQUENCE_ERROR = 'Not a legal sequence'
 ACTION_ERROR = 'Choose a action'
-SEQUENCE_AND_ACTION_ERROR = 'Choose an Action and a Sequence'
 DELETE_BUTTON_ERROR = 'Row number was not selected'
 
 class Main(shortcut_menu_wx_skeleton.MainFrame):
@@ -24,7 +23,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__row_selection_number = 0
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
         self.__special_characters_list = ['windows', 'alt', 'control', 'shift', 'space']
-        self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False}
+        self.__input_status = {'sequence': True, 'action': False, 'row number to delete': False}
         self.check_if_first_time()
 
 #-------------------------------------------------------------------------------
@@ -58,9 +57,6 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         elif self.__input_status['sequence'] and not self.__input_status['action'] :
             self.open_error_dialog(ACTION_ERROR)
 
-        elif not self.__input_status['sequence'] and not self.__input_status['action']:
-            self.open_error_dialog(SEQUENCE_AND_ACTION_ERROR)
-
 #-------------------------------------------------------------------------------
     def save_user_choice(self, event):
         print SHORTCUT_OPTIONS[self.shortcuts_choices.GetSelection()], '---action---'
@@ -87,11 +83,12 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def check_if_sequence_is_in_protocol(self):
         sequence = self.sequence_text_control.GetValue().split('+')
-        for sequence_entry in sequence:
-            if len(sequence_entry) > 1:
-                self.check_sequence_special_keys(sequence_entry)
-            else:
-                self.__input_status['sequence'] = True
+        if not sequence:
+            self.__input_status['sequence'] = False
+        else:
+            for sequence_entry in sequence:
+                if len(sequence_entry) > 1:
+                    self.check_sequence_special_keys(sequence_entry)
 
 #-------------------------------------------------------------------------------
     def check_sequence_special_keys(self, sequence_entry):
