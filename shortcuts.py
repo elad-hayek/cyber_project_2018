@@ -5,6 +5,7 @@ from Tkinter import *
 import tkFileDialog
 import wx
 import pickle
+import tkMessageBox
 
 CLOSE_PROCESS_BY_NAME_PATH = 'E:\USER\Documents\school\cyber\project_2018\close_process.ahk'
 
@@ -20,6 +21,7 @@ if GetKeyState("{0}") & GetKeyState("{1}") & GetKeyState("{2}")
 
 class ShortCuts:
     def __init__(self):
+        self.__argument = GetArgument()
         self.__shortcut_sequence = ''
         self.__shortcut_script_path = ''
         self.__shortcuts_templates = {'open folder': 'Run, %s',
@@ -38,36 +40,19 @@ class ShortCuts:
         self.__shortcut_function_activation = {'open folder': self.open_folder, 'open url': self.open_url, 'open settings': self.open_settings, 'open cmd': self.open_cmd, 'open program': self.open_program}
 
 
-    def ask_text_from_user(self, action):
-        frame = wx.Frame(None, -1, action)
-        frame.SetDimensions(0, 0, 200, 50)
-
-        # Create text input
-        dlg = wx.TextEntryDialog(frame, 'Enter '+action.split()[1], 'Text Entry')
-        if dlg.ShowModal() == wx.ID_OK:
-            return dlg.GetValue()
-        dlg.Destroy()
-#-------------------------------------------------------------------------------
-    def choose_folder_manager(self):
-        root = Tk()
-        root.withdraw()
-        root.filename = tkFileDialog.askdirectory(mustexist=True, parent=root, initialdir='/', title='Select your pictures folder')
-        return root.filename
-#-------------------------------------------------------------------------------
-    def choose_program_manager(self):
-        root = Tk()
-        root.withdraw()
-        root.filename = tkFileDialog.askopenfilename(initialdir="/", title="Select program", filetypes=(("exe files", "*.exe"), ("all files", "*.*")))
-        return root.filename
 #-------------------------------------------------------------------------------
     def open_folder(self):
-        path = self.choose_folder_manager()
-        self.run_action_sequence_for_shortcut('folder', path)
+        path = self.__argument.choose_folder_manager()
+        print path, '---path---'
+        if path:
+            self.run_action_sequence_for_shortcut('folder', path)
 
 #-------------------------------------------------------------------------------
     def open_url(self):
-        url = self.ask_text_from_user('open url')
-        self.run_action_sequence_for_shortcut('url', url)
+        url = self.__argument.ask_text_from_user('open url')
+        print url, '---url---'
+        if url:
+            self.run_action_sequence_for_shortcut('url', url)
 
 #-------------------------------------------------------------------------------
     def open_settings(self):
@@ -79,8 +64,10 @@ class ShortCuts:
 
 #-------------------------------------------------------------------------------
     def open_program(self):
-        path = self.choose_program_manager()
-        self.run_action_sequence_for_shortcut('program', path)
+        path = self.__argument.choose_program_manager()
+        print path, '---path---'
+        if path:
+            self.run_action_sequence_for_shortcut('program', path)
 
 #-------------------------------------------------------------------------------
     def get_shortcut_sequence(self):
@@ -164,6 +151,58 @@ class ShortCuts:
         json_save_file = open('user_data.json', 'r')
         self.__current_shortcuts = pickle.load(json_save_file)
         self.__files_ending_counter = pickle.load(json_save_file)
+
+
+class GetArgument:
+    def __init__(self):
+        self.___argument = ''
+#-------------------------------------------------------------------------------
+    def ask_text_from_user(self, action):
+        frame = wx.Frame(None, -1, action)
+        frame.SetDimensions(0, 0, 200, 50)
+
+        # Create text input
+        dlg = wx.TextEntryDialog(frame, 'Enter '+action.split()[1].upper(), 'Text Entry')
+        if dlg.ShowModal() == wx.ID_OK:
+            self.___argument = dlg.GetValue()
+            self.check_argument_input()
+            dlg.Destroy()
+            return dlg.GetValue()
+        else:
+            self.___argument = ''
+            self.check_argument_input()
+            dlg.Destroy()
+            return dlg.GetValue()
+
+#-------------------------------------------------------------------------------
+    def open_error_dialog(self, error):
+        root = Tk()
+        root.withdraw()
+        tkMessageBox.showerror("Error", error)
+
+#-------------------------------------------------------------------------------
+    def choose_folder_manager(self):
+        root = Tk()
+        root.withdraw()
+        root.filename = tkFileDialog.askdirectory(mustexist=True, parent=root, initialdir='/', title='Select your pictures folder')
+        self.___argument = root.filename
+        self.check_argument_input()
+        return root.filename
+
+#-------------------------------------------------------------------------------
+    def choose_program_manager(self):
+        root = Tk()
+        root.withdraw()
+        root.filename = tkFileDialog.askopenfilename(initialdir="/", title="Select program", filetypes=(("exe files", "*.exe"), ("all files", "*.*")))
+        self.___argument = root.filename
+        self.check_argument_input()
+        return root.filename
+
+#-------------------------------------------------------------------------------
+    def check_argument_input(self):
+        if not self.___argument:
+            self.open_error_dialog('Invalid Argument')
+
 
 
 
