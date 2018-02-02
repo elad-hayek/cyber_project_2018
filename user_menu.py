@@ -23,7 +23,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__row_selection_number = 0
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
         self.__special_characters_list = ['windows', 'alt', 'control', 'shift', 'space']
-        self.__input_status = {'sequence': True, 'action': False, 'row number to delete': False}
+        self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False}
         self.check_if_first_time()
 
 #-------------------------------------------------------------------------------
@@ -51,10 +51,11 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         if self.__input_status['sequence'] and self.__input_status['action']:
             self.__shortcuts_user.write_new_shortcut()
             self.__shortcuts_user.save_user_activity()
+
         elif not self.__input_status['sequence'] and self.__input_status['action']:
             self.open_error_dialog(SEQUENCE_ERROR)
 
-        elif self.__input_status['sequence'] and not self.__input_status['action'] :
+        elif self.__input_status['sequence'] and not self.__input_status['action'] or not self.__input_status['sequence'] and not self.__input_status['action']:
             self.open_error_dialog(ACTION_ERROR)
 
 #-------------------------------------------------------------------------------
@@ -84,8 +85,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
     def check_if_sequence_is_in_protocol(self):
         self.__input_status['sequence'] = True
         sequence = self.sequence_text_control.GetValue().split('+')
-        print len(sequence), '%%%%%%%%%%%%%%%%%%%%%%%%%'
-        if not sequence:
+        if not ''.join(sequence):
             self.__input_status['sequence'] = False
         elif len(sequence) > 6:
             self.__input_status['sequence'] = False
