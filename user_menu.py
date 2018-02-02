@@ -4,12 +4,16 @@ from shortcuts import ShortCuts
 import wx
 import shortcut_menu_wx_skeleton
 import os
+from Tkinter import *
+import tkMessageBox
 
 USER_DATA_FILE_NAME = 'user_data.json'
 SPECIAL_CHARACTERS_SYMBOLS = [['Windows', '#'], ['Alt', '!'], ['Control', '^'], ['Shift', '+']]
 SHORTCUT_OPTIONS = ['open folder', 'open url', 'open program', 'open cmd', 'open settings']
 SHORTCUT_GRID_LABELS = {0: 'Action', 1: 'Argument', 2: 'Sequence'}
-
+SEQUENCE_ERROR = 'There was a problem with the sequence'
+ACTION_ERROR = 'Choose a action'
+SEQUENCE_AND_ACTION_ERROR = 'Choose an Action and a Sequence'
 
 class Main(shortcut_menu_wx_skeleton.MainFrame):
     #constructor
@@ -18,6 +22,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__shortcuts_user = ShortCuts()
         self.__row_selection_number = 0
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
+        self.__special_characters_list = ['windows', 'alt', 'control', 'shift', 'space']
+        self.__input_status = {'sequence': False, 'action': False}
         self.check_if_first_time()
 
 #-------------------------------------------------------------------------------
@@ -39,13 +45,25 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.new_shortcut_panel.GetParent().Layout()
 #-------------------------------------------------------------------------------
     def add_new_shortcut_to_the_list(self, event):
-        self.__shortcuts_user.write_new_shortcut()
-        self.__shortcuts_user.save_user_activity()
+        print self.__input_status['sequence'], 'sequence'
+        print self.__input_status['action'], 'action'
 
+        if self.__input_status['sequence'] and self.__input_status['action']:
+            self.__shortcuts_user.write_new_shortcut()
+            self.__shortcuts_user.save_user_activity()
+        elif not self.__input_status['sequence'] and self.__input_status['action']:
+            self.open_error_dialog(SEQUENCE_ERROR)
+
+        elif self.__input_status['sequence'] and not self.__input_status['action'] :
+            self.open_error_dialog(ACTION_ERROR)
+
+        elif not self.__input_status['sequence'] and not self.__input_status['action']:
+            self.open_error_dialog(SEQUENCE_AND_ACTION_ERROR)
 #-------------------------------------------------------------------------------
     def save_user_choice(self, event):
         print SHORTCUT_OPTIONS[self.shortcuts_choices.GetSelection()]
         self.__shortcuts_user.set_users_choice(SHORTCUT_OPTIONS[self.shortcuts_choices.GetSelection()])
+        self.__input_status['action'] = True
 
 #-------------------------------------------------------------------------------
     def add_special_characters_to_the_add_table(self):
@@ -62,7 +80,29 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def check_sequence_input(self, event):
         self.__shortcuts_user.set_shortcut_sequence(self.sequence_text_control.GetValue())
-        print self.sequence_text_control.GetValue()
+        self.check_if_sequence_is_in_protocol()
+        print self.sequence_text_control.GetValue(), '%%%%%%%%%%%%%%%%'
+
+    def check_if_sequence_is_in_protocol(self):
+        sequence = self.sequence_text_control.GetValue().split('+')
+        for sequence_entry in sequence:
+            print sequence_entry, '!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+            if len(sequence_entry) > 1:
+                self.check_sequence_special_keys(sequence_entry)
+            else:
+                self.__input_status['sequence'] = True
+
+
+    def check_sequence_special_keys(self, sequence_entry):
+        if sequence_entry.lower() not in self.__special_characters_list:
+            self.__input_status['sequence'] = False
+        else:
+            self.__input_status['sequence'] = True
+
+    def open_error_dialog(self, error):
+        root = Tk()
+        root.withdraw()
+        tkMessageBox.showerror("Error", error)
 
 #===============================================================================
     def show_current_shortcuts_menu(self, event):
