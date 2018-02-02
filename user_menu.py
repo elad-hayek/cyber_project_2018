@@ -14,6 +14,7 @@ SHORTCUT_GRID_LABELS = {0: 'Action', 1: 'Argument', 2: 'Sequence'}
 SEQUENCE_ERROR = 'There was a problem with the sequence'
 ACTION_ERROR = 'Choose a action'
 SEQUENCE_AND_ACTION_ERROR = 'Choose an Action and a Sequence'
+DELETE_BUTTON_ERROR = 'Choose a row number to delete'
 
 class Main(shortcut_menu_wx_skeleton.MainFrame):
     #constructor
@@ -23,7 +24,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__row_selection_number = 0
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
         self.__special_characters_list = ['windows', 'alt', 'control', 'shift', 'space']
-        self.__input_status = {'sequence': False, 'action': False}
+        self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False}
         self.check_if_first_time()
 
 #-------------------------------------------------------------------------------
@@ -43,10 +44,10 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.current_shortcuts_panel.Hide()
         self.new_shortcut_panel.GetSizer().Layout()
         self.new_shortcut_panel.GetParent().Layout()
+
 #-------------------------------------------------------------------------------
     def add_new_shortcut_to_the_list(self, event):
-        print self.__input_status['sequence'], 'sequence'
-        print self.__input_status['action'], 'action'
+        print '+'.join(self.__shortcuts_user.get_shortcut_sequence()), '---sequence---'
 
         if self.__input_status['sequence'] and self.__input_status['action']:
             self.__shortcuts_user.write_new_shortcut()
@@ -59,9 +60,10 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
         elif not self.__input_status['sequence'] and not self.__input_status['action']:
             self.open_error_dialog(SEQUENCE_AND_ACTION_ERROR)
+
 #-------------------------------------------------------------------------------
     def save_user_choice(self, event):
-        print SHORTCUT_OPTIONS[self.shortcuts_choices.GetSelection()]
+        print SHORTCUT_OPTIONS[self.shortcuts_choices.GetSelection()], '---action---'
         self.__shortcuts_user.set_users_choice(SHORTCUT_OPTIONS[self.shortcuts_choices.GetSelection()])
         self.__input_status['action'] = True
 
@@ -81,24 +83,24 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
     def check_sequence_input(self, event):
         self.__shortcuts_user.set_shortcut_sequence(self.sequence_text_control.GetValue())
         self.check_if_sequence_is_in_protocol()
-        print self.sequence_text_control.GetValue(), '%%%%%%%%%%%%%%%%'
 
+#-------------------------------------------------------------------------------
     def check_if_sequence_is_in_protocol(self):
         sequence = self.sequence_text_control.GetValue().split('+')
         for sequence_entry in sequence:
-            print sequence_entry, '!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
             if len(sequence_entry) > 1:
                 self.check_sequence_special_keys(sequence_entry)
             else:
                 self.__input_status['sequence'] = True
 
-
+#-------------------------------------------------------------------------------
     def check_sequence_special_keys(self, sequence_entry):
         if sequence_entry.lower() not in self.__special_characters_list:
             self.__input_status['sequence'] = False
         else:
             self.__input_status['sequence'] = True
 
+#-------------------------------------------------------------------------------
     def open_error_dialog(self, error):
         root = Tk()
         root.withdraw()
@@ -167,13 +169,25 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def clear_shortcuts_grid(self):
         self.computer_shortcuts_grid.ClearGrid()
+
 #-------------------------------------------------------------------------------
     def delete_a_shortcut_from_the_grid(self, event):
-        self.__shortcuts_user.delete_shortcut(self.__selected_file_name_to_delete['action'], self.__selected_file_name_to_delete['file name'])
-        self.clear_shortcuts_grid()
-        self.add_shortcuts_to_shortcut_grid()
-        self.add_options_to_delete_list()
-        self.__shortcuts_user.save_user_activity()
+        self.check_if_row_number_to_delete_was_selected()
+        print self.__input_status['row number to delete']
+        if self.__input_status['row number to delete']:
+            self.__shortcuts_user.delete_shortcut(self.__selected_file_name_to_delete['action'], self.__selected_file_name_to_delete['file name'])
+            self.clear_shortcuts_grid()
+            self.add_shortcuts_to_shortcut_grid()
+            self.add_options_to_delete_list()
+            self.__shortcuts_user.save_user_activity()
+            self.__input_status['row number to delete'] = False
+        else:
+            self.open_error_dialog(DELETE_BUTTON_ERROR)
+
+#-------------------------------------------------------------------------------
+    def check_if_row_number_to_delete_was_selected(self):
+        if self.delete_number_choice.GetSelection() != -1:
+            self.__input_status['row number to delete'] = True
 
 #===============================================================================
     def go_to_home_panel(self, event):
