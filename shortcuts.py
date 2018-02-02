@@ -1,4 +1,15 @@
 # -*- coding: utf-8 -*-
+"""
+Description:    creates a shortcut using AutoHotKey syntax. It creates a file
+                for each shortcut entry from the user and activates the process.
+                It adds the shortcut to a database and saves it to a json file
+                for later retrieval. It also deletes shortcuts, checks argument
+                input and present a message accordingly.
+
+name:           Elad Hayek
+date:           2.2.18
+file name:      shortcuts.py
+"""
 import subprocess
 import os
 from Tkinter import *
@@ -21,6 +32,9 @@ if GetKeyState("{0}") & GetKeyState("{1}") & GetKeyState("{2}")
 
 class ShortCuts:
     def __init__(self):
+        """
+        creates a user profile for the program
+        """
         self.__argument = GetArgument()
         self.__shortcut_sequence = ''
         self.__shortcut_script_path = ''
@@ -42,6 +56,9 @@ class ShortCuts:
 
 #-------------------------------------------------------------------------------
     def open_folder(self):
+        """
+        uses the run_action_sequence_for_shortcut to open a folder shortcut
+        """
         path = self.__argument.choose_folder_manager()
         print path, '---path---'
         if path:
@@ -49,6 +66,9 @@ class ShortCuts:
 
 #-------------------------------------------------------------------------------
     def open_url(self):
+        """
+        uses the run_action_sequence_for_shortcut to open a URL shortcut
+        """
         url = self.__argument.ask_text_from_user('open url')
         print url, '---url---'
         if url:
@@ -56,14 +76,23 @@ class ShortCuts:
 
 #-------------------------------------------------------------------------------
     def open_settings(self):
+        """
+        uses the run_action_sequence_for_shortcut to open a control panel shortcut
+        """
         self.run_action_sequence_for_shortcut('settings')
 
 #-------------------------------------------------------------------------------
     def open_cmd(self):
+        """
+        uses the run_action_sequence_for_shortcut to open a cmd shortcut
+        """
         self.run_action_sequence_for_shortcut('cmd')
 
 #-------------------------------------------------------------------------------
     def open_program(self):
+        """
+        uses the run_action_sequence_for_shortcut to open a program shortcut
+        """
         path = self.__argument.choose_program_manager()
         print path, '---path---'
         if path:
@@ -71,19 +100,43 @@ class ShortCuts:
 
 #-------------------------------------------------------------------------------
     def get_shortcut_sequence(self):
+        """
+        returns the last entered shortcut sequence
+        """
         return self.__shortcut_sequence
 
 #-------------------------------------------------------------------------------
     def set_users_choice(self, choice):
+        """
+        sets the users choice of action
+
+        :arg choice = the action the user chose
+        :type choice = string
+        """
         self.__user_choice = choice
 
 #-------------------------------------------------------------------------------
     def set_shortcut_sequence(self, user_sequence):
+        """
+        sets the shortcut sequence
+
+        :arg user_sequence = the sequence the user entered
+        :type user_sequence = string
+        """
         self.__shortcut_sequence = user_sequence
         self.__shortcut_sequence = self.__shortcut_sequence.split('+')
 
 #-------------------------------------------------------------------------------
     def run_action_sequence_for_shortcut(self, shortcut_type, argument=''):
+        """
+        run the series of action to create a shortcut file and activate the shortcut
+
+        :arg shortcut_type = the action the user chose
+        :type shortcut_type = string
+
+        :arg argument = the argument the user chose for the action
+        :type argument = string
+        """
         self.__shortcut_script_path = SCRIPTS_PATH+'\\'+shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk'
         print self.__shortcut_script_path
         ahk_file = open(self.__shortcut_script_path, 'w')
@@ -101,11 +154,23 @@ class ShortCuts:
 #-------------------------------------------------------------------------------
 
     def write_new_shortcut(self):
+        """
+        activate the correct shortcut function from the actions dictionary
+        """
         self.__shortcut_function_activation[self.__user_choice]()
 
 #-------------------------------------------------------------------------------
 
     def write_to_file(self, shortcut_name, argument=''):
+        """
+        returns the string of AutoHotKey syntax to write the shortcut
+
+        :arg shortcut_name = the action the user chose
+        :type shortcut_name = string
+
+        :arg argument = the argument the user chose for the action
+        :type argument = string
+        """
         sequence_format_list = self.check_sequence_length()
         string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates[shortcut_name] % argument + '\n}'
         return string_to_write
@@ -113,14 +178,29 @@ class ShortCuts:
 #-------------------------------------------------------------------------------
 
     def check_sequence_length(self):
+        """
+        checks the user sequence entry and return a list with all the keys
+        """
         sequence_format_list = self.__shortcut_sequence[:]
+
+        # if the sequence is shorter than 6 fill the blanks with the last letter
         if len(sequence_format_list) < 6:
             for i in range(6-len(sequence_format_list)):
                 sequence_format_list.append(sequence_format_list[-1])
+
         return sequence_format_list
 #-------------------------------------------------------------------------------
 
     def delete_shortcut(self, shortcut_type, file_name):
+        """
+        deletes a shortcut file and end it's process
+
+        :arg shortcut_type = the action the user chose
+        :type shortcut_type = string
+
+        :arg file_name = the shortcut file name
+        :type file_name = string
+        """
         file_to_delete = self.__current_shortcuts[shortcut_type][file_name][2]
         self.activate_ahk_files(CLOSE_PROCESS_BY_NAME_PATH, file_name)
         os.remove(file_to_delete)
@@ -128,19 +208,46 @@ class ShortCuts:
 #-------------------------------------------------------------------------------
 
     def get_current_shortcuts(self):
+        """
+        returns the current shortcuts dictionary
+        """
         return self.__current_shortcuts
 
 #-------------------------------------------------------------------------------
 
     def activate_ahk_files(self, file_path, argument=''):
+        """
+        activates ahk files with subprocess
+
+        :arg file_path = the shortcut file path
+        :type file_path = string
+
+        :arg argument = the argument for the subprocess
+        :type argument = string
+        """
         subprocess.Popen([HOT_KEYS_PROGRAM_PATH, file_path, argument])
 #-------------------------------------------------------------------------------
 
     def add_to_history(self, shortcut_type, file_name, argument=None):
+        """
+        adds a shortcut to the current shortcuts dictionary
+
+        :arg shortcut_type = the action the user chose
+        :type shortcut_type = string
+
+        :arg file_name = the shortcut file name
+        :type file_name = string
+
+        :arg argument = the argument the user chose for the action
+        :type argument = string
+        """
         self.__current_shortcuts[shortcut_type][file_name] = (argument, self.__shortcut_sequence, self.__shortcut_script_path)
 
 #-------------------------------------------------------------------------------
     def save_user_activity(self):
+        """
+        saves the users shortcuts to a json file for later entry
+        """
         json_save_file = open('user_data.json', 'w')
         pickle.dump(self.__current_shortcuts, json_save_file)
         pickle.dump(self.__files_ending_counter, json_save_file)
@@ -148,6 +255,9 @@ class ShortCuts:
 
 #-------------------------------------------------------------------------------
     def get_user_previous_activity(self):
+        """
+        retrieve the user information from the json file
+        """
         json_save_file = open('user_data.json', 'r')
         self.__current_shortcuts = pickle.load(json_save_file)
         self.__files_ending_counter = pickle.load(json_save_file)
@@ -158,6 +268,12 @@ class GetArgument:
         self.___argument = ''
 #-------------------------------------------------------------------------------
     def ask_text_from_user(self, action):
+        """
+        opens a text dialog for argument entry from user
+
+        :arg action = the action the user chose
+        :type action = string
+        """
         frame = wx.Frame(None, -1, action)
         frame.SetDimensions(0, 0, 200, 50)
 
@@ -176,12 +292,21 @@ class GetArgument:
 
 #-------------------------------------------------------------------------------
     def open_error_dialog(self, error):
+        """
+        opens an error message
+
+        :arg error = the desired error message
+        :type error = string
+        """
         root = Tk()
         root.withdraw()
         tkMessageBox.showerror("Error", error)
 
 #-------------------------------------------------------------------------------
     def choose_folder_manager(self):
+        """
+        opens a folders manager for the user to choose a folder
+        """
         root = Tk()
         root.withdraw()
         root.filename = tkFileDialog.askdirectory(mustexist=True, parent=root, initialdir='/', title='Select your pictures folder')
@@ -191,6 +316,9 @@ class GetArgument:
 
 #-------------------------------------------------------------------------------
     def choose_program_manager(self):
+        """
+        opens a files manager for the user to choose a program
+        """
         root = Tk()
         root.withdraw()
         root.filename = tkFileDialog.askopenfilename(initialdir="/", title="Select program", filetypes=(("exe files", "*.exe"), ("all files", "*.*")))
@@ -200,6 +328,9 @@ class GetArgument:
 
 #-------------------------------------------------------------------------------
     def check_argument_input(self):
+        """
+        checks if the user entered an argument
+        """
         if not self.___argument:
             self.open_error_dialog('Invalid Argument')
 
