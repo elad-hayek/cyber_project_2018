@@ -3,7 +3,9 @@
 from shortcuts import ShortCuts
 import wx
 import shortcut_menu_wx_skeleton
+import os
 
+USER_DATA_FILE_NAME = 'user_data.json'
 SPECIAL_CHARACTERS_SYMBOLS = [['Windows', '#'], ['Alt', '!'], ['Control', '^'], ['Shift', '+']]
 SHORTCUT_OPTIONS = ['open folder', 'open url', 'open program', 'open cmd', 'open settings']
 SHORTCUT_GRID_LABELS = {0: 'Action', 1: 'Argument', 2: 'Sequence'}
@@ -16,7 +18,12 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__shortcuts_user = ShortCuts()
         self.__row_selection_number = 0
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
+        self.check_if_first_time()
 
+#-------------------------------------------------------------------------------
+    def check_if_first_time(self):
+        if os.path.isfile(USER_DATA_FILE_NAME):
+            self.__shortcuts_user.get_user_previous_activity()
 #-------------------------------------------------------------------------------
     def add_new_shortcut_menu(self, event):
         self.show_new_shortcut_panel()
@@ -33,6 +40,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def add_new_shortcut_to_the_list(self, event):
         self.__shortcuts_user.write_new_shortcut()
+        self.__shortcuts_user.save_user_activity()
 
 #-------------------------------------------------------------------------------
     def save_user_choice(self, event):
@@ -125,6 +133,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.clear_shortcuts_grid()
         self.add_shortcuts_to_shortcut_grid()
         self.add_options_to_delete_list()
+        self.__shortcuts_user.save_user_activity()
 
 #===============================================================================
     def go_to_home_panel(self, event):
@@ -132,8 +141,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.current_shortcuts_panel.Hide()
         self.new_shortcut_panel.Hide()
 
-
-
+    def update_user_data(self, event):
+        self.__shortcuts_user.save_user_activity()
+        self.Destroy()
 
 
 def main():

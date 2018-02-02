@@ -4,6 +4,7 @@ import os
 from Tkinter import *
 import tkFileDialog
 import wx
+import pickle
 
 CLOSE_PROCESS_BY_NAME_PATH = 'E:\USER\Documents\school\cyber\project_2018\close_process.ahk'
 
@@ -150,6 +151,20 @@ class ShortCuts:
 
     def add_to_history(self, shortcut_type, file_name, argument=None):
         self.__current_shortcuts[shortcut_type][file_name] = (argument, self.__shortcut_sequence, self.__shortcut_script_path)
+
+#-------------------------------------------------------------------------------
+    def save_user_activity(self):
+        json_save_file = open('user_data.json', 'w')
+        pickle.dump(self.__current_shortcuts, json_save_file)
+        pickle.dump(self.__files_ending_counter, json_save_file)
+        json_save_file.close()
+
+#-------------------------------------------------------------------------------
+    def get_user_previous_activity(self):
+        json_save_file = open('user_data.json', 'r')
+        self.__current_shortcuts = pickle.load(json_save_file)
+        self.__files_ending_counter = pickle.load(json_save_file)
+
 
 
 def main():

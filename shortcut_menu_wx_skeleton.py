@@ -102,10 +102,10 @@ class MainFrame ( wx.Frame ):
 
         new_shortcut_grid_sizer.Add( self.sequence_text_control, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
-        self.enter_sequence_button = wx.Button( self.new_shortcut_panel, wx.ID_ANY, u"Add", wx.DefaultPosition, wx.Size( 150,50 ), 0 )
-        self.enter_sequence_button.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
+        self.add_new_shortcut_button = wx.Button( self.new_shortcut_panel, wx.ID_ANY, u"Add", wx.DefaultPosition, wx.Size( 150,50 ), 0 )
+        self.add_new_shortcut_button.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
 
-        new_shortcut_grid_sizer.Add( self.enter_sequence_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+        new_shortcut_grid_sizer.Add( self.add_new_shortcut_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
 
         self.new_shortcut_panel.SetSizer( new_shortcut_grid_sizer )
@@ -216,6 +216,7 @@ class MainFrame ( wx.Frame ):
         self.Centre( wx.BOTH )
 
         # Connect Events
+        self.Bind( wx.EVT_CLOSE, self.update_user_data )
         self.Bind( wx.EVT_MENU, self.go_to_home_panel, id = self.home_menu_bar.GetId() )
         self.Bind( wx.EVT_MENU, self.add_new_shortcut_menu, id = self.new_shortcut.GetId() )
         self.Bind( wx.EVT_MENU, self.show_current_shortcuts_menu, id = self.show_current_shortcuts.GetId() )
@@ -223,7 +224,7 @@ class MainFrame ( wx.Frame ):
         self.current_shortcuts_button.Bind( wx.EVT_BUTTON, self.show_current_shortcuts_menu )
         self.shortcuts_choices.Bind( wx.EVT_CHOICE, self.save_user_choice )
         self.sequence_text_control.Bind( wx.EVT_TEXT, self.check_sequence_input )
-        self.enter_sequence_button.Bind( wx.EVT_BUTTON, self.add_new_shortcut_to_the_list )
+        self.add_new_shortcut_button.Bind( wx.EVT_BUTTON, self.add_new_shortcut_to_the_list )
         self.delete_number_choice.Bind( wx.EVT_CHOICE, self.select_shortcut_to_delete )
         self.delete_button.Bind( wx.EVT_BUTTON, self.delete_a_shortcut_from_the_grid )
 
@@ -232,6 +233,9 @@ class MainFrame ( wx.Frame ):
 
 
     # Virtual event handlers, overide them in your derived class
+    def update_user_data( self, event ):
+        event.Skip()
+
     def go_to_home_panel( self, event ):
         event.Skip()
 
@@ -257,4 +261,5 @@ class MainFrame ( wx.Frame ):
 
     def delete_a_shortcut_from_the_grid( self, event ):
         event.Skip()
+	
 
