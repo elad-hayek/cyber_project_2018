@@ -82,8 +82,12 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def check_if_sequence_is_in_protocol(self):
+        self.__input_status['sequence'] = True
         sequence = self.sequence_text_control.GetValue().split('+')
+        print len(sequence), '%%%%%%%%%%%%%%%%%%%%%%%%%'
         if not sequence:
+            self.__input_status['sequence'] = False
+        elif len(sequence) > 6:
             self.__input_status['sequence'] = False
         else:
             for sequence_entry in sequence:
