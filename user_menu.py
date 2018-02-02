@@ -11,10 +11,10 @@ USER_DATA_FILE_NAME = 'user_data.json'
 SPECIAL_CHARACTERS_SYMBOLS = [['Windows', '#'], ['Alt', '!'], ['Control', '^'], ['Shift', '+']]
 SHORTCUT_OPTIONS = ['open folder', 'open url', 'open program', 'open cmd', 'open settings']
 SHORTCUT_GRID_LABELS = {0: 'Action', 1: 'Argument', 2: 'Sequence'}
-SEQUENCE_ERROR = 'There was a problem with the sequence'
+SEQUENCE_ERROR = 'Not a legal sequence'
 ACTION_ERROR = 'Choose a action'
 SEQUENCE_AND_ACTION_ERROR = 'Choose an Action and a Sequence'
-DELETE_BUTTON_ERROR = 'Choose a row number to delete'
+DELETE_BUTTON_ERROR = 'Row number was not selected'
 
 class Main(shortcut_menu_wx_skeleton.MainFrame):
     #constructor
