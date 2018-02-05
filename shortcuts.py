@@ -281,12 +281,10 @@ class GetArgument:
         dlg = wx.TextEntryDialog(frame, 'Enter '+action.split()[1].upper(), 'Text Entry')
         if dlg.ShowModal() == wx.ID_OK:
             self.___argument = dlg.GetValue()
-            self.check_argument_input()
             dlg.Destroy()
             return dlg.GetValue()
         else:
             self.___argument = ''
-            self.check_argument_input()
             dlg.Destroy()
             return dlg.GetValue()
 
@@ -311,7 +309,6 @@ class GetArgument:
         root.withdraw()
         root.filename = tkFileDialog.askdirectory(mustexist=True, parent=root, initialdir='/', title='Select your pictures folder')
         self.___argument = root.filename
-        self.check_argument_input()
         return root.filename
 
 #-------------------------------------------------------------------------------
@@ -323,16 +320,9 @@ class GetArgument:
         root.withdraw()
         root.filename = tkFileDialog.askopenfilename(initialdir="/", title="Select program", filetypes=(("exe files", "*.exe"), ("all files", "*.*")))
         self.___argument = root.filename
-        self.check_argument_input()
         return root.filename
 
 #-------------------------------------------------------------------------------
-    def check_argument_input(self):
-        """
-        checks if the user entered an argument
-        """
-        if not self.___argument:
-            self.open_error_dialog('Invalid Argument')
 
 
 
