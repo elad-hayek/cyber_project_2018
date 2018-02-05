@@ -8,7 +8,7 @@ from Tkinter import *
 import tkMessageBox
 
 USER_DATA_FILE_NAME = 'user_data.json'
-SPECIAL_CHARACTERS_SYMBOLS = [['Windows', '#'], ['Alt', '!'], ['Control', '^'], ['Shift', '+']]
+SPECIAL_CHARACTERS_LIST = ['windows', 'alt', 'control', 'shift', 'space', 'backspace', 'enter']
 SHORTCUT_OPTIONS = ['open folder', 'open url', 'open program', 'open cmd', 'open settings']
 SHORTCUT_GRID_LABELS = {0: 'Action', 1: 'Argument', 2: 'Sequence'}
 SEQUENCE_ERROR = 'Not a legal sequence'
@@ -22,7 +22,6 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__shortcuts_user = ShortCuts()
         self.__row_selection_number = 0
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
-        self.__special_characters_list = ['windows', 'alt', 'control', 'shift', 'space']
         self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False}
         self.check_if_first_time()
 
@@ -66,9 +65,20 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def add_special_characters_to_the_add_table(self):
-        self.buttons_mapping_list.DeleteAllItems()
-        for special_character in SPECIAL_CHARACTERS_SYMBOLS:
-            self.buttons_mapping_list.AppendItem(special_character)
+        if not self.special_keys_list.GetCount():
+            self.special_keys_list.InsertItems(SPECIAL_CHARACTERS_LIST, 0)
+
+#-------------------------------------------------------------------------------
+    def add_special_key_to_the_sequence(self, event):
+        self.add_item_to_the_sequence_box(SPECIAL_CHARACTERS_LIST[self.special_keys_list.GetSelection()])
+
+#-------------------------------------------------------------------------------
+    def add_plus_to_sequence(self, event):
+        self.add_item_to_the_sequence_box('+')
+
+#-------------------------------------------------------------------------------
+    def add_item_to_the_sequence_box(self, item):
+        self.sequence_text_control.AppendText(item)
 
 #-------------------------------------------------------------------------------
     def add_options_to_shortcut_list(self):
@@ -96,7 +106,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def check_sequence_special_keys(self, sequence_entry):
-        if sequence_entry.lower() not in self.__special_characters_list:
+        if sequence_entry.lower() not in SPECIAL_CHARACTERS_LIST:
             self.__input_status['sequence'] = False
         else:
             self.__input_status['sequence'] = True

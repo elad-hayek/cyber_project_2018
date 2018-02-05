@@ -9,7 +9,6 @@
 
 import wx
 import wx.xrc
-import wx.dataview
 import wx.grid
 
 ###########################################################################
@@ -71,41 +70,89 @@ class MainFrame ( wx.Frame ):
 		self.new_shortcut_panel.SetBackgroundColour( wx.Colour( 128, 128, 0 ) )
 		self.new_shortcut_panel.Hide()
 		
-		new_shortcut_grid_sizer = wx.GridSizer( 0, 1, 0, 0 )
+		new_shortcut_grid_sizer = wx.GridSizer( 0, 2, 0, 0 )
+		
+		special_keys_and_computer_selection_sizer = wx.FlexGridSizer( 0, 2, 0, 0 )
+		special_keys_and_computer_selection_sizer.SetFlexibleDirection( wx.BOTH )
+		special_keys_and_computer_selection_sizer.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		special_buttons_sizer = wx.BoxSizer( wx.VERTICAL )
+		
+		self.special_keys = wx.StaticText( self.new_shortcut_panel, wx.ID_ANY, u"Click to add a key", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.special_keys.Wrap( -1 )
+		self.special_keys.SetFont( wx.Font( 16, 74, 90, 90, False, "Arial" ) )
+		
+		special_buttons_sizer.Add( self.special_keys, 0, wx.ALL, 10 )
+		
+		special_keys_listChoices = []
+		self.special_keys_list = wx.ListBox( self.new_shortcut_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,300 ), special_keys_listChoices, 0 )
+		self.special_keys_list.SetFont( wx.Font( 12, 74, 90, 90, False, "Arial" ) )
+		
+		special_buttons_sizer.Add( self.special_keys_list, 0, wx.ALL, 10 )
+		
+		
+		special_keys_and_computer_selection_sizer.Add( special_buttons_sizer, 1, wx.EXPAND, 5 )
+		
+		computer_selection_sizer = wx.BoxSizer( wx.VERTICAL )
+		
+		self.choose_computer_for_action_label = wx.StaticText( self.new_shortcut_panel, wx.ID_ANY, u"Choose a computer", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.choose_computer_for_action_label.Wrap( -1 )
+		self.choose_computer_for_action_label.SetFont( wx.Font( 16, 74, 90, 90, False, "Arial" ) )
+		
+		computer_selection_sizer.Add( self.choose_computer_for_action_label, 0, wx.ALL, 10 )
+		
+		choose_computer_for_actionChoices = []
+		self.choose_computer_for_action = wx.Choice( self.new_shortcut_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 200,-1 ), choose_computer_for_actionChoices, 0 )
+		self.choose_computer_for_action.SetSelection( 0 )
+		computer_selection_sizer.Add( self.choose_computer_for_action, 0, wx.ALL, 5 )
+		
+		
+		computer_selection_sizer.AddSpacer( ( 0, 160), 0, wx.EXPAND, 5 )
+		
+		self.add_plus_to_sequence_button = wx.Button( self.new_shortcut_panel, wx.ID_ANY, u"+", wx.DefaultPosition, wx.Size( 50,30 ), 0 )
+		self.add_plus_to_sequence_button.SetFont( wx.Font( 16, 74, 90, 90, False, "Arial" ) )
+		
+		computer_selection_sizer.Add( self.add_plus_to_sequence_button, 0, wx.ALL|wx.ALIGN_RIGHT, 5 )
+		
+		
+		special_keys_and_computer_selection_sizer.Add( computer_selection_sizer, 1, wx.EXPAND, 5 )
+		
+		
+		new_shortcut_grid_sizer.Add( special_keys_and_computer_selection_sizer, 1, wx.EXPAND, 5 )
+		
+		choose_action_sizer = wx.GridSizer( 0, 1, 0, 0 )
 		
 		self.choices_text = wx.StaticText( self.new_shortcut_panel, wx.ID_ANY, u"Choose An Action", wx.Point( -1,-1 ), wx.DefaultSize, 0 )
 		self.choices_text.Wrap( -1 )
 		self.choices_text.SetFont( wx.Font( 20, 74, 90, 90, False, "Arial" ) )
 		
-		new_shortcut_grid_sizer.Add( self.choices_text, 0, wx.ALL|wx.ALIGN_BOTTOM|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		choose_action_sizer.Add( self.choices_text, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_BOTTOM, 10 )
 		
 		shortcuts_choicesChoices = []
 		self.shortcuts_choices = wx.Choice( self.new_shortcut_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 300,150 ), shortcuts_choicesChoices, 0 )
 		self.shortcuts_choices.SetSelection( 0 )
 		self.shortcuts_choices.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
 		
-		new_shortcut_grid_sizer.Add( self.shortcuts_choices, 1, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
-		
-		self.buttons_mapping_list = wx.dataview.DataViewListCtrl( self.new_shortcut_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 200,300 ), wx.dataview.DV_VERT_RULES )
-		self.buttons_data_view = self.buttons_mapping_list.AppendTextColumn( u"Button" )
-		self.symbols_data_view = self.buttons_mapping_list.AppendTextColumn( u"Symbole" )
-		new_shortcut_grid_sizer.Add( self.buttons_mapping_list, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		choose_action_sizer.Add( self.shortcuts_choices, 1, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		self.enter_sequence_text = wx.StaticText( self.new_shortcut_panel, wx.ID_ANY, u"Enter Your Sequence Here", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.enter_sequence_text.Wrap( -1 )
 		self.enter_sequence_text.SetFont( wx.Font( 20, 74, 90, 90, False, "Arial" ) )
 		
-		new_shortcut_grid_sizer.Add( self.enter_sequence_text, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_BOTTOM, 5 )
+		choose_action_sizer.Add( self.enter_sequence_text, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_BOTTOM, 5 )
 		
 		self.sequence_text_control = wx.TextCtrl( self.new_shortcut_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 300,30 ), 0 )
 		self.sequence_text_control.SetFont( wx.Font( 12, 74, 90, 90, False, "Arial" ) )
 		
-		new_shortcut_grid_sizer.Add( self.sequence_text_control, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		choose_action_sizer.Add( self.sequence_text_control, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		self.add_new_shortcut_button = wx.Button( self.new_shortcut_panel, wx.ID_ANY, u"Add", wx.DefaultPosition, wx.Size( 150,50 ), 0 )
 		self.add_new_shortcut_button.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
 		
-		new_shortcut_grid_sizer.Add( self.add_new_shortcut_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		choose_action_sizer.Add( self.add_new_shortcut_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		
+		
+		new_shortcut_grid_sizer.Add( choose_action_sizer, 1, wx.EXPAND, 5 )
 		
 		
 		self.new_shortcut_panel.SetSizer( new_shortcut_grid_sizer )
@@ -222,6 +269,9 @@ class MainFrame ( wx.Frame ):
 		self.Bind( wx.EVT_MENU, self.show_current_shortcuts_menu, id = self.show_current_shortcuts.GetId() )
 		self.new_shortcut_button.Bind( wx.EVT_BUTTON, self.add_new_shortcut_menu )
 		self.current_shortcuts_button.Bind( wx.EVT_BUTTON, self.show_current_shortcuts_menu )
+		self.special_keys_list.Bind( wx.EVT_LISTBOX_DCLICK, self.add_special_key_to_the_sequence )
+		self.choose_computer_for_action.Bind( wx.EVT_CHOICE, self.choose_a_computer_for_action )
+		self.add_plus_to_sequence_button.Bind( wx.EVT_BUTTON, self.add_plus_to_sequence )
 		self.shortcuts_choices.Bind( wx.EVT_CHOICE, self.save_user_choice )
 		self.sequence_text_control.Bind( wx.EVT_TEXT, self.check_sequence_input )
 		self.add_new_shortcut_button.Bind( wx.EVT_BUTTON, self.add_new_shortcut_to_the_list )
@@ -246,6 +296,15 @@ class MainFrame ( wx.Frame ):
 		event.Skip()
 	
 	
+	
+	def add_special_key_to_the_sequence( self, event ):
+		event.Skip()
+	
+	def choose_a_computer_for_action( self, event ):
+		event.Skip()
+	
+	def add_plus_to_sequence( self, event ):
+		event.Skip()
 	
 	def save_user_choice( self, event ):
 		event.Skip()
