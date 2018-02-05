@@ -18,9 +18,9 @@ import wx
 import pickle
 import tkMessageBox
 
-CLOSE_PROCESS_BY_NAME_PATH = 'E:\USER\Documents\school\cyber\project_2018\close_process.ahk'
+CLOSE_PROCESS_BY_NAME_PATH = 'close_process.ahk'
 
-HOT_KEYS_PROGRAM_PATH = 'E:\Program Files\AutoHotKey\AutoHotkey.exe'
+HOT_KEYS_PROGRAM_PATH = 'AutoHotkey.exe'
 
 SCRIPTS_PATH = r'C:\Users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup'
 
