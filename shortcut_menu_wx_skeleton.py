@@ -33,6 +33,9 @@ class MainFrame ( wx.Frame ):
 		self.show_current_shortcuts = wx.MenuItem( self.main_menu, wx.ID_ANY, u"Show Current Shortcuts", wx.EmptyString, wx.ITEM_NORMAL )
 		self.main_menu.AppendItem( self.show_current_shortcuts )
 		
+		self.add_new_computer_menu_bar = wx.MenuItem( self.main_menu, wx.ID_ANY, u"Add New Computer", wx.EmptyString, wx.ITEM_NORMAL )
+		self.main_menu.AppendItem( self.add_new_computer_menu_bar )
+		
 		self.main_menubar.Append( self.main_menu, u"Menu" ) 
 		
 		self.SetMenuBar( self.main_menubar )
@@ -59,6 +62,11 @@ class MainFrame ( wx.Frame ):
 		self.current_shortcuts_button.SetFont( wx.Font( 18, 70, 90, 90, False, wx.EmptyString ) )
 		
 		main_panel_box_sizer.Add( self.current_shortcuts_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 25 )
+		
+		self.add_new_computer_button = wx.Button( self.main_panel, wx.ID_ANY, u"Add Computer", wx.DefaultPosition, wx.Size( 300,60 ), 0 )
+		self.add_new_computer_button.SetFont( wx.Font( 18, 74, 90, 90, False, "Arial" ) )
+		
+		main_panel_box_sizer.Add( self.add_new_computer_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 25 )
 		
 		
 		self.main_panel.SetSizer( main_panel_box_sizer )
@@ -269,6 +277,7 @@ class MainFrame ( wx.Frame ):
 		self.Bind( wx.EVT_MENU, self.show_current_shortcuts_menu, id = self.show_current_shortcuts.GetId() )
 		self.new_shortcut_button.Bind( wx.EVT_BUTTON, self.add_new_shortcut_menu )
 		self.current_shortcuts_button.Bind( wx.EVT_BUTTON, self.show_current_shortcuts_menu )
+		self.add_new_computer_button.Bind( wx.EVT_BUTTON, self.add_new_computer )
 		self.special_keys_list.Bind( wx.EVT_LISTBOX_DCLICK, self.add_special_key_to_the_sequence )
 		self.choose_computer_for_action.Bind( wx.EVT_CHOICE, self.choose_a_computer_for_action )
 		self.add_plus_to_sequence_button.Bind( wx.EVT_BUTTON, self.add_plus_to_sequence )
@@ -296,6 +305,9 @@ class MainFrame ( wx.Frame ):
 		event.Skip()
 	
 	
+	
+	def add_new_computer( self, event ):
+		event.Skip()
 	
 	def add_special_key_to_the_sequence( self, event ):
 		event.Skip()
