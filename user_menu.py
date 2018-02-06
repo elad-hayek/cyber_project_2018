@@ -14,6 +14,7 @@ SHORTCUT_GRID_LABELS = {0: 'Action', 1: 'Argument', 2: 'Sequence'}
 SEQUENCE_ERROR = 'Not a legal sequence'
 ACTION_ERROR = 'Choose a action'
 DELETE_BUTTON_ERROR = 'Row number was not selected'
+WINDOWS_KEY_REPRESENTATION = 'LWin'
 
 class Main(shortcut_menu_wx_skeleton.MainFrame):
     #constructor
@@ -70,7 +71,10 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def add_special_key_to_the_sequence(self, event):
-        self.add_item_to_the_sequence_box(SPECIAL_CHARACTERS_LIST[self.special_keys_list.GetSelection()])
+        if SPECIAL_CHARACTERS_LIST[self.special_keys_list.GetSelection()] == 'windows':
+            self.add_item_to_the_sequence_box(WINDOWS_KEY_REPRESENTATION)
+        else:
+            self.add_item_to_the_sequence_box(SPECIAL_CHARACTERS_LIST[self.special_keys_list.GetSelection()])
 
 #-------------------------------------------------------------------------------
     def add_plus_to_sequence(self, event):
@@ -106,7 +110,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def check_sequence_special_keys(self, sequence_entry):
-        if sequence_entry.lower() not in SPECIAL_CHARACTERS_LIST:
+        if sequence_entry == WINDOWS_KEY_REPRESENTATION:
+            self.__input_status['sequence'] = True
+        elif sequence_entry.lower() not in SPECIAL_CHARACTERS_LIST:
             self.__input_status['sequence'] = False
         else:
             self.__input_status['sequence'] = True
