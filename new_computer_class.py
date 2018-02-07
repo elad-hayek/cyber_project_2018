@@ -2,6 +2,13 @@
 
 from socket_class import Sockets
 import _multiprocessing
+from subprocess import Popen, PIPE
+import re
+
+MAC_REGULAR_EXPRESSION = '([a-fA-F0-9]{2}[:|\-]?){6}'
+IP_REGULAR_EXPRESSION = '192.168.1.(\d){1,3}'
+MAC_FILTER = ['ff-ff-ff-ff-ff-ff', 'ff-ff-ff-ff-ff-fa']
+IP_FILTER = ['192.168.1.1']
 
 SERVER_IP = '0.0.0.0'
 SERVER_PORT = 8820
@@ -51,6 +58,19 @@ class Client():
         pass
 
     def find_computers_in_the_network(self):
+        arp_question = Popen(['arp', '-a'], stdout=PIPE)
+        result = arp_question.communicate()[0]
+        result_split_lines = [line.strip() for line in result.splitlines()]  # split the arp answer to lines
+
+        for line in result_split_lines:
+            mac_finder = re.search(MAC_REGULAR_EXPRESSION, line)
+            ip_finder = re.search(IP_REGULAR_EXPRESSION, line)
+            if mac_finder and ip_finder:
+                if mac_finder.group(0).lower() not in MAC_FILTER and ip_finder.group(0) not in IP_FILTER:
+                    print line.split()[:2]
+
+
+    def check_if_remote_server_is_pinging(self):
         pass
 
     def add_computer_information_to_data_base(self):
@@ -65,6 +85,7 @@ def main():
     server = Server()
     print server.receive_information_from_client()
     server.pass_information_to_client('ok')
+
 
 
 
