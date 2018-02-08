@@ -37,9 +37,11 @@ class Server():
         self.__server_socket.write_to_client(data, self.__client_socket)
 
     def make_the_shortcut_file(self, action, sequence, argument):
+        self.__shortcut_builder.get_user_previous_activity()
         self.__shortcut_builder.set_users_choice(action)
         self.__shortcut_builder.set_shortcut_sequence(sequence)
         self.__shortcut_builder.write_new_shortcut(argument)
+        self.__shortcut_builder.save_user_activity()
 
 
     def activate_the_shortcut_on_the_computer(self):

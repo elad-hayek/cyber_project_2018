@@ -129,6 +129,12 @@ class ShortCuts:
 
 #-------------------------------------------------------------------------------
     def set_shortcut_argument(self, argument):
+        """
+        sets the user argument
+
+        :arg argument = the user shortcut argument
+        :type argument = string
+        """
         self.__argument.set_argument(argument)
 
 #-------------------------------------------------------------------------------
@@ -327,10 +333,19 @@ class GetArgument:
 
 #-------------------------------------------------------------------------------
     def get_argument(self):
+        """
+        returns the user chosen argument
+        """
         return self.___argument
 
 #-------------------------------------------------------------------------------
     def set_argument(self, argument):
+        """
+        sets the user argument
+
+        :arg argument = the user shortcut argument
+        :type argument = string
+        """
         self.___argument = argument
 
 
