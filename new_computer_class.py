@@ -4,6 +4,7 @@ from socket_class import Sockets
 import _multiprocessing
 from subprocess import Popen, PIPE
 import re
+import socket
 
 MAC_REGULAR_EXPRESSION = '([a-fA-F0-9]{2}[:|\-]?){6}'
 IP_REGULAR_EXPRESSION = '192.168.1.(\d){1,3}'
@@ -46,7 +47,12 @@ class Client():
         self.__raw_computer_information = []
 
     def connect_to_server(self, ip, port):
-        self.__client_socket.connect_to_server(ip, port)
+        try:
+            self.__client_socket.connect_to_server(ip, port)
+            return True
+        except socket.error, e:
+            print e
+            return False
 
     def receive_information_from_the_server(self):
         data = self.__client_socket.read_from_server()
@@ -93,8 +99,13 @@ class Client():
         print result_split_lines[-1], '---ping---'
         return result_split_lines[1].split()[1], result_split_lines[-1]
 
-    def check_if_remote_server_is_on(self, computer_ip):
-        pass
+    def check_if_remote_server_is_on(self, server_ip):
+        if self.connect_to_server(server_ip, SERVER_PORT):
+            print 'connection was successful'
+            return True
+        else:
+            print 'connection failed'
+            return False
 
     def add_computer_information_to_data_base(self):
         pass
@@ -107,11 +118,9 @@ class Client():
 def main():
     client = Client()
     client.find_computers_in_the_network()
-
-
-    # client.connect_to_server('192.168.1.46', 8820)
-    # client.send_request_to_the_server('open', 'a+f', 'google.com')
-    # print client.receive_information_from_the_server()
+    if client.check_if_remote_server_is_on('192.168.1.46'):
+        client.send_request_to_the_server('open', 'a+f', 'google.com')
+        print client.receive_information_from_the_server()
 
 
 
