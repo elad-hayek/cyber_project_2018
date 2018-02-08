@@ -22,6 +22,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         shortcut_menu_wx_skeleton.MainFrame.__init__(self, parent)
         self.__shortcuts_user = ShortCuts()
         self.__row_selection_number = 0
+        self.__saved_computer_list = {'My Computer': None}
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
         self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False}
         self.check_if_first_time()
@@ -35,6 +36,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.show_new_shortcut_panel()
         self.add_special_characters_to_the_add_table()
         self.add_options_to_shortcut_list()
+        self.add_computers_to_choose_computer_list()
 
 #-------------------------------------------------------------------------------
     def show_new_shortcut_panel(self):
@@ -122,6 +124,18 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         root = Tk()
         root.withdraw()
         tkMessageBox.showerror("Error", error)
+
+#-------------------------------------------------------------------------------
+    def add_computers_to_choose_computer_list(self):
+
+        computer_names = [key for key in self.__saved_computer_list.keys()]
+        if self.choose_computer_for_action.IsEmpty():
+            for computer in computer_names:
+                self.choose_computer_for_action.Append(computer)
+
+#-------------------------------------------------------------------------------
+    def choose_a_computer_for_action(self, event):
+        pass
 
 #===============================================================================
     def show_current_shortcuts_menu(self, event):

@@ -46,6 +46,8 @@ class Server():
 
     def activate_the_shortcut_on_the_computer(self):
         pass
+
+
 class Client():
     def __init__(self):
         self.__client_socket = Sockets()
