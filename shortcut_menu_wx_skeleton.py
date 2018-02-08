@@ -10,6 +10,7 @@
 import wx
 import wx.xrc
 import wx.grid
+import wx.dataview
 
 ###########################################################################
 ## Class MainFrame
@@ -63,10 +64,10 @@ class MainFrame ( wx.Frame ):
 		
 		main_panel_box_sizer.Add( self.current_shortcuts_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 25 )
 		
-		self.add_new_computer_button = wx.Button( self.main_panel, wx.ID_ANY, u"Add Computer", wx.DefaultPosition, wx.Size( 300,60 ), 0 )
-		self.add_new_computer_button.SetFont( wx.Font( 18, 74, 90, 90, False, "Arial" ) )
+		self.main_add_new_computer_button = wx.Button( self.main_panel, wx.ID_ANY, u"Add Computer", wx.DefaultPosition, wx.Size( 300,60 ), 0 )
+		self.main_add_new_computer_button.SetFont( wx.Font( 18, 74, 90, 90, False, "Arial" ) )
 		
-		main_panel_box_sizer.Add( self.add_new_computer_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 25 )
+		main_panel_box_sizer.Add( self.main_add_new_computer_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 25 )
 		
 		
 		self.main_panel.SetSizer( main_panel_box_sizer )
@@ -75,7 +76,7 @@ class MainFrame ( wx.Frame ):
 		main_box_sizer.Add( self.main_panel, 1, wx.EXPAND |wx.ALL, 0 )
 		
 		self.new_shortcut_panel = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.new_shortcut_panel.SetBackgroundColour( wx.Colour( 128, 128, 0 ) )
+		self.new_shortcut_panel.SetBackgroundColour( wx.Colour( 5, 122, 84 ) )
 		self.new_shortcut_panel.Hide()
 		
 		new_shortcut_grid_sizer = wx.GridSizer( 0, 2, 0, 0 )
@@ -264,6 +265,34 @@ class MainFrame ( wx.Frame ):
 		current_shortcuts_sizer.Fit( self.current_shortcuts_panel )
 		main_box_sizer.Add( self.current_shortcuts_panel, 0, wx.EXPAND|wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 0 )
 		
+		self.add_new_computer_panel = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.add_new_computer_panel.SetBackgroundColour( wx.Colour( 113, 70, 95 ) )
+		self.add_new_computer_panel.Hide()
+		
+		add_new_computer_sizer = wx.BoxSizer( wx.VERTICAL )
+		
+		self.add_new_computer_label = wx.StaticText( self.add_new_computer_panel, wx.ID_ANY, u"Select A Computer To Add", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.add_new_computer_label.Wrap( -1 )
+		self.add_new_computer_label.SetFont( wx.Font( 18, 74, 90, 90, False, "Arial" ) )
+		
+		add_new_computer_sizer.Add( self.add_new_computer_label, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		
+		self.add_new_computer_list_control = wx.dataview.DataViewListCtrl( self.add_new_computer_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 200,250 ), wx.dataview.DV_HORIZ_RULES|wx.dataview.DV_ROW_LINES|wx.dataview.DV_VERT_RULES )
+		self.new_computer_name_label = self.add_new_computer_list_control.AppendTextColumn( u"Name" )
+		self.new_computer_ip_label = self.add_new_computer_list_control.AppendTextColumn( u"IP" )
+		add_new_computer_sizer.Add( self.add_new_computer_list_control, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		
+		self.add_new_computer_button = wx.Button( self.add_new_computer_panel, wx.ID_ANY, u"Add", wx.DefaultPosition, wx.Size( 100,50 ), 0 )
+		self.add_new_computer_button.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
+		
+		add_new_computer_sizer.Add( self.add_new_computer_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 20 )
+		
+		
+		self.add_new_computer_panel.SetSizer( add_new_computer_sizer )
+		self.add_new_computer_panel.Layout()
+		add_new_computer_sizer.Fit( self.add_new_computer_panel )
+		main_box_sizer.Add( self.add_new_computer_panel, 1, wx.EXPAND |wx.ALL, 0 )
+		
 		
 		self.SetSizer( main_box_sizer )
 		self.Layout()
@@ -275,9 +304,10 @@ class MainFrame ( wx.Frame ):
 		self.Bind( wx.EVT_MENU, self.go_to_home_panel, id = self.home_menu_bar.GetId() )
 		self.Bind( wx.EVT_MENU, self.add_new_shortcut_menu, id = self.new_shortcut.GetId() )
 		self.Bind( wx.EVT_MENU, self.show_current_shortcuts_menu, id = self.show_current_shortcuts.GetId() )
+		self.Bind( wx.EVT_MENU, self.show_add_new_computer_menu, id = self.add_new_computer_menu_bar.GetId() )
 		self.new_shortcut_button.Bind( wx.EVT_BUTTON, self.add_new_shortcut_menu )
 		self.current_shortcuts_button.Bind( wx.EVT_BUTTON, self.show_current_shortcuts_menu )
-		self.add_new_computer_button.Bind( wx.EVT_BUTTON, self.add_new_computer )
+		self.main_add_new_computer_button.Bind( wx.EVT_BUTTON, self.show_add_new_computer_menu )
 		self.special_keys_list.Bind( wx.EVT_LISTBOX_DCLICK, self.add_special_key_to_the_sequence )
 		self.choose_computer_for_action.Bind( wx.EVT_CHOICE, self.choose_a_computer_for_action )
 		self.add_plus_to_sequence_button.Bind( wx.EVT_BUTTON, self.add_plus_to_sequence )
@@ -286,6 +316,7 @@ class MainFrame ( wx.Frame ):
 		self.add_new_shortcut_button.Bind( wx.EVT_BUTTON, self.add_new_shortcut_to_the_list )
 		self.delete_number_choice.Bind( wx.EVT_CHOICE, self.select_shortcut_to_delete )
 		self.delete_button.Bind( wx.EVT_BUTTON, self.delete_a_shortcut_from_the_grid )
+		self.add_new_computer_button.Bind( wx.EVT_BUTTON, self.add_new_computer_to_the_list )
 	
 	def __del__( self ):
 		pass
@@ -304,10 +335,11 @@ class MainFrame ( wx.Frame ):
 	def show_current_shortcuts_menu( self, event ):
 		event.Skip()
 	
-	
-	
-	def add_new_computer( self, event ):
+	def show_add_new_computer_menu( self, event ):
 		event.Skip()
+	
+	
+	
 	
 	def add_special_key_to_the_sequence( self, event ):
 		event.Skip()
@@ -331,6 +363,9 @@ class MainFrame ( wx.Frame ):
 		event.Skip()
 	
 	def delete_a_shortcut_from_the_grid( self, event ):
+		event.Skip()
+	
+	def add_new_computer_to_the_list( self, event ):
 		event.Skip()
 	
 

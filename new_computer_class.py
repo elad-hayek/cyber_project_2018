@@ -115,11 +115,6 @@ class Client():
             print 'connection failed'
             return False
 
-    def add_computer_information_to_data_base(self):
-        pass
-
-    def change_computer_name(self):
-        pass
 
 
 

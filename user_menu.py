@@ -43,6 +43,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.new_shortcut_panel.Show()
         self.main_panel.Hide()
         self.current_shortcuts_panel.Hide()
+        self.add_new_computer_panel.Hide()
         self.new_shortcut_panel.GetSizer().Layout()
         self.new_shortcut_panel.GetParent().Layout()
 
@@ -148,6 +149,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
     def show_current_shortcut_panel(self):
         self.main_panel.Hide()
         self.new_shortcut_panel.Hide()
+        self.add_new_computer_panel.Hide()
         self.current_shortcuts_panel.Show()
         self.current_shortcuts_panel.GetSizer().Layout()
         self.current_shortcuts_panel.GetParent().Layout()
@@ -221,10 +223,24 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             self.__input_status['row number to delete'] = True
 
 #===============================================================================
+    def show_add_new_computer_menu(self, event):
+        self.show_add_new_computer_panel()
+
+
+    def show_add_new_computer_panel(self):
+        self.new_shortcut_panel.Hide()
+        self.main_panel.Hide()
+        self.current_shortcuts_panel.Hide()
+        self.add_new_computer_panel.Show()
+        self.add_new_computer_panel.GetSizer().Layout()
+        self.add_new_computer_panel.GetParent().Layout()
+
+#===============================================================================
     def go_to_home_panel(self, event):
         self.main_panel.Show()
         self.current_shortcuts_panel.Hide()
         self.new_shortcut_panel.Hide()
+        self.add_new_computer_panel.Hide()
 
     def update_user_data(self, event):
         self.__shortcuts_user.save_user_activity()
