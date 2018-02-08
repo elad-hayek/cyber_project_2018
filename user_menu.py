@@ -253,7 +253,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             self.add_new_computer_list_control.AppendItem(computer)
 
     def add_new_computer_to_the_list(self, event):
-        pass
+        self.__saved_computer_list[self.__selected_computer_name] = self.__client.get_computer_information()[self.__selected_computer_name]
+        print self.__saved_computer_list
 
     def choose_computer_name_and_ip(self, event):
         if self.__computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0]:
