@@ -36,6 +36,7 @@ class ShortCuts:
         creates a user profile for the program
         """
         self.__argument = GetArgument()
+        self.__remote_computer_activation = False
         self.__shortcut_sequence = ''
         self.__shortcut_script_path = ''
         self.__shortcuts_templates = {'open folder': 'Run, %s',
@@ -59,20 +60,20 @@ class ShortCuts:
         """
         uses the run_action_sequence_for_shortcut to open a folder shortcut
         """
-        path = self.__argument.choose_folder_manager()
-        print path, '---path---'
-        if path:
-            self.run_action_sequence_for_shortcut('folder', path)
+        if not self.__remote_computer_activation:
+            self.__argument.choose_folder_manager()
+        if self.__argument.get_argument():
+            self.run_action_sequence_for_shortcut('folder')
 
 #-------------------------------------------------------------------------------
     def open_url(self):
         """
         uses the run_action_sequence_for_shortcut to open a URL shortcut
         """
-        url = self.__argument.ask_text_from_user('open url')
-        print url, '---url---'
-        if url:
-            self.run_action_sequence_for_shortcut('url', url)
+        if not self.__remote_computer_activation:
+            self.__argument.ask_text_from_user('open url')
+        if self.__argument.get_argument():
+            self.run_action_sequence_for_shortcut('url')
 
 #-------------------------------------------------------------------------------
     def open_settings(self):
@@ -93,10 +94,10 @@ class ShortCuts:
         """
         uses the run_action_sequence_for_shortcut to open a program shortcut
         """
-        path = self.__argument.choose_program_manager()
-        print path, '---path---'
-        if path:
-            self.run_action_sequence_for_shortcut('program', path)
+        if not self.__remote_computer_activation:
+            self.__argument.choose_program_manager()
+        if self.__argument.get_argument():
+            self.run_action_sequence_for_shortcut('program')
 
 #-------------------------------------------------------------------------------
     def get_shortcut_sequence(self):
@@ -127,52 +128,56 @@ class ShortCuts:
         self.__shortcut_sequence = self.__shortcut_sequence.split('+')
 
 #-------------------------------------------------------------------------------
-    def run_action_sequence_for_shortcut(self, shortcut_type, argument=''):
+    def set_shortcut_argument(self, argument):
+        self.__argument.set_argument(argument)
+
+#-------------------------------------------------------------------------------
+    def run_action_sequence_for_shortcut(self, shortcut_type):
         """
         run the series of action to create a shortcut file and activate the shortcut
 
         :arg shortcut_type = the action the user chose
         :type shortcut_type = string
 
-        :arg argument = the argument the user chose for the action
-        :type argument = string
         """
         self.__shortcut_script_path = SCRIPTS_PATH+'\\'+shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk'
         print self.__shortcut_script_path
         ahk_file = open(self.__shortcut_script_path, 'w')
 
-        ahk_file.write(self.write_to_file('open '+shortcut_type, argument))
+        ahk_file.write(self.write_to_file('open '+shortcut_type))
         ahk_file.close()
 
 
         self.activate_ahk_files(self.__shortcut_script_path)
 
-        self.add_to_history('open '+shortcut_type, shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk', argument)
+        self.add_to_history('open '+shortcut_type, shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk')
 
         self.__files_ending_counter[shortcut_type] += 1
 
 #-------------------------------------------------------------------------------
 
-    def write_new_shortcut(self):
+    def write_new_shortcut(self, argument=''):
         """
         activate the correct shortcut function from the actions dictionary
         """
+        if argument:
+            self.__remote_computer_activation = True
+            self.set_shortcut_argument(argument)
+        else:
+            self.__remote_computer_activation = False
         self.__shortcut_function_activation[self.__user_choice]()
 
 #-------------------------------------------------------------------------------
 
-    def write_to_file(self, shortcut_name, argument=''):
+    def write_to_file(self, shortcut_name):
         """
         returns the string of AutoHotKey syntax to write the shortcut
 
         :arg shortcut_name = the action the user chose
         :type shortcut_name = string
-
-        :arg argument = the argument the user chose for the action
-        :type argument = string
         """
         sequence_format_list = self.check_sequence_length()
-        string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates[shortcut_name] % argument + '\n}'
+        string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates[shortcut_name] % self.__argument.get_argument() + '\n}'
         return string_to_write
 
 #-------------------------------------------------------------------------------
@@ -228,7 +233,7 @@ class ShortCuts:
         subprocess.Popen([HOT_KEYS_PROGRAM_PATH, file_path, argument])
 #-------------------------------------------------------------------------------
 
-    def add_to_history(self, shortcut_type, file_name, argument=None):
+    def add_to_history(self, shortcut_type, file_name):
         """
         adds a shortcut to the current shortcuts dictionary
 
@@ -237,11 +242,8 @@ class ShortCuts:
 
         :arg file_name = the shortcut file name
         :type file_name = string
-
-        :arg argument = the argument the user chose for the action
-        :type argument = string
         """
-        self.__current_shortcuts[shortcut_type][file_name] = (argument, self.__shortcut_sequence, self.__shortcut_script_path)
+        self.__current_shortcuts[shortcut_type][file_name] = (self.__argument.get_argument(), self.__shortcut_sequence, self.__shortcut_script_path)
 
 #-------------------------------------------------------------------------------
     def save_user_activity(self):
@@ -274,6 +276,7 @@ class GetArgument:
         :arg action = the action the user chose
         :type action = string
         """
+
         frame = wx.Frame(None, -1, action)
         frame.SetDimensions(0, 0, 200, 50)
 
@@ -282,11 +285,11 @@ class GetArgument:
         if dlg.ShowModal() == wx.ID_OK:
             self.___argument = dlg.GetValue()
             dlg.Destroy()
-            return dlg.GetValue()
+            self.___argument = dlg.GetValue()
         else:
             self.___argument = ''
             dlg.Destroy()
-            return dlg.GetValue()
+            self.___argument = dlg.GetValue()
 
 #-------------------------------------------------------------------------------
     def open_error_dialog(self, error):
@@ -309,7 +312,7 @@ class GetArgument:
         root.withdraw()
         root.filename = tkFileDialog.askdirectory(mustexist=True, parent=root, initialdir='/', title='Select your pictures folder')
         self.___argument = root.filename
-        return root.filename
+        self.___argument = root.filename
 
 #-------------------------------------------------------------------------------
     def choose_program_manager(self):
@@ -320,11 +323,15 @@ class GetArgument:
         root.withdraw()
         root.filename = tkFileDialog.askopenfilename(initialdir="/", title="Select program", filetypes=(("exe files", "*.exe"), ("all files", "*.*")))
         self.___argument = root.filename
-        return root.filename
+        self.___argument = root.filename
 
 #-------------------------------------------------------------------------------
+    def get_argument(self):
+        return self.___argument
 
-
+#-------------------------------------------------------------------------------
+    def set_argument(self, argument):
+        self.___argument = argument
 
 
 def main():

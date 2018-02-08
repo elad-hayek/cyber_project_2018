@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from socket_class import Sockets
+from shortcuts import ShortCuts
 import _multiprocessing
 from subprocess import Popen, PIPE
 import re
@@ -18,9 +19,11 @@ SERVER_PORT = 8820
 
 class Server():
     def __init__(self):
+        self.__shortcut_builder = ShortCuts()
         self.__server_socket = Sockets()
         self.__client_socket = Sockets()
         self.__server_socket.open_server(SERVER_IP, SERVER_PORT)
+        print 'server is up'
         self.open_server()
 
     def open_server(self):
@@ -28,18 +31,19 @@ class Server():
 
     def receive_information_from_client(self):
         data = self.__server_socket.read_from_client(self.__client_socket)
-        return data.split('`')
+        return data.split('$$')
 
     def pass_information_to_client(self, data):
         self.__server_socket.write_to_client(data, self.__client_socket)
 
-    def make_the_shortcut_file(self):
-        pass
+    def make_the_shortcut_file(self, action, sequence, argument):
+        self.__shortcut_builder.set_users_choice(action)
+        self.__shortcut_builder.set_shortcut_sequence(sequence)
+        self.__shortcut_builder.write_new_shortcut(argument)
+
 
     def activate_the_shortcut_on_the_computer(self):
         pass
-
-
 class Client():
     def __init__(self):
         self.__client_socket = Sockets()
@@ -59,7 +63,7 @@ class Client():
         return data
 
     def send_request_to_the_server(self, action, sequence, argument):
-        data_to_send = action+'`'+sequence+'`'+argument
+        data_to_send = action+'$$'+sequence+'$$'+argument
         self.__client_socket.write_to_server(data_to_send)
 
     def activate_the_shortcut_on_the_computer(self):
@@ -116,12 +120,17 @@ class Client():
 
 
 def main():
-    client = Client()
-    client.find_computers_in_the_network()
-    if client.check_if_remote_server_is_on('192.168.1.46'):
-        client.send_request_to_the_server('open', 'a+f', 'google.com')
-        print client.receive_information_from_the_server()
+    # client = Client()
+    # client.find_computers_in_the_network()
+    # if client.check_if_remote_server_is_on('192.168.1.46'):
+    #     client.send_request_to_the_server('open', 'a+f', 'google.com')
+    #     print client.receive_information_from_the_server()
 
+    server = Server()
+    a = server.receive_information_from_client()
+    print a
+    server.make_the_shortcut_file(a[0], a[1], a[2])
+    server.pass_information_to_client('ok')
 
 
 
