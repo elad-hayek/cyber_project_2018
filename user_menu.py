@@ -6,6 +6,7 @@ import shortcut_menu_wx_skeleton
 import os
 from Tkinter import *
 import tkMessageBox
+from new_computer_class import Server, Client
 
 USER_DATA_FILE_NAME = 'user_data.json'
 SPECIAL_CHARACTERS_LIST = ['windows', 'alt', 'control', 'shift', 'space', 'backspace', 'enter']
@@ -225,6 +226,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #===============================================================================
     def show_add_new_computer_menu(self, event):
         self.show_add_new_computer_panel()
+        self.add_computer_information_to_the_add_table()
 
 
     def show_add_new_computer_panel(self):
@@ -234,6 +236,16 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.add_new_computer_panel.Show()
         self.add_new_computer_panel.GetSizer().Layout()
         self.add_new_computer_panel.GetParent().Layout()
+
+
+    def add_computer_information_to_the_add_table(self):
+        computer_list = []
+        for computer_name in self.__saved_computer_list:
+            if computer_name != 'My Computer':
+                computer_list.append([computer_name, self.__saved_computer_list[computer_name][0]])
+
+        for computer in computer_list:
+            self.add_new_computer_list_control.AppendItem(computer)
 
 #===============================================================================
     def go_to_home_panel(self, event):

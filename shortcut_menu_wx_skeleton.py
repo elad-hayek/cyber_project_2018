@@ -278,6 +278,8 @@ class MainFrame ( wx.Frame ):
 		add_new_computer_sizer.Add( self.add_new_computer_label, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		self.add_new_computer_list_control = wx.dataview.DataViewListCtrl( self.add_new_computer_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 200,250 ), wx.dataview.DV_HORIZ_RULES|wx.dataview.DV_ROW_LINES|wx.dataview.DV_VERT_RULES )
+		self.add_new_computer_list_control.SetFont( wx.Font( 12, 74, 90, 90, False, "Arial" ) )
+		
 		self.new_computer_name_label = self.add_new_computer_list_control.AppendTextColumn( u"Name" )
 		self.new_computer_ip_label = self.add_new_computer_list_control.AppendTextColumn( u"IP" )
 		add_new_computer_sizer.Add( self.add_new_computer_list_control, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
