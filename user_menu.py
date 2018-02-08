@@ -22,8 +22,11 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
     def __init__(self, parent):
         shortcut_menu_wx_skeleton.MainFrame.__init__(self, parent)
         self.__shortcuts_user = ShortCuts()
+        self.__client = Client()
         self.__row_selection_number = 0
         self.__saved_computer_list = {'My Computer': None}
+        self.__computer_list_for_getting_user_selection = []
+        self.__selected_computer_name = ''
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
         self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False}
         self.check_if_first_time()
@@ -226,6 +229,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #===============================================================================
     def show_add_new_computer_menu(self, event):
         self.show_add_new_computer_panel()
+        self.__client.find_computers_in_the_network()
         self.add_computer_information_to_the_add_table()
 
 
@@ -239,13 +243,25 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 
     def add_computer_information_to_the_add_table(self):
-        computer_list = []
-        for computer_name in self.__saved_computer_list:
-            if computer_name != 'My Computer':
-                computer_list.append([computer_name, self.__saved_computer_list[computer_name][0]])
+        for computer_name in self.__client.get_computer_information():
+            if computer_name == self.__client.get_computer_information()[computer_name][0]:
+                computer_name = None
+            self.__computer_list_for_getting_user_selection.append([computer_name, self.__client.get_computer_information()[computer_name][0]])
 
-        for computer in computer_list:
+        # self.__computer_list_for_getting_user_selection = [['elad', '192.168.1.46'], ['hot_box', '192.168.1.10']]
+        for computer in self.__computer_list_for_getting_user_selection:
             self.add_new_computer_list_control.AppendItem(computer)
+
+    def add_new_computer_to_the_list(self, event):
+        pass
+
+    def choose_computer_name_and_ip(self, event):
+        if self.__computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0]:
+            self.__selected_computer_name = self.__computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0]
+        else:
+            self.__selected_computer_name = self.__computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0]
+
+        print self.__selected_computer_name
 
 #===============================================================================
     def go_to_home_panel(self, event):

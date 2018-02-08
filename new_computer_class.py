@@ -115,6 +115,9 @@ class Client():
             print 'connection failed'
             return False
 
+    def get_computer_information(self):
+        return self.__computer_information
+
 
 
 

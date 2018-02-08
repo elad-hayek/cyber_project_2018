@@ -2527,7 +2527,7 @@
                                     <property name="name">add_new_computer_list_control</property>
                                     <property name="permission">protected</property>
                                     <property name="pos"></property>
-                                    <property name="size">200,250</property>
+                                    <property name="size">300,250</property>
                                     <property name="style">wxDV_HORIZ_RULES|wxDV_ROW_LINES|wxDV_VERT_RULES</property>
                                     <property name="subclass"></property>
                                     <property name="tooltip"></property>
@@ -2552,7 +2552,7 @@
                                     <event name="OnDataViewListCtrlItemExpanding"></event>
                                     <event name="OnDataViewListCtrlItemStartEditing"></event>
                                     <event name="OnDataViewListCtrlItemValueChanged"></event>
-                                    <event name="OnDataViewListCtrlSelectionChanged"></event>
+                                    <event name="OnDataViewListCtrlSelectionChanged">choose_computer_name_and_ip</event>
                                     <event name="OnEnterWindow"></event>
                                     <event name="OnEraseBackground"></event>
                                     <event name="OnKeyDown"></event>
