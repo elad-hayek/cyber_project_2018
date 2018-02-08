@@ -9,6 +9,7 @@ MAC_REGULAR_EXPRESSION = '([a-fA-F0-9]{2}[:|\-]?){6}'
 IP_REGULAR_EXPRESSION = '192.168.1.(\d){1,3}'
 MAC_FILTER = ['ff-ff-ff-ff-ff-ff', 'ff-ff-ff-ff-ff-fa']
 IP_FILTER = ['192.168.1.1']
+PING_QUESTION_LIST_OF_ELEMENT = ['ping', '-an', '', '&&', 'echo', 'T', '||', 'echo', 'F']
 
 SERVER_IP = '0.0.0.0'
 SERVER_PORT = 8820
@@ -42,6 +43,7 @@ class Client():
     def __init__(self):
         self.__client_socket = Sockets()
         self.__computer_information = {}
+        self.__raw_computer_information = []
 
     def connect_to_server(self, ip, port):
         self.__client_socket.connect_to_server(ip, port)
@@ -68,9 +70,30 @@ class Client():
             if mac_finder and ip_finder:
                 if mac_finder.group(0).lower() not in MAC_FILTER and ip_finder.group(0) not in IP_FILTER:
                     print line.split()[:2]
+                    self.__raw_computer_information.append(line.split()[:2])
+
+        for computer in self.__raw_computer_information:
+            computer_name, ping_result = self.find_computer_name_and_find_if_pinging(computer[0])
+            if ping_result == 'T':
+                self.__computer_information[computer_name] = computer
+
+        del self.__raw_computer_information[:]  # clear raw computer information
+                                                # ip and mac
+        print self.__computer_information
 
 
-    def check_if_remote_server_is_pinging(self):
+    def find_computer_name_and_find_if_pinging(self, computer_ip):
+        ping_arg_list = PING_QUESTION_LIST_OF_ELEMENT
+        ping_arg_list[2] = computer_ip
+        ping_question = Popen(ping_arg_list, stdout=PIPE, shell=True)
+        result = ping_question.communicate()[0]
+        result_split_lines = [line.strip() for line in result.splitlines()]  # split the arp answer to lines
+
+        print result_split_lines[1].split()[1], '---name---'
+        print result_split_lines[-1], '---ping---'
+        return result_split_lines[1].split()[1], result_split_lines[-1]
+
+    def check_if_remote_server_is_on(self, computer_ip):
         pass
 
     def add_computer_information_to_data_base(self):
@@ -82,9 +105,13 @@ class Client():
 
 
 def main():
-    server = Server()
-    print server.receive_information_from_client()
-    server.pass_information_to_client('ok')
+    client = Client()
+    client.find_computers_in_the_network()
+
+
+    # client.connect_to_server('192.168.1.46', 8820)
+    # client.send_request_to_the_server('open', 'a+f', 'google.com')
+    # print client.receive_information_from_the_server()
 
 
 
