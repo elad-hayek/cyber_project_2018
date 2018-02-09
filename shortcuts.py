@@ -17,12 +17,13 @@ import tkFileDialog
 import wx
 import pickle
 import tkMessageBox
+import getpass
 
 CLOSE_PROCESS_BY_NAME_PATH = 'close_process.ahk'
 
 HOT_KEYS_PROGRAM_PATH = 'AutoHotkey.exe'
 
-SCRIPTS_PATH = r'C:\Users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup'
+SCRIPTS_PATH = r'C:\Users\%s\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup'
 
 
 HOT_KEYS_TEMPLATE = """~*{5}::
@@ -147,6 +148,7 @@ class ShortCuts:
 
         """
         self.__shortcut_script_path = SCRIPTS_PATH+'\\'+shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk'
+        self.__shortcut_script_path = self.__shortcut_script_path % getpass.getuser()
         print self.__shortcut_script_path
         ahk_file = open(self.__shortcut_script_path, 'w')
 
