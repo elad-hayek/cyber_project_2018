@@ -29,7 +29,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__computer_name_list = []
         self.__selected_computer_name = ''
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
-        self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False}
+        self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False, 'new computer': False}
         self.check_if_first_time()
 
 #-------------------------------------------------------------------------------
@@ -57,6 +57,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         print '+'.join(self.__shortcuts_user.get_shortcut_sequence()), '---sequence---'
 
         if self.__input_status['sequence'] and self.__input_status['action']:
+            self.check_what_computer_was_chosen()
             self.__shortcuts_user.write_new_shortcut()
             self.__shortcuts_user.save_user_activity()
 
@@ -65,6 +66,14 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
         elif self.__input_status['sequence'] and not self.__input_status['action'] or not self.__input_status['sequence'] and not self.__input_status['action']:
             self.open_error_dialog(ACTION_ERROR)
+
+
+    def check_what_computer_was_chosen(self):
+        if self.__selected_computer_name == 'My Computer':
+            # return False, self.__selected_computer_name
+            pass
+        print self.__selected_computer_name
+
 
 #-------------------------------------------------------------------------------
     def save_user_choice(self, event):
@@ -137,11 +146,13 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def add_computers_to_choose_computer_list(self):
-
         self.__computer_name_list = [key for key in self.__saved_computer_list.keys()]
-        if self.choose_computer_for_action.IsEmpty():
+
+        if self.choose_computer_for_action.IsEmpty() or self.__input_status['new computer']:
+            self.choose_computer_for_action.Clear()
             for computer in self.__computer_name_list:
                 self.choose_computer_for_action.Append(computer)
+            self.__input_status['new computer'] = False
 
 #-------------------------------------------------------------------------------
     def choose_a_computer_for_action(self, event):
@@ -257,6 +268,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def add_new_computer_to_the_list(self, event):
         self.__saved_computer_list[self.__selected_computer_name] = self.__client.get_computer_information()[self.__selected_computer_name]
+        self.__input_status['new computer'] = True
         print self.__saved_computer_list
 
 #-------------------------------------------------------------------------------
