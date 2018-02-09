@@ -7,8 +7,10 @@ import os
 from Tkinter import *
 import tkMessageBox
 from new_computer_class import Server, Client
+import pickle
 
-USER_DATA_FILE_NAME = 'user_data.json'
+SHORTCUTS_USER_DATA_FILE_NAME = 'user_data.json'
+ADDED_COMPUTERS_DATA_FILE_NAME = 'added_computers_data.json'
 SPECIAL_CHARACTERS_LIST = ['windows', 'alt', 'control', 'shift', 'space', 'backspace', 'enter']
 SHORTCUT_OPTIONS = ['open folder', 'open url', 'open program', 'open cmd', 'open settings']
 SHORTCUT_GRID_LABELS = {0: 'Action', 1: 'Argument', 2: 'Sequence'}
@@ -37,8 +39,10 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def check_if_first_time(self):
-        if os.path.isfile(USER_DATA_FILE_NAME):
+        if os.path.isfile(SHORTCUTS_USER_DATA_FILE_NAME):
             self.__shortcuts_user.get_user_previous_activity()
+        if os.path.isfile(ADDED_COMPUTERS_DATA_FILE_NAME):
+            self.get_added_computers_previous_activity()
 #-------------------------------------------------------------------------------
     def add_new_shortcut_menu(self, event):
         self.show_new_shortcut_panel()
@@ -62,7 +66,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
         if self.__input_status['sequence'] and self.__input_status['action'] and self.__selected_computer_name:
             self.check_what_computer_was_chosen()
-            self.__shortcuts_user.write_new_shortcut()
+            self.__shortcuts_user.write_new_shortcut(self.__input_status['remote argument'])
             self.__shortcuts_user.save_user_activity()
 
         elif not self.__input_status['sequence'] and self.__input_status['action']:
@@ -292,6 +296,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def add_new_computer_to_the_list(self, event):
         self.__saved_computer_list[self.__selected_computer_name] = self.__client.get_computer_information()[self.__selected_computer_name]
+        self.save_added_computers_previous_activity()
         self.__input_status['new computer'] = True
         print self.__saved_computer_list
 
@@ -302,6 +307,17 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
         print self.__selected_computer_name
 
+#-------------------------------------------------------------------------------
+    def save_added_computers_previous_activity(self):
+        json_save_file = open(ADDED_COMPUTERS_DATA_FILE_NAME, 'w')
+        pickle.dump(self.__saved_computer_list, json_save_file)
+        json_save_file.close()
+
+#-------------------------------------------------------------------------------
+    def get_added_computers_previous_activity(self):
+        json_save_file = open(ADDED_COMPUTERS_DATA_FILE_NAME, 'r')
+        self.__saved_computer_list = pickle.load(json_save_file)
+
 #===============================================================================
     def go_to_home_panel(self, event):
         self.main_panel.Show()
@@ -311,6 +327,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
     def update_user_data(self, event):
         self.__shortcuts_user.save_user_activity()
+        self.save_added_computers_previous_activity()
         self.Destroy()
 
 
