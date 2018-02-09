@@ -118,6 +118,9 @@ class Client():
     def get_computer_information(self):
         return self.__computer_information
 
+    def close_client(self):
+        self.__client_socket.close()
+
 
 
 

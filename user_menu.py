@@ -13,6 +13,7 @@ SPECIAL_CHARACTERS_LIST = ['windows', 'alt', 'control', 'shift', 'space', 'backs
 SHORTCUT_OPTIONS = ['open folder', 'open url', 'open program', 'open cmd', 'open settings']
 SHORTCUT_GRID_LABELS = {0: 'Action', 1: 'Argument', 2: 'Sequence'}
 CHOOSE_COMPUTER_ERROR = 'Choose a computer'
+REMOTE_SERVER_CONNECTION_ERROR = 'There was a problem with the connection'
 SEQUENCE_ERROR = 'Not a legal sequence'
 ACTION_ERROR = 'Choose a action'
 DELETE_BUTTON_ERROR = 'Row number was not selected'
@@ -75,9 +76,20 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
     def check_what_computer_was_chosen(self):
         if self.__selected_computer_name == 'My Computer':
-            # return False, self.__selected_computer_name
-            pass
-        print self.__selected_computer_name
+            return False, self.__selected_computer_name
+        else:
+            self.connect_to_server_and_pass_arguments()
+
+
+    def connect_to_server_and_pass_arguments(self):
+        if self.__client.check_if_remote_server_is_on(self.__saved_computer_list[self.__selected_computer_name][0]):
+            self.__client.send_request_to_the_server('open url', 'a+f', 'google.com')
+            print self.__client.receive_information_from_the_server()
+            self.__client.close_client()
+
+        else:
+            self.open_error_dialog(REMOTE_SERVER_CONNECTION_ERROR)
+
 
 
 #-------------------------------------------------------------------------------
