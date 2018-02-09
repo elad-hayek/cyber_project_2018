@@ -84,7 +84,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
     def check_what_computer_was_chosen(self):
         if self.__selected_computer_name == 'My Computer':
-            return False, self.__selected_computer_name
+            self.__input_status['remote argument'] = False
+            return False
         else:
             self.connect_to_server_and_pass_arguments()
 
