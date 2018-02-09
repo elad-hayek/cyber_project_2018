@@ -118,6 +118,13 @@ class ShortCuts:
         self.__user_choice = choice
 
 #-------------------------------------------------------------------------------
+    def get_users_choice(self):
+        """
+        returns the action the user chose
+        """
+        return self.__user_choice
+
+#-------------------------------------------------------------------------------
     def set_shortcut_sequence(self, user_sequence):
         """
         sets the shortcut sequence
@@ -154,7 +161,6 @@ class ShortCuts:
 
         ahk_file.write(self.write_to_file('open '+shortcut_type))
         ahk_file.close()
-
 
         self.activate_ahk_files(self.__shortcut_script_path)
 

@@ -30,8 +30,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__computer_list_for_getting_user_selection = []
         self.__computer_name_list = []
         self.__selected_computer_name = ''
+        self.__remote_computer_argument = ''
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
-        self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False, 'new computer': False}
+        self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False, 'new computer': False, 'remote argument': False}
         self.check_if_first_time()
 
 #-------------------------------------------------------------------------------
@@ -83,12 +84,18 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
     def connect_to_server_and_pass_arguments(self):
         if self.__client.check_if_remote_server_is_on(self.__saved_computer_list[self.__selected_computer_name][0]):
-            self.__client.send_request_to_the_server('open url', 'a+f', 'google.com')
+            self.__input_status['remote argument'] = True
+            # self.__remote_computer_argument = self.get_argument_from_server()
+            self.__remote_computer_argument = 'google.com'
+            self.__client.send_request_to_the_server(self.__shortcuts_user.get_users_choice(), '+'.join(self.__shortcuts_user.get_shortcut_sequence()), self.__remote_computer_argument)
             print self.__client.receive_information_from_the_server()
             self.__client.close_client()
 
         else:
             self.open_error_dialog(REMOTE_SERVER_CONNECTION_ERROR)
+
+    def get_argument_from_server(self):
+        pass
 
 
 
