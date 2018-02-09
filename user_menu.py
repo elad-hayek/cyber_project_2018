@@ -26,6 +26,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__row_selection_number = 0
         self.__saved_computer_list = {'My Computer': None}
         self.__computer_list_for_getting_user_selection = []
+        self.__computer_name_list = []
         self.__selected_computer_name = ''
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
         self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False}
@@ -110,6 +111,10 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             self.__input_status['sequence'] = False
         elif len(sequence) > 6:
             self.__input_status['sequence'] = False
+
+        elif self.sequence_text_control.GetValue()[-1] == '+':
+            self.__input_status['sequence'] = False
+
         else:
             for sequence_entry in sequence:
                 if len(sequence_entry) > 1:
@@ -133,14 +138,14 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def add_computers_to_choose_computer_list(self):
 
-        computer_names = [key for key in self.__saved_computer_list.keys()]
+        self.__computer_name_list = [key for key in self.__saved_computer_list.keys()]
         if self.choose_computer_for_action.IsEmpty():
-            for computer in computer_names:
+            for computer in self.__computer_name_list:
                 self.choose_computer_for_action.Append(computer)
 
 #-------------------------------------------------------------------------------
     def choose_a_computer_for_action(self, event):
-        pass
+        self.__selected_computer_name = self.__computer_name_list[self.choose_computer_for_action.GetSelection()]
 
 #===============================================================================
     def show_current_shortcuts_menu(self, event):
@@ -232,7 +237,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__client.find_computers_in_the_network()
         self.add_computer_information_to_the_add_table()
 
-
+#-------------------------------------------------------------------------------
     def show_add_new_computer_panel(self):
         self.new_shortcut_panel.Hide()
         self.main_panel.Hide()
@@ -241,25 +246,22 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.add_new_computer_panel.GetSizer().Layout()
         self.add_new_computer_panel.GetParent().Layout()
 
-
+#-------------------------------------------------------------------------------
     def add_computer_information_to_the_add_table(self):
         for computer_name in self.__client.get_computer_information():
-            if computer_name == self.__client.get_computer_information()[computer_name][0]:
-                computer_name = None
             self.__computer_list_for_getting_user_selection.append([computer_name, self.__client.get_computer_information()[computer_name][0]])
 
-        # self.__computer_list_for_getting_user_selection = [['elad', '192.168.1.46'], ['hot_box', '192.168.1.10']]
         for computer in self.__computer_list_for_getting_user_selection:
             self.add_new_computer_list_control.AppendItem(computer)
 
+#-------------------------------------------------------------------------------
     def add_new_computer_to_the_list(self, event):
         self.__saved_computer_list[self.__selected_computer_name] = self.__client.get_computer_information()[self.__selected_computer_name]
         print self.__saved_computer_list
 
+#-------------------------------------------------------------------------------
     def choose_computer_name_and_ip(self, event):
         if self.__computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0]:
-            self.__selected_computer_name = self.__computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0]
-        else:
             self.__selected_computer_name = self.__computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0]
 
         print self.__selected_computer_name
