@@ -89,7 +89,7 @@ class Client():
         for computer in self.__raw_computer_information:
             computer_name, ping_result = self.find_computer_name_and_find_if_pinging(computer[0])
             if ping_result == 'T':
-                self.__computer_information[computer_name] = computer
+                self.__computer_information[computer_name.title()] = computer
 
         del self.__raw_computer_information[:]  # clear raw computer information
                                                 # ip and mac

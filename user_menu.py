@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from shortcuts import ShortCuts
+from shortcuts import ShortCuts, GetArgument
 import wx
 import shortcut_menu_wx_skeleton
 import os
@@ -32,9 +32,11 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__computer_list_for_getting_user_selection = []
         self.__computer_name_list = []
         self.__selected_computer_name = ''
+        self.__argument_functions = GetArgument()
         self.__remote_computer_argument = ''
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
         self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False, 'new computer': False, 'remote argument': False}
+        self.__shortcut_argument_activation = {'open folder': self.open_remote_folder, 'open url': self.open_remote_url, 'open program': self.open_remote_program}
         self.check_if_first_time()
 
 #-------------------------------------------------------------------------------
@@ -43,6 +45,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             self.__shortcuts_user.get_user_previous_activity()
         if os.path.isfile(ADDED_COMPUTERS_DATA_FILE_NAME):
             self.get_added_computers_previous_activity()
+
 #-------------------------------------------------------------------------------
     def add_new_shortcut_menu(self, event):
         self.show_new_shortcut_panel()
@@ -65,9 +68,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         print self.__selected_computer_name, '---computer---'
 
         if self.__input_status['sequence'] and self.__input_status['action'] and self.__selected_computer_name:
-            self.check_what_computer_was_chosen()
-            self.__shortcuts_user.write_new_shortcut(self.__input_status['remote argument'])
-            self.__shortcuts_user.save_user_activity()
+            if not self.check_what_computer_was_chosen():
+                self.__shortcuts_user.write_new_shortcut()
+                self.__shortcuts_user.save_user_activity()
 
         elif not self.__input_status['sequence'] and self.__input_status['action']:
             self.open_error_dialog(SEQUENCE_ERROR)
@@ -89,8 +92,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
     def connect_to_server_and_pass_arguments(self):
         if self.__client.check_if_remote_server_is_on(self.__saved_computer_list[self.__selected_computer_name][0]):
             self.__input_status['remote argument'] = True
-            # self.__remote_computer_argument = self.get_argument_from_server()
-            self.__remote_computer_argument = 'google.com'
+            self.get_argument_from_server()
             self.__client.send_request_to_the_server(self.__shortcuts_user.get_users_choice(), '+'.join(self.__shortcuts_user.get_shortcut_sequence()), self.__remote_computer_argument)
             print self.__client.receive_information_from_the_server()
             self.__client.close_client()
@@ -99,9 +101,18 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             self.open_error_dialog(REMOTE_SERVER_CONNECTION_ERROR)
 
     def get_argument_from_server(self):
+            self.__shortcut_argument_activation[self.__shortcuts_user.get_users_choice()]()
+
+
+    def open_remote_folder(self):
         pass
 
+    def open_remote_url(self):
+        self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice())
+        self.__remote_computer_argument = self.__argument_functions.get_argument()
 
+    def open_remote_program(self):
+        pass
 
 #-------------------------------------------------------------------------------
     def save_user_choice(self, event):
@@ -303,7 +314,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def choose_computer_name_and_ip(self, event):
         if self.__computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0]:
-            self.__selected_computer_name = self.__computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0]
+            self.__selected_computer_name = self.__computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0].title()
 
         print self.__selected_computer_name
 
