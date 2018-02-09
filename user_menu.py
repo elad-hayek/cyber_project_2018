@@ -298,9 +298,11 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def add_computer_information_to_the_add_table(self):
+        self.__computer_list_for_getting_user_selection = []
         for computer_name in self.__client.get_computer_information():
             self.__computer_list_for_getting_user_selection.append([computer_name, self.__client.get_computer_information()[computer_name][0]])
 
+        self.add_new_computer_list_control.DeleteAllItems()
         for computer in self.__computer_list_for_getting_user_selection:
             self.add_new_computer_list_control.AppendItem(computer)
 
