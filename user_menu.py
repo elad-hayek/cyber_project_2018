@@ -12,6 +12,7 @@ USER_DATA_FILE_NAME = 'user_data.json'
 SPECIAL_CHARACTERS_LIST = ['windows', 'alt', 'control', 'shift', 'space', 'backspace', 'enter']
 SHORTCUT_OPTIONS = ['open folder', 'open url', 'open program', 'open cmd', 'open settings']
 SHORTCUT_GRID_LABELS = {0: 'Action', 1: 'Argument', 2: 'Sequence'}
+CHOOSE_COMPUTER_ERROR = 'Choose a computer'
 SEQUENCE_ERROR = 'Not a legal sequence'
 ACTION_ERROR = 'Choose a action'
 DELETE_BUTTON_ERROR = 'Row number was not selected'
@@ -55,8 +56,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def add_new_shortcut_to_the_list(self, event):
         print '+'.join(self.__shortcuts_user.get_shortcut_sequence()), '---sequence---'
+        print self.__selected_computer_name, '---computer---'
 
-        if self.__input_status['sequence'] and self.__input_status['action']:
+        if self.__input_status['sequence'] and self.__input_status['action'] and self.__selected_computer_name:
             self.check_what_computer_was_chosen()
             self.__shortcuts_user.write_new_shortcut()
             self.__shortcuts_user.save_user_activity()
@@ -66,6 +68,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
         elif self.__input_status['sequence'] and not self.__input_status['action'] or not self.__input_status['sequence'] and not self.__input_status['action']:
             self.open_error_dialog(ACTION_ERROR)
+
+        elif not self.__selected_computer_name:
+            self.open_error_dialog(CHOOSE_COMPUTER_ERROR)
 
 
     def check_what_computer_was_chosen(self):
