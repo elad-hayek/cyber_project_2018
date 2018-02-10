@@ -88,7 +88,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             return False
         else:
             self.connect_to_server_and_pass_arguments()
-
+            return True
 
     def connect_to_server_and_pass_arguments(self):
         if self.__client.check_if_remote_server_is_on(self.__saved_computer_list[self.__selected_computer_name][0]):
@@ -100,6 +100,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
         else:
             self.open_error_dialog(REMOTE_SERVER_CONNECTION_ERROR)
+
 
     def get_argument_from_server(self):
             self.__shortcut_argument_activation[self.__shortcuts_user.get_users_choice()]()
