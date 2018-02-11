@@ -73,8 +73,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             if not self.check_what_computer_was_chosen():
                 self.__shortcuts_user.write_new_shortcut()
                 self.__shortcuts_user.save_user_activity()
-                self.__saved_computer_list['My Computer'][1] = self.__shortcuts_user.get_current_shortcuts()
-                self.save_added_computers_previous_activity()
+                self.update_my_computer_data()
 
         elif not self.__input_status['sequence'] and self.__input_status['action']:
             self.open_error_dialog(SEQUENCE_ERROR)
@@ -85,6 +84,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         elif not self.__selected_computer_name:
             self.open_error_dialog(CHOOSE_COMPUTER_ERROR)
 
+    def update_my_computer_data(self):
+        self.__saved_computer_list['My Computer'][1] = self.__shortcuts_user.get_current_shortcuts()
+        self.save_added_computers_previous_activity()
 
     def check_what_computer_was_chosen(self):
         if self.__selected_computer_name == 'My Computer':
@@ -238,10 +240,6 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
                 for file_name in self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action]:
                     self.computer_shortcuts_grid.SetCellValue(row, col, action)
                     col += 1
-
-                    print file_name, '%%%%%%%%%%%%%%%%%%%%%%'
-                    print self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action][file_name], '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'
-
                     argument = self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action][file_name][0]
                     self.computer_shortcuts_grid.SetCellValue(row, col, argument)
                     col += 1
@@ -264,8 +262,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         action = self.computer_shortcuts_grid.GetCellValue(self.delete_number_choice.GetSelection(), 0)
         sequence = self.computer_shortcuts_grid.GetCellValue(self.delete_number_choice.GetSelection(), 2)
         sequence = sequence.split('+')
-        for file_name in self.__shortcuts_user.get_current_shortcuts()[action]:
-            if self.__shortcuts_user.get_current_shortcuts()[action][file_name][1] == sequence:
+        for file_name in self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action]:
+            if self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action][file_name][1] == sequence:
                 self.__selected_file_name_to_delete['file name'] = file_name
                 self.__selected_file_name_to_delete['action'] = action
                 print self.__selected_file_name_to_delete
@@ -282,10 +280,11 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         print self.__input_status['row number to delete']
         if self.__input_status['row number to delete']:
             self.__shortcuts_user.delete_shortcut(self.__selected_file_name_to_delete['action'], self.__selected_file_name_to_delete['file name'])
+            self.__shortcuts_user.save_user_activity()
+            self.update_my_computer_data()
             self.clear_shortcuts_grid()
             self.add_shortcuts_to_shortcut_grid()
             self.add_options_to_delete_list()
-            self.__shortcuts_user.save_user_activity()
             self.__input_status['row number to delete'] = False
         else:
             self.open_error_dialog(DELETE_BUTTON_ERROR)
