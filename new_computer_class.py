@@ -16,7 +16,8 @@ IP_FILTER = ['192.168.1.1']
 PING_QUESTION_LIST_OF_ELEMENT = ['ping', '-an', '', '&&', 'echo', 'T', '||', 'echo', 'F']
 
 SERVER_IP = '0.0.0.0'
-SERVER_PORT = 8820
+SERVER_LISTENING_PORT = 8820
+SERVER_ACTING_PORT = 8821
 
 
 class Server():
@@ -24,12 +25,12 @@ class Server():
         self.__shortcut_builder = ShortCuts()
         self.__server_socket = Sockets()
         self.__client_socket = Sockets()
-        self.__server_socket.open_server(SERVER_IP, SERVER_PORT)
+        self.__server_socket.open_server(SERVER_IP, SERVER_LISTENING_PORT)
         print 'server is up'
-        self.open_server()
+        self.connect_to_client()
 
 
-    def open_server(self):
+    def connect_to_client(self):
         self.__client_socket, client_address = self.__server_socket.client_connection()
 
     def receive_information_from_client(self):
@@ -122,7 +123,7 @@ class Client():
         return result_split_lines[1].split()[1], result_split_lines[-1]
 
     def check_if_remote_server_is_on(self, server_ip):
-        if self.connect_to_server(server_ip, SERVER_PORT):
+        if self.connect_to_server(server_ip, SERVER_LISTENING_PORT):
             print 'connection was successful'
             return True
         else:
