@@ -8,7 +8,6 @@ from Tkinter import *
 import tkMessageBox
 from new_computer_class import Server, Client
 import pickle
-import threading
 import subprocess
 
 SHORTCUTS_USER_DATA_FILE_NAME = 'user_data.json'
@@ -93,7 +92,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             return True
 
     def connect_to_server_and_pass_arguments(self):
-        if self.__client.check_if_remote_server_is_on(self.__saved_computer_list[self.__selected_computer_name][0]):
+        if self.__client.check_if_remote_server_is_on(self.__saved_computer_list[self.__selected_computer_name][0][0]):
             self.__input_status['remote argument'] = True
             self.get_argument_from_server()
             self.__client.send_request_to_the_server(self.__shortcuts_user.get_users_choice(), '+'.join(self.__shortcuts_user.get_shortcut_sequence()), self.__remote_computer_argument)
@@ -320,7 +319,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def add_new_computer_to_the_list(self, event):
-        self.__saved_computer_list[self.__selected_computer_name] = self.__client.get_computer_information()[self.__selected_computer_name]
+        self.__saved_computer_list[self.__selected_computer_name] = [self.__client.get_computer_information()[self.__selected_computer_name]]
         self.save_added_computers_previous_activity()
         self.__input_status['new computer'] = True
         print self.__saved_computer_list
