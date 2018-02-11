@@ -6,6 +6,8 @@ import _multiprocessing
 from subprocess import Popen, PIPE
 import re
 import socket
+import os
+
 
 MAC_REGULAR_EXPRESSION = '([a-fA-F0-9]{2}[:|\-]?){6}'
 IP_REGULAR_EXPRESSION = '192.168.1.(\d){1,3}'
@@ -26,12 +28,19 @@ class Server():
         print 'server is up'
         self.open_server()
 
+
     def open_server(self):
         self.__client_socket, client_address = self.__server_socket.client_connection()
 
     def receive_information_from_client(self):
         data = self.__server_socket.read_from_client(self.__client_socket)
-        return data.split('$$')
+        if data[-3:] == '@@@':
+            last_argument = data.split('$$')[-1][:-3]
+            data = data.split('$$')
+            data[-1] = last_argument
+            self.activate_the_shortcut_on_the_computer(data)
+        else:
+            return data.split('$$')
 
     def pass_information_to_client(self, data):
         self.__server_socket.write_to_client(data, self.__client_socket)
@@ -43,9 +52,13 @@ class Server():
         self.__shortcut_builder.write_new_shortcut(argument)
         self.__shortcut_builder.save_user_activity()
 
+    def activate_the_shortcut_on_the_computer(self, data):
+        action = data[0]
+        argument = data[1]
+        os.system('python activate_shortcuts.py '+action+' '+argument)
 
-    def activate_the_shortcut_on_the_computer(self):
-        pass
+
+
 
 
 class Client():

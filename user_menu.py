@@ -9,7 +9,6 @@ import tkMessageBox
 from new_computer_class import Server, Client
 import pickle
 import threading
-from loading_screen import MyLabel
 import subprocess
 
 SHORTCUTS_USER_DATA_FILE_NAME = 'user_data.json'

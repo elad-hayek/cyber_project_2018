@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from Tkinter import *
 from PIL import Image, ImageTk
-import multiprocessing
 
 class MyLabel(Label):
     def __init__(self, master, filename):
