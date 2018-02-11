@@ -8,6 +8,9 @@ from Tkinter import *
 import tkMessageBox
 from new_computer_class import Server, Client
 import pickle
+import threading
+from loading_screen import MyLabel
+import subprocess
 
 SHORTCUTS_USER_DATA_FILE_NAME = 'user_data.json'
 ADDED_COMPUTERS_DATA_FILE_NAME = 'added_computers_data.json'
@@ -36,7 +39,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__remote_computer_argument = ''
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
         self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False, 'new computer': False, 'remote argument': False}
-        self.__shortcut_argument_activation = {'open folder': self.open_remote_folder, 'open url': self.open_remote_url, 'open program': self.open_remote_program}
+        self.__shortcut_argument_activation = {'open folder': self.open_remote_folder, 'open url': self.open_remote_url, 'open program': self.open_remote_program, 'open cmd': self.no_needed_argument, 'open settings': self.no_needed_argument}
         self.check_if_first_time()
 
 #-------------------------------------------------------------------------------
@@ -115,6 +118,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
     def open_remote_program(self):
         pass
+
+    def no_needed_argument(self):
+        print 'no argument needed'
 
 #-------------------------------------------------------------------------------
     def save_user_choice(self, event):
@@ -286,10 +292,15 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #===============================================================================
     def show_add_new_computer_menu(self, event):
         self.show_add_new_computer_panel()
+        self.show_loading_screen()
+#-------------------------------------------------------------------------------
+
+    def show_loading_screen(self):
+        loading_screen = subprocess.Popen(['python', 'loading_screen.py'])
         self.__client.find_computers_in_the_network()
         self.add_computer_information_to_the_add_table()
+        loading_screen.terminate()
 
-#-------------------------------------------------------------------------------
     def show_add_new_computer_panel(self):
         self.new_shortcut_panel.Hide()
         self.main_panel.Hide()
