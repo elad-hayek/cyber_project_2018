@@ -55,7 +55,7 @@ class Server():
     def activate_the_shortcut_on_the_computer(self, data):
         action = data[0]
         argument = data[1]
-        os.system('python activate_shortcuts.py '+action+' '+argument)
+        os.system('python activate_shortcuts.py '+'"'+action+'" "'+argument+'"')
 
 
 
@@ -83,8 +83,9 @@ class Client():
         data_to_send = action+'$$'+sequence+'$$'+argument
         self.__client_socket.write_to_server(data_to_send)
 
-    def activate_the_shortcut_on_the_computer(self):
-        pass
+    def activate_the_shortcut_on_the_computer(self, action, argument):
+        data_to_send = action+'$$'+argument+'@@@'
+        self.__client_socket.write_to_server(data_to_send)
 
     def find_computers_in_the_network(self):
         arp_question = Popen(['arp', '-a'], stdout=PIPE)
@@ -145,9 +146,9 @@ def main():
     #     print client.receive_information_from_the_server()
 
     server = Server()
-    a = server.receive_information_from_client()
-    print a
-    server.make_the_shortcut_file(a[0], a[1], a[2])
+    server.receive_information_from_client()
+
+    # server.make_the_shortcut_file(a[0], a[1], a[2])
     server.pass_information_to_client('ok')
 
 
