@@ -29,12 +29,13 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__shortcuts_user = ShortCuts()
         self.__client = Client()
         self.__row_selection_number = 0
-        self.__saved_computer_list = {'My Computer': None}
+        self.__saved_computer_list = {'My Computer': [[], self.__shortcuts_user.get_current_shortcuts()]}
         self.__computer_list_for_getting_user_selection = []
         self.__computer_name_list = []
         self.__selected_computer_name = ''
         self.__argument_functions = GetArgument()
         self.__remote_computer_argument = ''
+        self.__current_shortcuts_selected_computer_name = 'My Computer'
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
         self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False, 'new computer': False, 'remote argument': False}
         self.__shortcut_argument_activation = {'open folder': self.open_remote_folder, 'open url': self.open_remote_url, 'open program': self.open_remote_program, 'open cmd': self.no_needed_argument, 'open settings': self.no_needed_argument}
@@ -72,6 +73,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             if not self.check_what_computer_was_chosen():
                 self.__shortcuts_user.write_new_shortcut()
                 self.__shortcuts_user.save_user_activity()
+                self.__saved_computer_list['My Computer'][1] = self.__shortcuts_user.get_current_shortcuts()
+                self.save_added_computers_previous_activity()
 
         elif not self.__input_status['sequence'] and self.__input_status['action']:
             self.open_error_dialog(SEQUENCE_ERROR)
@@ -209,6 +212,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.change_shortcut_grid_labels()
         self.add_shortcuts_to_shortcut_grid()
         self.add_options_to_delete_list()
+        self.add_computers_to_computer_choice()
 
 #-------------------------------------------------------------------------------
     def show_current_shortcut_panel(self):
@@ -226,18 +230,22 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def add_shortcuts_to_shortcut_grid(self):
-        print self.__shortcuts_user.get_current_shortcuts()
+        print self.__saved_computer_list['My Computer']
         row = 0
-        for key in self.__shortcuts_user.get_current_shortcuts():
+        for action in self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1]:
             col = 0
-            if self.__shortcuts_user.get_current_shortcuts()[key]:
-                for file_name in self.__shortcuts_user.get_current_shortcuts()[key]:
-                    self.computer_shortcuts_grid.SetCellValue(row, col, key)
+            if self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action]:
+                for file_name in self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action]:
+                    self.computer_shortcuts_grid.SetCellValue(row, col, action)
                     col += 1
-                    argument = self.__shortcuts_user.get_current_shortcuts()[key][file_name][0]
+
+                    print file_name, '%%%%%%%%%%%%%%%%%%%%%%'
+                    print self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action][file_name], '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'
+
+                    argument = self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action][file_name][0]
                     self.computer_shortcuts_grid.SetCellValue(row, col, argument)
                     col += 1
-                    sequence = '+'.join(self.__shortcuts_user.get_current_shortcuts()[key][file_name][1])
+                    sequence = '+'.join(self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action][file_name][1])
                     self.computer_shortcuts_grid.SetCellValue(row, col, sequence)
                     row += 1
                     col = 0
@@ -283,6 +291,21 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             self.open_error_dialog(DELETE_BUTTON_ERROR)
 
 #-------------------------------------------------------------------------------
+    def get_computer_to_show_shortcuts(self, event):
+        self.__current_shortcuts_selected_computer_name = self.__computer_name_list[self.computer_choice.GetSelection()]
+        print self.__current_shortcuts_selected_computer_name
+
+#-------------------------------------------------------------------------------
+    def add_computers_to_computer_choice(self):
+        self.__computer_name_list = [key for key in self.__saved_computer_list.keys()]
+
+        if self.computer_choice.IsEmpty() or self.__input_status['new computer']:
+            self.computer_choice.Clear()
+            for computer in self.__computer_name_list:
+                self.computer_choice.Append(computer)
+            self.__input_status['new computer'] = False
+
+#-------------------------------------------------------------------------------
     def check_if_row_number_to_delete_was_selected(self):
         if self.delete_number_choice.GetSelection() != -1:
             self.__input_status['row number to delete'] = True
@@ -321,7 +344,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
     def add_new_computer_to_the_list(self, event):
         self.__saved_computer_list[self.__selected_computer_name] = [self.__client.get_computer_information()[self.__selected_computer_name]]
         self.save_added_computers_previous_activity()
-        self.__input_status['new computer'] = True
+        self.__input_status['new computer'] = True  # update the new computer status so the choice list will update
         print self.__saved_computer_list
 
 #-------------------------------------------------------------------------------

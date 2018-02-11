@@ -188,6 +188,8 @@ class MainFrame ( wx.Frame ):
 		computer_choiceChoices = []
 		self.computer_choice = wx.Choice( self.current_shortcuts_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 270,-1 ), computer_choiceChoices, 0 )
 		self.computer_choice.SetSelection( 0 )
+		self.computer_choice.SetFont( wx.Font( 12, 74, 90, 90, False, "Arial" ) )
+		
 		choose_and_delete_sizer.Add( self.computer_choice, 0, wx.ALL, 5 )
 		
 		self.select_row_num_text = wx.StaticText( self.current_shortcuts_panel, wx.ID_ANY, u"Select row number to delete", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -318,6 +320,7 @@ class MainFrame ( wx.Frame ):
 		self.shortcuts_choices.Bind( wx.EVT_CHOICE, self.save_user_choice )
 		self.sequence_text_control.Bind( wx.EVT_TEXT, self.check_sequence_input )
 		self.add_new_shortcut_button.Bind( wx.EVT_BUTTON, self.add_new_shortcut_to_the_list )
+		self.computer_choice.Bind( wx.EVT_CHOICE, self.get_computer_to_show_shortcuts )
 		self.delete_number_choice.Bind( wx.EVT_CHOICE, self.select_shortcut_to_delete )
 		self.delete_button.Bind( wx.EVT_BUTTON, self.delete_a_shortcut_from_the_grid )
 		self.Bind( wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.choose_computer_name_and_ip, id = wx.ID_ANY )
@@ -362,6 +365,9 @@ class MainFrame ( wx.Frame ):
 		event.Skip()
 	
 	def add_new_shortcut_to_the_list( self, event ):
+		event.Skip()
+	
+	def get_computer_to_show_shortcuts( self, event ):
 		event.Skip()
 	
 	def select_shortcut_to_delete( self, event ):
