@@ -45,6 +45,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def check_if_first_time(self):
+        pass
         # if os.path.isfile(SHORTCUTS_USER_DATA_FILE_NAME):
         #     self.__shortcuts_user.get_user_previous_activity()
         if os.path.isfile(ADDED_COMPUTERS_DATA_FILE_NAME):
@@ -73,14 +74,11 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
         if self.__input_status['sequence'] and self.__input_status['action'] and self.__selected_computer_name:
             self.check_what_computer_was_chosen()
-            print self.__saved_computer_list
             self.__shortcuts_user.write_new_shortcut(self.__selected_computer_name, self.__saved_computer_list[self.__selected_computer_name][1], self.__saved_computer_list[self.__selected_computer_name][2], self.__remote_computer_argument)
             self.__remote_computer_argument = ''
             self.__saved_computer_list[self.__selected_computer_name][1] = self.__shortcuts_user.get_current_shortcuts()
             self.__saved_computer_list[self.__selected_computer_name][2] = self.__shortcuts_user.get_file_ending_counter()
             self.save_added_computers_previous_activity()
-            # self.__shortcuts_user.save_user_activity()
-            # self.update_my_computer_data()
 
         elif not self.__input_status['sequence'] and self.__input_status['action']:
             self.open_error_dialog(SEQUENCE_ERROR)
@@ -242,7 +240,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def add_shortcuts_to_shortcut_grid(self):
-        print self.__saved_computer_list['My Computer']
+        print self.__saved_computer_list
         # self.__current_shortcuts_selected_computer_name = 'Elad'
         row = 0
         for action in self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1]:
@@ -292,7 +290,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         if self.__input_status['row number to delete']:
             self.__shortcuts_user.delete_shortcut(self.__selected_file_name_to_delete['action'], self.__selected_file_name_to_delete['file name'])
             self.__shortcuts_user.save_user_activity()
-            self.update_my_computer_data()
+            # self.update_my_computer_data()
             self.clear_shortcuts_grid()
             self.add_shortcuts_to_shortcut_grid()
             self.add_options_to_delete_list()

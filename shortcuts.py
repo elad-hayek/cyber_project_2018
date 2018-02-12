@@ -18,6 +18,7 @@ import wx
 import pickle
 import tkMessageBox
 import getpass
+import copy
 
 CLOSE_PROCESS_BY_NAME_PATH = 'close_process.ahk'
 
@@ -185,8 +186,8 @@ class ShortCuts:
             self.set_shortcut_argument(argument)
         else:
             self.__remote_computer_activation = False
-        self.__files_ending_counter = computer_files_ending_counter
-        self.__current_shortcuts = computer_current_shortcuts
+        self.__files_ending_counter = copy.deepcopy(computer_files_ending_counter)
+        self.__current_shortcuts = copy.deepcopy(computer_current_shortcuts)
         self.__computer_name = computer_name
         self.__shortcut_function_activation[self.__user_choice]()
 
