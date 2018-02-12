@@ -223,7 +223,7 @@ class ShortCuts:
         return sequence_format_list
 #-------------------------------------------------------------------------------
 
-    def delete_shortcut(self, shortcut_type, file_name):
+    def delete_shortcut(self, shortcut_type, file_name, computer_current_shortcut):
         """
         deletes a shortcut file and end it's process
 
@@ -233,6 +233,7 @@ class ShortCuts:
         :arg file_name = the shortcut file name
         :type file_name = string
         """
+        self.__current_shortcuts = computer_current_shortcut
         file_to_delete = self.__current_shortcuts[shortcut_type][file_name][2]
         self.activate_ahk_files(CLOSE_PROCESS_BY_NAME_PATH, file_name)
         os.remove(file_to_delete)

@@ -258,6 +258,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
                     col = 0
         self.__row_selection_number = row
 
+        self.add_options_to_delete_list()
+
 #-------------------------------------------------------------------------------
     def add_options_to_delete_list(self):
         self.delete_number_choice.Clear()
@@ -288,9 +290,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.check_if_row_number_to_delete_was_selected()
         print self.__input_status['row number to delete']
         if self.__input_status['row number to delete']:
-            self.__shortcuts_user.delete_shortcut(self.__selected_file_name_to_delete['action'], self.__selected_file_name_to_delete['file name'])
-            self.__shortcuts_user.save_user_activity()
-            # self.update_my_computer_data()
+            self.__shortcuts_user.delete_shortcut(self.__selected_file_name_to_delete['action'], self.__selected_file_name_to_delete['file name'], self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1])
+            self.save_added_computers_previous_activity()
             self.clear_shortcuts_grid()
             self.add_shortcuts_to_shortcut_grid()
             self.add_options_to_delete_list()
