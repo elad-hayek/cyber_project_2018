@@ -190,6 +190,7 @@ class ShortCuts:
         self.__current_shortcuts = copy.deepcopy(computer_current_shortcuts)
         self.__computer_name = computer_name
         self.__shortcut_function_activation[self.__user_choice]()
+        self.set_shortcut_argument('')
 
 #-------------------------------------------------------------------------------
 
