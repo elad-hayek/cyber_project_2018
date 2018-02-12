@@ -73,7 +73,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
         if self.__input_status['sequence'] and self.__input_status['action'] and self.__selected_computer_name:
             self.check_what_computer_was_chosen()
-            print self.__saved_computer_list, '^^^^^^^^^^^^^^^^^^^^^^^^^^'
+            print self.__saved_computer_list
             self.__shortcuts_user.write_new_shortcut(self.__selected_computer_name, self.__saved_computer_list[self.__selected_computer_name][1], self.__saved_computer_list[self.__selected_computer_name][2], self.__remote_computer_argument)
             self.__remote_computer_argument = ''
             self.__saved_computer_list[self.__selected_computer_name][1] = self.__shortcuts_user.get_current_shortcuts()
@@ -243,6 +243,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def add_shortcuts_to_shortcut_grid(self):
         print self.__saved_computer_list['My Computer']
+        # self.__current_shortcuts_selected_computer_name = 'Elad'
         row = 0
         for action in self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1]:
             col = 0
@@ -303,6 +304,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
     def get_computer_to_show_shortcuts(self, event):
         self.__current_shortcuts_selected_computer_name = self.__computer_name_list[self.computer_choice.GetSelection()]
         print self.__current_shortcuts_selected_computer_name
+        self.clear_shortcuts_grid()
+        self.add_shortcuts_to_shortcut_grid()
 
 #-------------------------------------------------------------------------------
     def add_computers_to_computer_choice(self):

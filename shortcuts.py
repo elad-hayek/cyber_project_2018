@@ -272,6 +272,8 @@ class ShortCuts:
         :arg file_name = the shortcut file name
         :type file_name = string
         """
+        if self.__remote_computer_activation:
+            self.__argument.set_argument(self.__argument.get_argument().split('$$')[0])
         self.__current_shortcuts[shortcut_type][file_name] = (self.__argument.get_argument(), self.__shortcut_sequence, self.__shortcut_script_path)
 
 #-------------------------------------------------------------------------------
