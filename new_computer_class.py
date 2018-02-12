@@ -18,14 +18,15 @@ PING_QUESTION_LIST_OF_ELEMENT = ['ping', '-an', '', '&&', 'echo', 'T', '||', 'ec
 SERVER_IP = '0.0.0.0'
 SERVER_LISTENING_PORT = 8820
 SERVER_ACTING_PORT = 8821
+CONNECTION_TYPE = [SERVER_LISTENING_PORT, SERVER_ACTING_PORT]
 
 
 class Server():
-    def __init__(self):
+    def __init__(self, connection_type):
         self.__shortcut_builder = ShortCuts()
         self.__server_socket = Sockets()
         self.__client_socket = Sockets()
-        self.__server_socket.open_server(SERVER_IP, SERVER_LISTENING_PORT)
+        self.__server_socket.open_server(SERVER_IP, CONNECTION_TYPE[connection_type])
         print 'server is up'
         self.connect_to_client()
 
@@ -122,13 +123,13 @@ class Client():
         print result_split_lines[-1], '---ping---'
         return result_split_lines[1].split()[1], result_split_lines[-1]
 
-    def check_if_remote_server_is_on(self, server_ip):
-        if self.connect_to_server(server_ip, SERVER_LISTENING_PORT):
-            print 'connection was successful'
-            return True
-        else:
-            print 'connection failed'
-            return False
+    def check_if_remote_server_is_on(self, server_ip, connection_type):
+            if self.connect_to_server(server_ip, CONNECTION_TYPE[connection_type]):
+                print 'connection was successful'
+                return True
+            else:
+                print 'connection failed'
+                return False
 
     def get_computer_information(self):
         return self.__computer_information
@@ -146,7 +147,7 @@ def main():
     #     client.send_request_to_the_server('open', 'a+f', 'google.com')
     #     print client.receive_information_from_the_server()
 
-    server = Server()
+    server = Server(1)
     server.receive_information_from_client()
 
     # server.make_the_shortcut_file(a[0], a[1], a[2])
