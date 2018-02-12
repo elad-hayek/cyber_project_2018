@@ -21,6 +21,8 @@ SEQUENCE_ERROR = 'Not a legal sequence'
 ACTION_ERROR = 'Choose a action'
 DELETE_BUTTON_ERROR = 'Row number was not selected'
 WINDOWS_KEY_REPRESENTATION = 'LWin'
+CURRENT_SHORTCUTS_TEMPLATE = {'open folder': {}, 'open url': {}, 'open program': {}, 'open cmd': {}, 'open settings': {}}
+FILES_ENDING_COUNTER_TEMPLATE = {'folder': 0, 'url': 0, 'program': 0, 'cmd': 0, 'settings': 0}
 
 class Main(shortcut_menu_wx_skeleton.MainFrame):
     #constructor
@@ -29,7 +31,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__shortcuts_user = ShortCuts()
         self.__client = Client()
         self.__row_selection_number = 0
-        self.__saved_computer_list = {'My Computer': [[], self.__shortcuts_user.get_current_shortcuts()]}
+        self.__saved_computer_list = {'My Computer': [[], CURRENT_SHORTCUTS_TEMPLATE, FILES_ENDING_COUNTER_TEMPLATE]}
         self.__computer_list_for_getting_user_selection = []
         self.__computer_name_list = []
         self.__selected_computer_name = ''
@@ -43,8 +45,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def check_if_first_time(self):
-        if os.path.isfile(SHORTCUTS_USER_DATA_FILE_NAME):
-            self.__shortcuts_user.get_user_previous_activity()
+        # if os.path.isfile(SHORTCUTS_USER_DATA_FILE_NAME):
+        #     self.__shortcuts_user.get_user_previous_activity()
         if os.path.isfile(ADDED_COMPUTERS_DATA_FILE_NAME):
             self.get_added_computers_previous_activity()
 
@@ -70,10 +72,15 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         print self.__selected_computer_name, '---computer---'
 
         if self.__input_status['sequence'] and self.__input_status['action'] and self.__selected_computer_name:
-            if not self.check_what_computer_was_chosen():
-                self.__shortcuts_user.write_new_shortcut()
-                self.__shortcuts_user.save_user_activity()
-                self.update_my_computer_data()
+            self.check_what_computer_was_chosen()
+            print self.__saved_computer_list, '^^^^^^^^^^^^^^^^^^^^^^^^^^'
+            self.__shortcuts_user.write_new_shortcut(self.__selected_computer_name, self.__saved_computer_list[self.__selected_computer_name][1], self.__saved_computer_list[self.__selected_computer_name][2], self.__remote_computer_argument)
+            self.__remote_computer_argument = ''
+            self.__saved_computer_list[self.__selected_computer_name][1] = self.__shortcuts_user.get_current_shortcuts()
+            self.__saved_computer_list[self.__selected_computer_name][2] = self.__shortcuts_user.get_file_ending_counter()
+            self.save_added_computers_previous_activity()
+            # self.__shortcuts_user.save_user_activity()
+            # self.update_my_computer_data()
 
         elif not self.__input_status['sequence'] and self.__input_status['action']:
             self.open_error_dialog(SEQUENCE_ERROR)
@@ -84,10 +91,12 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         elif not self.__selected_computer_name:
             self.open_error_dialog(CHOOSE_COMPUTER_ERROR)
 
+#-------------------------------------------------------------------------------
     def update_my_computer_data(self):
         self.__saved_computer_list['My Computer'][1] = self.__shortcuts_user.get_current_shortcuts()
         self.save_added_computers_previous_activity()
 
+#-------------------------------------------------------------------------------
     def check_what_computer_was_chosen(self):
         if self.__selected_computer_name == 'My Computer':
             self.__input_status['remote argument'] = False
@@ -96,6 +105,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             self.connect_to_server_and_pass_arguments()
             return True
 
+#-------------------------------------------------------------------------------
     def connect_to_server_and_pass_arguments(self):
         if self.__client.check_if_remote_server_is_on(self.__saved_computer_list[self.__selected_computer_name][0][0], 0):
             self.__input_status['remote argument'] = True
@@ -107,17 +117,17 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         else:
             self.open_error_dialog(REMOTE_SERVER_CONNECTION_ERROR)
 
-
+#-------------------------------------------------------------------------------
     def get_argument_from_server(self):
             self.__shortcut_argument_activation[self.__shortcuts_user.get_users_choice()]()
 
-
+#-------------------------------------------------------------------------------
     def open_remote_folder(self):
         pass
 
     def open_remote_url(self):
         self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice())
-        self.__remote_computer_argument = self.__argument_functions.get_argument()
+        self.__remote_computer_argument = self.__argument_functions.get_argument()+'$$'+self.__saved_computer_list[self.__selected_computer_name][0][0]
 
     def open_remote_program(self):
         pass
@@ -341,7 +351,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def add_new_computer_to_the_list(self, event):
-        self.__saved_computer_list[self.__selected_computer_name] = [self.__client.get_computer_information()[self.__selected_computer_name]]
+        self.__saved_computer_list[self.__selected_computer_name] = [self.__client.get_computer_information()[self.__selected_computer_name], CURRENT_SHORTCUTS_TEMPLATE, FILES_ENDING_COUNTER_TEMPLATE]
         self.save_added_computers_previous_activity()
         self.__input_status['new computer'] = True  # update the new computer status so the choice list will update
         print self.__saved_computer_list
@@ -372,7 +382,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.add_new_computer_panel.Hide()
 
     def update_user_data(self, event):
-        self.__shortcuts_user.save_user_activity()
+        # self.__shortcuts_user.save_user_activity()
         self.save_added_computers_previous_activity()
         self.Destroy()
 

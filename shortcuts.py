@@ -39,12 +39,14 @@ class ShortCuts:
         self.__argument = GetArgument()
         self.__remote_computer_activation = False
         self.__shortcut_sequence = ''
+        self.__computer_name = ''
         self.__shortcut_script_path = ''
         self.__shortcuts_templates = {'open folder': 'Run, %s',
                                       'open url': 'Run, chrome.exe %s',
                                       'open settings': 'Run, control %s',
                                       'open cmd': 'Run, cmd %s',
-                                      'open program': 'Run, %s'}
+                                      'open program': 'Run, %s',
+                                      'open connection to activate remote shortcut': 'Run, python activate_remote_data.py "%s" "%s"'}
 
         self.__current_shortcuts = {'open folder': {}, 'open url': {}, 'open program': {},
                                     'open cmd': {}, 'open settings': {}}
@@ -106,6 +108,9 @@ class ShortCuts:
         returns the last entered shortcut sequence
         """
         return self.__shortcut_sequence
+#-------------------------------------------------------------------------------
+    def set_remote_computer_activation_flag(self, state):
+        self.__remote_computer_activation = state
 
 #-------------------------------------------------------------------------------
     def set_users_choice(self, choice):
@@ -154,7 +159,7 @@ class ShortCuts:
         :type shortcut_type = string
 
         """
-        self.__shortcut_script_path = SCRIPTS_PATH+'\\'+shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk'
+        self.__shortcut_script_path = SCRIPTS_PATH+'\\'+self.__computer_name+'_'+shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk'
         self.__shortcut_script_path = self.__shortcut_script_path % getpass.getuser()
         print self.__shortcut_script_path
         ahk_file = open(self.__shortcut_script_path, 'w')
@@ -164,13 +169,14 @@ class ShortCuts:
 
         self.activate_ahk_files(self.__shortcut_script_path)
 
-        self.add_to_history('open '+shortcut_type, shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk')
+        self.add_to_history('open '+shortcut_type, self.__computer_name+'_'+shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk')
 
         self.__files_ending_counter[shortcut_type] += 1
 
+
 #-------------------------------------------------------------------------------
 
-    def write_new_shortcut(self, argument=''):
+    def write_new_shortcut(self, computer_name, computer_current_shortcuts, computer_files_ending_counter, argument=''):
         """
         activate the correct shortcut function from the actions dictionary
         """
@@ -179,6 +185,9 @@ class ShortCuts:
             self.set_shortcut_argument(argument)
         else:
             self.__remote_computer_activation = False
+        self.__files_ending_counter = computer_files_ending_counter
+        self.__current_shortcuts = computer_current_shortcuts
+        self.__computer_name = computer_name
         self.__shortcut_function_activation[self.__user_choice]()
 
 #-------------------------------------------------------------------------------
@@ -191,7 +200,10 @@ class ShortCuts:
         :type shortcut_name = string
         """
         sequence_format_list = self.check_sequence_length()
-        string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates[shortcut_name] % self.__argument.get_argument() + '\n}'
+        if self.__computer_name == 'My Computer':
+            string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates[shortcut_name] % self.__argument.get_argument() + '\n}'
+        else:
+            string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates['open connection to activate remote shortcut'] % (self.__argument.get_argument().split('$$')[0], self.__argument.get_argument().split('$$')[1]) + '\n}'
         return string_to_write
 
 #-------------------------------------------------------------------------------
@@ -231,6 +243,9 @@ class ShortCuts:
         returns the current shortcuts dictionary
         """
         return self.__current_shortcuts
+
+    def get_file_ending_counter(self):
+        return self.__files_ending_counter
 
 #-------------------------------------------------------------------------------
 
