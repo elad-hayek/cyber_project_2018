@@ -18,7 +18,7 @@ class ActivateShortcuts():
         pass
 
     def open_cmd(self):
-        pass
+        os.system('start cmd')
 
     def open_settings(self):
         pass

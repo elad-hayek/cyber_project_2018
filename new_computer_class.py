@@ -54,7 +54,7 @@ class Server():
 
     def activate_the_shortcut_on_the_computer(self, data):
         action = data[0]
-        argument = data[1]
+        argument = data[2]
         os.system('python activate_shortcuts.py '+'"'+action+'" "'+argument+'"')
 
     def disconnect_client(self):
@@ -140,11 +140,15 @@ def main():
     #     client.send_request_to_the_server('open', 'a+f', 'google.com')
     #     print client.receive_information_from_the_server()
 
-    server = Server(1)
-    server.receive_information_from_client()
+    while 1:
+        server = Server(1)
+        a = server.receive_information_from_client()
+        print a
+        server.pass_information_to_client('ok'+repr(a))
 
-    # server.make_the_shortcut_file(a[0], a[1], a[2])
-    server.pass_information_to_client('ok')
+        # server.make_the_shortcut_file(a[0], a[1], a[2])
+        server.disconnect_client()
+        server.close_server()
 
 
 
