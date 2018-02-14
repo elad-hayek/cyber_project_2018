@@ -92,8 +92,8 @@ class Client():
         self.__client_socket.write_to_server(data_to_send)
 
 #-------------------------------------------------------------------------------
-    def find_computers_in_the_network(self, mac_address=BROADCAST):
-        arp_question = Popen(['python', 'get_ip_and_mac.py', mac_address], stdout=PIPE)
+    def find_computers_in_the_network(self):
+        arp_question = Popen(['python', 'get_ip_and_mac.py', BROADCAST], stdout=PIPE)
         result = arp_question.communicate()[0]
         for addr in result.split():
             self.__raw_computer_information.append([addr.split('$$')[0], addr.split('$$')[1]])

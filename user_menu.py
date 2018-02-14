@@ -330,7 +330,6 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
     def show_loading_screen(self):
         loading_screen = subprocess.Popen(['python', 'loading_screen.py'])
-        #'%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
         self.__client.find_computers_in_the_network()
         self.add_computer_information_to_the_add_table()
         loading_screen.terminate()
