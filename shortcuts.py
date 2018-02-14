@@ -201,8 +201,6 @@ class ShortCuts:
         :arg shortcut_name = the action the user chose
         :type shortcut_name = string
         """
-        print len(self.__argument.get_argument().split('$$')), '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
-        print self.__shortcuts_templates['open connection to activate remote shortcut'].format(*self.__argument.get_argument().split('$$'))
 
         sequence_format_list = self.check_sequence_length()
         if self.__computer_name == 'My Computer':

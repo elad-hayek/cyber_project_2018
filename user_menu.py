@@ -126,13 +126,18 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
     def open_remote_url(self):
         self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice())
-        self.__remote_computer_argument =self.__shortcuts_user.get_users_choice()+'$$'+self.__argument_functions.get_argument()+'$$'+self.__saved_computer_list[self.__selected_computer_name][0][1]
+        self.set_remote_computer_argument()
 
     def open_remote_program(self):
         pass
 
     def no_needed_argument(self):
         print 'no argument needed'
+        self.__argument_functions.set_argument('??')
+        self.set_remote_computer_argument()
+
+    def set_remote_computer_argument(self):
+        self.__remote_computer_argument = self.__shortcuts_user.get_users_choice()+'$$'+self.__argument_functions.get_argument()+'$$'+self.__saved_computer_list[self.__selected_computer_name][0][1]
 
 #-------------------------------------------------------------------------------
     def save_user_choice(self, event):
