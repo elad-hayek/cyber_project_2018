@@ -109,7 +109,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         if self.__client.check_if_remote_server_is_on(self.__saved_computer_list[self.__selected_computer_name][0][0], 0):
             self.__input_status['remote argument'] = True
             self.get_argument_from_server()
-            self.__client.send_request_to_the_server(self.__shortcuts_user.get_users_choice(), '+'.join(self.__shortcuts_user.get_shortcut_sequence()), self.__remote_computer_argument)
+            self.__client.send_request_to_the_server(self.__shortcuts_user.get_users_choice(), self.__remote_computer_argument, '+'.join(self.__shortcuts_user.get_shortcut_sequence()))
             print self.__client.receive_information_from_the_server()
             self.__client.close_client()
             self.__client = Client()

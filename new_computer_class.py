@@ -57,6 +57,12 @@ class Server():
         argument = data[1]
         os.system('python activate_shortcuts.py '+'"'+action+'" "'+argument+'"')
 
+    def disconnect_client(self):
+        self.__client_socket.close_socket()
+
+    def close_server(self):
+        self.__server_socket.close_socket()
+
 
 
 
@@ -82,7 +88,7 @@ class Client():
         return data
 
 #-------------------------------------------------------------------------------
-    def send_request_to_the_server(self, action, sequence, argument):
+    def send_request_to_the_server(self, action, argument, sequence=' '):
         data_to_send = action+'$$'+sequence+'$$'+argument
         self.__client_socket.write_to_server(data_to_send)
 
