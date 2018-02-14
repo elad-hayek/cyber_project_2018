@@ -12,7 +12,7 @@ class ActivateShortcuts():
         os.system(self.__argument[:2]+' && cd '+self.__argument+' && start.')
 
     def open_url(self):
-        pass
+        os.system('start "" '+self.__argument)
 
     def open_program(self):
         pass
