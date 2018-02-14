@@ -122,7 +122,7 @@ class Client():
 
 #-------------------------------------------------------------------------------
     def close_client(self):
-        self.__client_socket.close()
+        self.__client_socket.close_socket()
 
 
 

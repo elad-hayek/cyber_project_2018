@@ -78,3 +78,9 @@ class Sockets(socket):
         self.listen(1)
         (client_socket, client_address) = self.accept()
         return client_socket, client_address
+
+    def close_socket(self):
+        """
+        closes the socket
+        """
+        self.close()

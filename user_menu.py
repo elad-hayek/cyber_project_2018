@@ -74,12 +74,12 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         print self.__selected_computer_name, '---computer---'
 
         if self.__input_status['sequence'] and self.__input_status['action'] and self.__selected_computer_name:
-            self.check_what_computer_was_chosen()
-            self.__shortcuts_user.write_new_shortcut(self.__selected_computer_name, self.__saved_computer_list[self.__selected_computer_name][1], self.__saved_computer_list[self.__selected_computer_name][2], self.__remote_computer_argument)
-            self.__remote_computer_argument = ''
-            self.__saved_computer_list[self.__selected_computer_name][1] = self.__shortcuts_user.get_current_shortcuts()
-            self.__saved_computer_list[self.__selected_computer_name][2] = self.__shortcuts_user.get_file_ending_counter()
-            self.save_added_computers_previous_activity()
+            if self.check_what_computer_was_chosen():
+                self.__shortcuts_user.write_new_shortcut(self.__selected_computer_name, self.__saved_computer_list[self.__selected_computer_name][1], self.__saved_computer_list[self.__selected_computer_name][2], self.__remote_computer_argument)
+                self.__remote_computer_argument = ''
+                self.__saved_computer_list[self.__selected_computer_name][1] = self.__shortcuts_user.get_current_shortcuts()
+                self.__saved_computer_list[self.__selected_computer_name][2] = self.__shortcuts_user.get_file_ending_counter()
+                self.save_added_computers_previous_activity()
 
         elif not self.__input_status['sequence'] and self.__input_status['action']:
             self.open_error_dialog(SEQUENCE_ERROR)
@@ -99,10 +99,10 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
     def check_what_computer_was_chosen(self):
         if self.__selected_computer_name == 'My Computer':
             self.__input_status['remote argument'] = False
-            return False
-        else:
-            self.connect_to_server_and_pass_arguments()
             return True
+        else:
+            return self.connect_to_server_and_pass_arguments()
+
 
 #-------------------------------------------------------------------------------
     def connect_to_server_and_pass_arguments(self):
@@ -112,9 +112,14 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             self.__client.send_request_to_the_server(self.__shortcuts_user.get_users_choice(), '+'.join(self.__shortcuts_user.get_shortcut_sequence()), self.__remote_computer_argument)
             print self.__client.receive_information_from_the_server()
             self.__client.close_client()
+            self.__client = Client()
+            return True
 
         else:
             self.open_error_dialog(REMOTE_SERVER_CONNECTION_ERROR)
+            self.__client.close_client()
+            self.__client = Client()
+            return False
 
 #-------------------------------------------------------------------------------
     def get_argument_from_server(self):
@@ -247,7 +252,6 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def add_shortcuts_to_shortcut_grid(self):
         print self.__saved_computer_list
-        # self.__current_shortcuts_selected_computer_name = 'Elad'
         row = 0
         for action in self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1]:
             col = 0
