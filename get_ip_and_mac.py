@@ -11,7 +11,7 @@ COMPUTERS_IP = socket.gethostbyname_ex(socket.gethostname())[-1][-1]
 
 MAC_FILTER = ['ff:ff:ff:ff:ff:ff', 'ff:ff:ff:ff:ff:fa']
 IP_FILTER = ['192.168.1.1']
-
+BROADCAST = 'ff:ff:ff:ff:ff:ff'
 IP_ = '192.168.1.'
 
 
@@ -24,7 +24,7 @@ def main():
         answered, unanswered = srp(Ether(dst=mac_address)/ARP(pdst=IP_+str(i)), timeout=0.5, verbose=False)
 
         if len(answered) > 0:
-            if mac_address  == 'ff:ff:ff:ff:ff:ff':
+            if mac_address == BROADCAST:
                 result = sr(ARP(op=ARP.who_has, psrc=COMPUTERS_IP, pdst=answered[0][0].getlayer(ARP).pdst), verbose=False)
                 if answered[0][0].getlayer(ARP).pdst not in IP_FILTER and result[0][0][1].hwsrc not in MAC_FILTER:
                     ip_and_macs.append([answered[0][0].getlayer(ARP).pdst, result[0][0][1].hwsrc])

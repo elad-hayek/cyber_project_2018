@@ -126,7 +126,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
     def open_remote_url(self):
         self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice())
-        self.__remote_computer_argument = self.__argument_functions.get_argument()+'$$'+self.__saved_computer_list[self.__selected_computer_name][0][0]
+        self.__remote_computer_argument =self.__shortcuts_user.get_users_choice()+'$$'+self.__argument_functions.get_argument()+'$$'+self.__saved_computer_list[self.__selected_computer_name][0][1]
 
     def open_remote_program(self):
         pass

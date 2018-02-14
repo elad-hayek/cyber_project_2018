@@ -47,7 +47,7 @@ class ShortCuts:
                                       'open settings': 'Run, control %s',
                                       'open cmd': 'Run, cmd %s',
                                       'open program': 'Run, %s',
-                                      'open connection to activate remote shortcut': 'Run, python activate_remote_data.py "%s" "%s"'}
+                                      'open connection to activate remote shortcut': 'Run, python activate_remote_data.py "{0}" "{1}" "{2}"'}
 
         self.__current_shortcuts = {'open folder': {}, 'open url': {}, 'open program': {},
                                     'open cmd': {}, 'open settings': {}}
@@ -201,11 +201,14 @@ class ShortCuts:
         :arg shortcut_name = the action the user chose
         :type shortcut_name = string
         """
+        print len(self.__argument.get_argument().split('$$')), '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
+        print self.__shortcuts_templates['open connection to activate remote shortcut'].format(*self.__argument.get_argument().split('$$'))
+
         sequence_format_list = self.check_sequence_length()
         if self.__computer_name == 'My Computer':
             string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates[shortcut_name] % self.__argument.get_argument() + '\n}'
         else:
-            string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates['open connection to activate remote shortcut'] % (self.__argument.get_argument().split('$$')[0], self.__argument.get_argument().split('$$')[1]) + '\n}'
+            string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates['open connection to activate remote shortcut'].format(*self.__argument.get_argument().split('$$')) + '\n}'
         return string_to_write
 
 #-------------------------------------------------------------------------------
