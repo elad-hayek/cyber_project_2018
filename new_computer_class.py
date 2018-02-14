@@ -11,9 +11,7 @@ import os
 
 MAC_REGULAR_EXPRESSION = '([a-fA-F0-9]{2}[:|\-]?){6}'
 IP_REGULAR_EXPRESSION = '192.168.1.(\d){1,3}'
-MAC_FILTER = ['ff-ff-ff-ff-ff-ff', 'ff-ff-ff-ff-ff-fa']
-IP_FILTER = ['192.168.1.1']
-PING_QUESTION_LIST_OF_ELEMENT = ['ping', '-an', '', '&&', 'echo', 'T', '||', 'echo', 'F']
+BROADCAST = 'ff:ff:ff:ff:ff:ff'
 
 SERVER_IP = '0.0.0.0'
 SERVER_LISTENING_PORT = 8820
@@ -69,6 +67,7 @@ class Client():
         self.__computer_information = {}
         self.__raw_computer_information = []
 
+#-------------------------------------------------------------------------------
     def connect_to_server(self, ip, port):
         try:
             self.__client_socket.connect_to_server(ip, port)
@@ -77,52 +76,38 @@ class Client():
             print e
             return False
 
+#-------------------------------------------------------------------------------
     def receive_information_from_the_server(self):
         data = self.__client_socket.read_from_server()
         return data
 
+#-------------------------------------------------------------------------------
     def send_request_to_the_server(self, action, sequence, argument):
         data_to_send = action+'$$'+sequence+'$$'+argument
         self.__client_socket.write_to_server(data_to_send)
 
+#-------------------------------------------------------------------------------
     def activate_the_shortcut_on_the_computer(self, action, argument):
         data_to_send = action+'$$'+argument+'@@@'
         self.__client_socket.write_to_server(data_to_send)
 
-    def find_computers_in_the_network(self):
-        arp_question = Popen(['arp', '-a'], stdout=PIPE)
+#-------------------------------------------------------------------------------
+    def find_computers_in_the_network(self, mac_address=BROADCAST):
+        arp_question = Popen(['python', 'get_ip_and_mac.py', mac_address], stdout=PIPE)
         result = arp_question.communicate()[0]
-        result_split_lines = [line.strip() for line in result.splitlines()]  # split the arp answer to lines
+        for addr in result.split():
+            self.__raw_computer_information.append([addr.split('$$')[0], addr.split('$$')[1]])
 
-        for line in result_split_lines:
-            mac_finder = re.search(MAC_REGULAR_EXPRESSION, line)
-            ip_finder = re.search(IP_REGULAR_EXPRESSION, line)
-            if mac_finder and ip_finder:
-                if mac_finder.group(0).lower() not in MAC_FILTER and ip_finder.group(0) not in IP_FILTER:
-                    print line.split()[:2]
-                    self.__raw_computer_information.append(line.split()[:2])
-
+        print self.__raw_computer_information
         for computer in self.__raw_computer_information:
-            computer_name, ping_result = self.find_computer_name_and_find_if_pinging(computer[0])
-            if ping_result == 'T':
-                self.__computer_information[computer_name.title()] = computer
+            computer_name = socket.getfqdn(computer[0])
+            self.__computer_information[computer_name.title()] = computer
 
         del self.__raw_computer_information[:]  # clear raw computer information
                                                 # ip and mac
         print self.__computer_information
 
-
-    def find_computer_name_and_find_if_pinging(self, computer_ip):
-        ping_arg_list = PING_QUESTION_LIST_OF_ELEMENT
-        ping_arg_list[2] = computer_ip
-        ping_question = Popen(ping_arg_list, stdout=PIPE, shell=True)
-        result = ping_question.communicate()[0]
-        result_split_lines = [line.strip() for line in result.splitlines()]  # split the arp answer to lines
-
-        print result_split_lines[1].split()[1], '---name---'
-        print result_split_lines[-1], '---ping---'
-        return result_split_lines[1].split()[1], result_split_lines[-1]
-
+#-------------------------------------------------------------------------------
     def check_if_remote_server_is_on(self, server_ip, connection_type):
             if self.connect_to_server(server_ip, CONNECTION_TYPE[connection_type]):
                 print 'connection was successful'
@@ -131,9 +116,11 @@ class Client():
                 print 'connection failed'
                 return False
 
+#-------------------------------------------------------------------------------
     def get_computer_information(self):
         return self.__computer_information
 
+#-------------------------------------------------------------------------------
     def close_client(self):
         self.__client_socket.close()
 
