@@ -15,13 +15,13 @@ class ActivateShortcuts():
         os.system('start "" '+self.__argument)
 
     def open_program(self):
-        pass
+        os.system('start "" '+self.__argument)
 
     def open_cmd(self):
         os.system('start cmd')
 
     def open_settings(self):
-        pass
+        os.system('start "" "control"')
 
     def set_action(self, action):
         self.__action = action
