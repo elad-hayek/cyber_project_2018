@@ -173,7 +173,6 @@ class ShortCuts:
         :type shortcut_type = string
 
         """
-        print self.__files_ending_counter[shortcut_type], '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
         self.__shortcut_script_path = SCRIPTS_PATH+'\\'+self.__computer_name+'_'+shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk'
         self.__shortcut_script_path = self.__shortcut_script_path % getpass.getuser()
         print self.__shortcut_script_path
@@ -373,7 +372,7 @@ class GetArgument:
         """
         root = Tk()
         root.withdraw()
-        root.filename = tkFileDialog.askopenfilename(initialdir="/", title="Select file", filetypes=(("exe files", "*.exe"), ("all files", "*.*")))
+        root.filename = tkFileDialog.askopenfilename(initialdir="/", title="Select file")
         self.___argument = root.filename
         self.___argument = root.filename
 
