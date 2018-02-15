@@ -109,8 +109,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         if self.__client.check_if_remote_server_is_on(self.__saved_computer_list[self.__selected_computer_name][0][0], 0):
             self.__input_status['remote argument'] = True
             self.get_argument_from_server()
-            self.__client.send_request_to_the_server(self.__shortcuts_user.get_users_choice(), self.__remote_computer_argument.split('$$')[1], '+'.join(self.__shortcuts_user.get_shortcut_sequence()))
-            print self.__client.receive_information_from_the_server()
+            if self.__argument_functions.get_argument():
+                self.__client.send_request_to_the_server(self.__shortcuts_user.get_users_choice(), self.__remote_computer_argument.split('$$')[1], '+'.join(self.__shortcuts_user.get_shortcut_sequence()))
+                print self.__client.receive_information_from_the_server()
             self.__client.close_client()
             self.__client = Client()
             return True
@@ -130,7 +131,10 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         pass
 
     def open_remote_url(self):
-        self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice())
+        self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice(), ' Please enter full url  example: www.google.com')
+        if self.__argument_functions.get_argument():
+            if self.__argument_functions.get_argument().split('.')[0] != 'www':
+                self.__argument_functions.set_argument('www.'+self.__argument_functions.get_argument())
         self.set_remote_computer_argument()
 
     def open_remote_program(self):
@@ -142,6 +146,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.set_remote_computer_argument()
 
     def set_remote_computer_argument(self):
+        print self.__argument_functions.get_argument()
         self.__remote_computer_argument = self.__shortcuts_user.get_users_choice()+'$$'+self.__argument_functions.get_argument()+'$$'+self.__saved_computer_list[self.__selected_computer_name][0][1]
 
 #-------------------------------------------------------------------------------

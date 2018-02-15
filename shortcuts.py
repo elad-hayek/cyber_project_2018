@@ -67,7 +67,11 @@ class ShortCuts:
         if not self.__remote_computer_activation:
             self.__argument.choose_folder_manager()
         if self.__argument.get_argument():
-            self.run_action_sequence_for_shortcut('folder')
+            if self.__remote_computer_activation:
+                if self.__argument.get_argument().split('$$')[1]:
+                    self.run_action_sequence_for_shortcut('folder')
+            else:
+                self.run_action_sequence_for_shortcut('folder')
 
 #-------------------------------------------------------------------------------
     def open_url(self):
@@ -77,7 +81,11 @@ class ShortCuts:
         if not self.__remote_computer_activation:
             self.__argument.ask_text_from_user('open url')
         if self.__argument.get_argument():
-            self.run_action_sequence_for_shortcut('url')
+            if self.__remote_computer_activation:
+                if self.__argument.get_argument().split('$$')[1]:
+                    self.run_action_sequence_for_shortcut('url')
+            else:
+                self.run_action_sequence_for_shortcut('url')
 
 #-------------------------------------------------------------------------------
     def open_settings(self):
@@ -101,7 +109,12 @@ class ShortCuts:
         if not self.__remote_computer_activation:
             self.__argument.choose_program_manager()
         if self.__argument.get_argument():
-            self.run_action_sequence_for_shortcut('program')
+            if self.__remote_computer_activation:
+                if self.__argument.get_argument().split('$$')[1]:
+                    self.run_action_sequence_for_shortcut('program')
+            else:
+                self.run_action_sequence_for_shortcut('program')
+
 
 #-------------------------------------------------------------------------------
     def get_shortcut_sequence(self):
@@ -307,7 +320,7 @@ class GetArgument:
     def __init__(self):
         self.___argument = ''
 #-------------------------------------------------------------------------------
-    def ask_text_from_user(self, action):
+    def ask_text_from_user(self, action, marks=''):
         """
         opens a text dialog for argument entry from user
 
@@ -319,7 +332,7 @@ class GetArgument:
         frame.SetDimensions(0, 0, 200, 50)
 
         # Create text input
-        dlg = wx.TextEntryDialog(frame, 'Enter '+action.split()[1].upper(), 'Text Entry')
+        dlg = wx.TextEntryDialog(frame, 'Enter '+action.split()[1].upper()+'\n'+marks, 'Text Entry')
         if dlg.ShowModal() == wx.ID_OK:
             self.___argument = dlg.GetValue()
             dlg.Destroy()
