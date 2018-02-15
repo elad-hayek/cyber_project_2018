@@ -6,7 +6,7 @@ class ActivateShortcuts():
     def __init__(self):
         self.__action = ''
         self.__argument = ''
-        self.__remote_shortcut_activation = {'open folder': self.open_folder, 'open url': self.open_url, 'open program': self.open_program, 'open cmd': self.open_cmd, 'open settings': self.open_settings}
+        self.__remote_shortcut_activation = {'open folder': self.open_folder, 'open url': self.open_url, 'open file': self.open_file, 'open cmd': self.open_cmd, 'open settings': self.open_settings}
 
     def open_folder(self):
         os.system(self.__argument[:2]+' && cd '+self.__argument+' && start.')
@@ -14,7 +14,7 @@ class ActivateShortcuts():
     def open_url(self):
         os.system('start "" '+self.__argument)
 
-    def open_program(self):
+    def open_file(self):
         os.system('start "" '+self.__argument)
 
     def open_cmd(self):

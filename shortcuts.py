@@ -46,17 +46,17 @@ class ShortCuts:
                                       'open url': 'Run, chrome.exe %s',
                                       'open settings': 'Run, control %s',
                                       'open cmd': 'Run, cmd %s',
-                                      'open program': 'Run, %s',
+                                      'open file': 'Run, %s',
                                       'open connection to activate remote shortcut': 'Run, python activate_remote_data.py "{0}" "{1}" "{2}"'}
 
-        self.__current_shortcuts = {'open folder': {}, 'open url': {}, 'open program': {},
+        self.__current_shortcuts = {'open folder': {}, 'open url': {}, 'open file': {},
                                     'open cmd': {}, 'open settings': {}}
 
-        self.__files_ending_counter = {'folder': 0, 'url': 0, 'program': 0, 'cmd': 0, 'settings': 0}
+        self.__files_ending_counter = {'folder': 0, 'url': 0, 'file': 0, 'cmd': 0, 'settings': 0}
 
         self.__user_choice = ''
 
-        self.__shortcut_function_activation = {'open folder': self.open_folder, 'open url': self.open_url, 'open settings': self.open_settings, 'open cmd': self.open_cmd, 'open program': self.open_program}
+        self.__shortcut_function_activation = {'open folder': self.open_folder, 'open url': self.open_url, 'open settings': self.open_settings, 'open cmd': self.open_cmd, 'open file': self.open_file}
 
 
 #-------------------------------------------------------------------------------
@@ -102,18 +102,18 @@ class ShortCuts:
         self.run_action_sequence_for_shortcut('cmd')
 
 #-------------------------------------------------------------------------------
-    def open_program(self):
+    def open_file(self):
         """
-        uses the run_action_sequence_for_shortcut to open a program shortcut
+        uses the run_action_sequence_for_shortcut to open a file shortcut
         """
         if not self.__remote_computer_activation:
-            self.__argument.choose_program_manager()
+            self.__argument.choose_file_manager()
         if self.__argument.get_argument():
             if self.__remote_computer_activation:
                 if self.__argument.get_argument().split('$$')[1]:
-                    self.run_action_sequence_for_shortcut('program')
+                    self.run_action_sequence_for_shortcut('file')
             else:
-                self.run_action_sequence_for_shortcut('program')
+                self.run_action_sequence_for_shortcut('file')
 
 
 #-------------------------------------------------------------------------------
@@ -173,6 +173,7 @@ class ShortCuts:
         :type shortcut_type = string
 
         """
+        print self.__files_ending_counter[shortcut_type], '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
         self.__shortcut_script_path = SCRIPTS_PATH+'\\'+self.__computer_name+'_'+shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk'
         self.__shortcut_script_path = self.__shortcut_script_path % getpass.getuser()
         print self.__shortcut_script_path
@@ -366,13 +367,13 @@ class GetArgument:
         self.___argument = root.filename
 
 #-------------------------------------------------------------------------------
-    def choose_program_manager(self):
+    def choose_file_manager(self):
         """
-        opens a files manager for the user to choose a program
+        opens a files manager for the user to choose a file
         """
         root = Tk()
         root.withdraw()
-        root.filename = tkFileDialog.askopenfilename(initialdir="/", title="Select program", filetypes=(("exe files", "*.exe"), ("all files", "*.*")))
+        root.filename = tkFileDialog.askopenfilename(initialdir="/", title="Select file", filetypes=(("exe files", "*.exe"), ("all files", "*.*")))
         self.___argument = root.filename
         self.___argument = root.filename
 
