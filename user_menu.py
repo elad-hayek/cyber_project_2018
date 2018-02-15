@@ -260,6 +260,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
                     self.computer_shortcuts_grid.SetCellValue(row, col, action)
                     col += 1
                     argument = self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action][file_name][0]
+                    if action == 'open program':
+                        argument = argument.split('/')[-1]
                     self.computer_shortcuts_grid.SetCellValue(row, col, argument)
                     col += 1
                     sequence = '+'.join(self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action][file_name][1])

@@ -54,14 +54,14 @@ class Server():
 
     def activate_the_shortcut_on_the_computer(self, data):
         action = data[0]
-        argument = data[2]
+        argument = data[1]
         os.system('python activate_shortcuts.py '+'"'+action+'" "'+argument+'"')
 
     def disconnect_client(self):
-        self.__client_socket.close_socket()
+        self.__client_socket.close()
 
     def close_server(self):
-        self.__server_socket.close_socket()
+        self.__server_socket.close()
 
 
 
@@ -128,7 +128,7 @@ class Client():
 
 #-------------------------------------------------------------------------------
     def close_client(self):
-        self.__client_socket.close_socket()
+        self.__client_socket.close()
 
 
 
