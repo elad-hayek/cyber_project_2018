@@ -25,6 +25,8 @@ WINDOWS_KEY_REPRESENTATION = 'LWin'
 CURRENT_SHORTCUTS_TEMPLATE = {'open folder': {}, 'open url': {}, 'open file': {}, 'open cmd': {}, 'open settings': {}}
 FILES_ENDING_COUNTER_TEMPLATE = {'folder': 0, 'url': 0, 'file': 0, 'cmd': 0, 'settings': 0}
 REMOTE_URL_ARGUMENT_REMARK = ' Please enter full url  example: www.google.com'
+REMOTE_FOLDER_ARGUMENT_REMARK = 'Enter path to folder'
+REMOTE_FILE_ARGUMENT_REMARK = 'Enter path to file'
 
 class Main(shortcut_menu_wx_skeleton.MainFrame):
     #constructor
@@ -126,7 +128,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def open_remote_folder(self):
-        self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice(), 'enter path to folder')
+        self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice(), REMOTE_FOLDER_ARGUMENT_REMARK)
         self.set_remote_computer_argument()
 
     def open_remote_url(self):
@@ -137,7 +139,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.set_remote_computer_argument()
 
     def open_remote_file(self):
-        self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice(), 'enter path to file')
+        self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice(), REMOTE_FILE_ARGUMENT_REMARK)
         self.set_remote_computer_argument()
 
     def no_needed_argument(self):
