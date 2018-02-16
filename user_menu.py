@@ -11,7 +11,7 @@ import pickle
 import subprocess
 #import threading
 
-SHORTCUTS_USER_DATA_FILE_NAME = 'user_data.json'
+
 ADDED_COMPUTERS_DATA_FILE_NAME = 'added_computers_data.json'
 SPECIAL_CHARACTERS_LIST = ['windows', 'alt', 'control', 'shift', 'space', 'backspace', 'enter']
 SHORTCUT_OPTIONS = ['open folder', 'open url', 'open file', 'open cmd', 'open settings']

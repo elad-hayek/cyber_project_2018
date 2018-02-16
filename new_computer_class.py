@@ -7,11 +7,14 @@ from subprocess import Popen, PIPE
 import re
 import socket
 import os
+import pickle
 
 
 MAC_REGULAR_EXPRESSION = '([a-fA-F0-9]{2}[:|\-]?){6}'
 IP_REGULAR_EXPRESSION = '192.168.1.(\d){1,3}'
 BROADCAST = 'ff:ff:ff:ff:ff:ff'
+ADDED_COMPUTERS_DATA_FILE_NAME = 'added_computers_data.json'
+
 
 SERVER_IP = '0.0.0.0'
 SERVER_LISTENING_PORT = 8820
@@ -21,6 +24,7 @@ CONNECTION_TYPE = [SERVER_LISTENING_PORT, SERVER_ACTING_PORT]
 
 class Server():
     def __init__(self, connection_type):
+        self.__saved_computer_list = {}
         self.__shortcut_builder = ShortCuts()
         self.__server_socket = Sockets()
         self.__client_socket = Sockets()
@@ -45,12 +49,25 @@ class Server():
     def pass_information_to_client(self, data):
         self.__server_socket.write_to_client(data, self.__client_socket)
 
+    def get_added_computers_previous_activity(self):
+        json_save_file = open(ADDED_COMPUTERS_DATA_FILE_NAME, 'r')
+        self.__saved_computer_list = pickle.load(json_save_file)
+
+    def save_added_computers_previous_activity(self):
+        json_save_file = open(ADDED_COMPUTERS_DATA_FILE_NAME, 'w')
+        pickle.dump(self.__saved_computer_list, json_save_file)
+        json_save_file.close()
+
     def make_the_shortcut_file(self, action, sequence, argument):
-        self.__shortcut_builder.get_user_previous_activity()
+        self.get_added_computers_previous_activity()
         self.__shortcut_builder.set_users_choice(action)
         self.__shortcut_builder.set_shortcut_sequence(sequence)
-        self.__shortcut_builder.write_new_shortcut(argument)
-        self.__shortcut_builder.save_user_activity()
+        argument = '1$$'+argument
+        self.__shortcut_builder.write_new_shortcut('My Computer', self.__saved_computer_list['My Computer'][1], self.__saved_computer_list['My Computer'][2], argument)
+        self.__saved_computer_list['My Computer'][1] = self.__shortcut_builder.get_current_shortcuts()
+        self.__saved_computer_list['My Computer'][2] = self.__shortcut_builder.get_file_ending_counter()
+        self.save_added_computers_previous_activity()
+
 
     def activate_the_shortcut_on_the_computer(self, data):
         action = data[0]
@@ -140,12 +157,14 @@ def main():
     #     client.send_request_to_the_server('open', 'a+f', 'google.com')
     #     print client.receive_information_from_the_server()
 
+    n = 0
     while 1:
-        server = Server(1)
-        server.receive_information_from_client()
+        server = Server(n)
+        a = server.receive_information_from_client()
+        print a
         server.pass_information_to_client('ok')
-
-        # server.make_the_shortcut_file(a[0], a[1], a[2])
+        if n == 0:
+            server.make_the_shortcut_file(a[0], a[1], a[2])
         server.disconnect_client()
         server.close_server()
 

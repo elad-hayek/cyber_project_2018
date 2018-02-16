@@ -216,8 +216,12 @@ class ShortCuts:
         """
 
         sequence_format_list = self.check_sequence_length()
-        if self.__computer_name == 'My Computer':
+        if self.__computer_name == 'My Computer' and not self.__remote_computer_activation:
             string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates[shortcut_name] % self.__argument.get_argument() + '\n}'
+
+        elif self.__computer_name == 'My Computer' and self.__remote_computer_activation:
+            string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates[shortcut_name] % self.__argument.get_argument().split('$$')[1] + '\n}'
+
         else:
             string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates['open connection to activate remote shortcut'].format(*self.__argument.get_argument().split('$$')) + '\n}'
         return string_to_write
