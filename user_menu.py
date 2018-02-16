@@ -9,7 +9,7 @@ import tkMessageBox
 from new_computer_class import Server, Client
 import pickle
 import subprocess
-import threading
+#import threading
 
 SHORTCUTS_USER_DATA_FILE_NAME = 'user_data.json'
 ADDED_COMPUTERS_DATA_FILE_NAME = 'added_computers_data.json'
@@ -47,9 +47,6 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def check_if_first_time(self):
-        pass
-        # if os.path.isfile(SHORTCUTS_USER_DATA_FILE_NAME):
-        #     self.__shortcuts_user.get_user_previous_activity()
         if os.path.isfile(ADDED_COMPUTERS_DATA_FILE_NAME):
             self.get_added_computers_previous_activity()
 
@@ -129,7 +126,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def open_remote_folder(self):
-        pass
+        self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice(), 'enter path to folder')
+        self.set_remote_computer_argument()
 
     def open_remote_url(self):
         self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice(), REMOTE_URL_ARGUMENT_REMARK)
@@ -139,7 +137,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.set_remote_computer_argument()
 
     def open_remote_file(self):
-        pass
+        self.__argument_functions.ask_text_from_user(self.__shortcuts_user.get_users_choice(), 'enter path to file')
+        self.set_remote_computer_argument()
 
     def no_needed_argument(self):
         print 'no argument needed'
