@@ -260,6 +260,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def add_shortcuts_to_shortcut_grid(self):
+        self.check_if_first_time()
         print self.__saved_computer_list
         row = 0
         for action in self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1]:
