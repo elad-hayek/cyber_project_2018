@@ -6,9 +6,10 @@ import shortcut_menu_wx_skeleton
 import os
 from Tkinter import *
 import tkMessageBox
-from new_computer_class import Server, Client
+from new_computer_class import Client
 import pickle
 import subprocess
+from create_server_bat_and_vbs_files import *
 #import threading
 
 
@@ -32,6 +33,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
     #constructor
     def __init__(self, parent):
         shortcut_menu_wx_skeleton.MainFrame.__init__(self, parent)
+        self.__open_servers = Create_bat_and_vbs_files()
         self.__shortcuts_user = ShortCuts()
         self.__client = Client()
         self.__row_selection_number = 0
