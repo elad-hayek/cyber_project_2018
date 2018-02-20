@@ -34,7 +34,7 @@ class MainFrame ( wx.Frame ):
 		self.show_current_shortcuts = wx.MenuItem( self.main_menu, wx.ID_ANY, u"Show Current Shortcuts", wx.EmptyString, wx.ITEM_NORMAL )
 		self.main_menu.AppendItem( self.show_current_shortcuts )
 		
-		self.add_new_computer_menu_bar = wx.MenuItem( self.main_menu, wx.ID_ANY, u"Add New Computer", wx.EmptyString, wx.ITEM_NORMAL )
+		self.add_new_computer_menu_bar = wx.MenuItem( self.main_menu, wx.ID_ANY, u"Manage Computers", wx.EmptyString, wx.ITEM_NORMAL )
 		self.main_menu.AppendItem( self.add_new_computer_menu_bar )
 		
 		self.main_menubar.Append( self.main_menu, u"Menu" ) 
@@ -64,7 +64,7 @@ class MainFrame ( wx.Frame ):
 		
 		main_panel_box_sizer.Add( self.current_shortcuts_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 25 )
 		
-		self.main_add_new_computer_button = wx.Button( self.main_panel, wx.ID_ANY, u"Add Computer", wx.DefaultPosition, wx.Size( 300,60 ), 0 )
+		self.main_add_new_computer_button = wx.Button( self.main_panel, wx.ID_ANY, u"Manage Computers", wx.DefaultPosition, wx.Size( 300,60 ), 0 )
 		self.main_add_new_computer_button.SetFont( wx.Font( 18, 74, 90, 90, False, "Arial" ) )
 		
 		main_panel_box_sizer.Add( self.main_add_new_computer_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 25 )
@@ -279,35 +279,71 @@ class MainFrame ( wx.Frame ):
 		current_shortcuts_sizer.Fit( self.current_shortcuts_panel )
 		main_box_sizer.Add( self.current_shortcuts_panel, 0, wx.EXPAND|wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 0 )
 		
-		self.add_new_computer_panel = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.add_new_computer_panel.SetBackgroundColour( wx.Colour( 113, 70, 95 ) )
-		self.add_new_computer_panel.Hide()
+		self.manage_computers_panel = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.manage_computers_panel.SetFont( wx.Font( 18, 74, 90, 90, False, "Arial" ) )
+		self.manage_computers_panel.SetBackgroundColour( wx.Colour( 113, 70, 95 ) )
+		self.manage_computers_panel.Hide()
+		
+		manage_computers_sizer = wx.GridSizer( 0, 2, 0, 0 )
 		
 		add_new_computer_sizer = wx.BoxSizer( wx.VERTICAL )
 		
-		self.add_new_computer_label = wx.StaticText( self.add_new_computer_panel, wx.ID_ANY, u"Select A Computer To Add", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.add_new_computer_label = wx.StaticText( self.manage_computers_panel, wx.ID_ANY, u"Select A Computer To Add", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.add_new_computer_label.Wrap( -1 )
 		self.add_new_computer_label.SetFont( wx.Font( 18, 74, 90, 90, False, "Arial" ) )
 		
 		add_new_computer_sizer.Add( self.add_new_computer_label, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.add_new_computer_list_control = wx.dataview.DataViewListCtrl( self.add_new_computer_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 300,250 ), wx.dataview.DV_HORIZ_RULES|wx.dataview.DV_ROW_LINES|wx.dataview.DV_VERT_RULES )
+		self.add_new_computer_list_control = wx.dataview.DataViewListCtrl( self.manage_computers_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 300,250 ), wx.dataview.DV_HORIZ_RULES|wx.dataview.DV_ROW_LINES|wx.dataview.DV_VERT_RULES )
 		self.add_new_computer_list_control.SetFont( wx.Font( 12, 74, 90, 90, False, "Arial" ) )
 		
 		self.new_computer_name_label = self.add_new_computer_list_control.AppendTextColumn( u"Name" )
 		self.new_computer_ip_label = self.add_new_computer_list_control.AppendTextColumn( u"IP" )
 		add_new_computer_sizer.Add( self.add_new_computer_list_control, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		self.add_new_computer_button = wx.Button( self.add_new_computer_panel, wx.ID_ANY, u"Add", wx.DefaultPosition, wx.Size( 100,50 ), 0 )
+		add_computers_buttons_sizer = wx.GridSizer( 0, 2, 0, 0 )
+		
+		self.search_computers_button = wx.Button( self.manage_computers_panel, wx.ID_ANY, u"Search Computers", wx.DefaultPosition, wx.Size( 180,50 ), 0 )
+		self.search_computers_button.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
+		
+		add_computers_buttons_sizer.Add( self.search_computers_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 20 )
+		
+		self.add_new_computer_button = wx.Button( self.manage_computers_panel, wx.ID_ANY, u"Add", wx.DefaultPosition, wx.Size( 100,50 ), 0 )
 		self.add_new_computer_button.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
 		
-		add_new_computer_sizer.Add( self.add_new_computer_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 20 )
+		add_computers_buttons_sizer.Add( self.add_new_computer_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 20 )
 		
 		
-		self.add_new_computer_panel.SetSizer( add_new_computer_sizer )
-		self.add_new_computer_panel.Layout()
-		add_new_computer_sizer.Fit( self.add_new_computer_panel )
-		main_box_sizer.Add( self.add_new_computer_panel, 1, wx.EXPAND |wx.ALL, 0 )
+		add_new_computer_sizer.Add( add_computers_buttons_sizer, 1, wx.EXPAND, 5 )
+		
+		
+		manage_computers_sizer.Add( add_new_computer_sizer, 1, wx.EXPAND, 5 )
+		
+		delete_computer_sizer = wx.BoxSizer( wx.VERTICAL )
+		
+		self.remove_computer_text = wx.StaticText( self.manage_computers_panel, wx.ID_ANY, u"Select A Computer To Delete", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.remove_computer_text.Wrap( -1 )
+		delete_computer_sizer.Add( self.remove_computer_text, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		
+		remove_computer_listboxChoices = []
+		self.remove_computer_listbox = wx.ListBox( self.manage_computers_panel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 300,250 ), remove_computer_listboxChoices, 0 )
+		self.remove_computer_listbox.SetFont( wx.Font( 12, 74, 90, 90, False, "Arial" ) )
+		
+		delete_computer_sizer.Add( self.remove_computer_listbox, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		
+		self.delete_computer_button = wx.Button( self.manage_computers_panel, wx.ID_ANY, u"Delete", wx.DefaultPosition, wx.Size( 100,50 ), 0 )
+		self.delete_computer_button.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
+		
+		delete_computer_sizer.Add( self.delete_computer_button, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 20 )
+		
+		
+		manage_computers_sizer.Add( delete_computer_sizer, 1, wx.EXPAND, 5 )
+		
+		
+		self.manage_computers_panel.SetSizer( manage_computers_sizer )
+		self.manage_computers_panel.Layout()
+		manage_computers_sizer.Fit( self.manage_computers_panel )
+		main_box_sizer.Add( self.manage_computers_panel, 1, wx.EXPAND|wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 0 )
 		
 		
 		self.SetSizer( main_box_sizer )
@@ -334,8 +370,11 @@ class MainFrame ( wx.Frame ):
 		self.delete_number_choice.Bind( wx.EVT_CHOICE, self.select_shortcut_to_delete )
 		self.delete_button.Bind( wx.EVT_BUTTON, self.delete_a_shortcut_from_the_grid )
 		self.delete_all_button.Bind( wx.EVT_BUTTON, self.delete_all_of_the_computer_shortcuts )
-		self.Bind( wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.choose_computer_name_and_ip, id = wx.ID_ANY )
+		self.Bind( wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.choose_computer_name_and_ip_to_add_to_list, id = wx.ID_ANY )
+		self.search_computers_button.Bind( wx.EVT_BUTTON, self.search_computers_in_network )
 		self.add_new_computer_button.Bind( wx.EVT_BUTTON, self.add_new_computer_to_the_list )
+		self.remove_computer_listbox.Bind( wx.EVT_LISTBOX, self.choose_computer_name_and_ip_to_remove_from_list )
+		self.delete_computer_button.Bind( wx.EVT_BUTTON, self.delete_computer_from_saved_list )
 	
 	def __del__( self ):
 		pass
@@ -390,10 +429,19 @@ class MainFrame ( wx.Frame ):
 	def delete_all_of_the_computer_shortcuts( self, event ):
 		event.Skip()
 	
-	def choose_computer_name_and_ip( self, event ):
+	def choose_computer_name_and_ip_to_add_to_list( self, event ):
+		event.Skip()
+	
+	def search_computers_in_network( self, event ):
 		event.Skip()
 	
 	def add_new_computer_to_the_list( self, event ):
+		event.Skip()
+	
+	def choose_computer_name_and_ip_to_remove_from_list( self, event ):
+		event.Skip()
+	
+	def delete_computer_from_saved_list( self, event ):
 		event.Skip()
 	
 

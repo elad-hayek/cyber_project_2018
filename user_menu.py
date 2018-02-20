@@ -39,14 +39,17 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__client = Client()
         self.__row_selection_number = 0
         self.__saved_computer_list = {'My Computer': [[], CURRENT_SHORTCUTS_TEMPLATE, FILES_ENDING_COUNTER_TEMPLATE]}
-        self.__computer_list_for_getting_user_selection = []
+        self.__add_computer_list_for_getting_user_selection = []
+        self.__remove_computer_list_for_getting_user_selection = []
         self.__computer_name_list = []
         self.__selected_computer_name = ''
+        self.__selected_computer_name_to_add = ''
+        self.__selected_computer_name_to_remove = ''
         self.__argument_functions = GetArgument()
         self.__remote_computer_argument = ''
         self.__current_shortcuts_selected_computer_name = 'My Computer'
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
-        self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False, 'new computer': False, 'remote argument': False, 'delete all': False}
+        self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False, 'new computer': False, 'remote argument': False, 'delete all': False, 'remove_computer': False}
         self.__shortcut_argument_activation = {'open folder': self.open_remote_folder, 'open url': self.open_remote_url, 'open file': self.open_remote_file, 'open cmd': self.no_needed_argument, 'open settings': self.no_needed_argument}
         self.check_if_first_time()
 
@@ -67,7 +70,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.new_shortcut_panel.Show()
         self.main_panel.Hide()
         self.current_shortcuts_panel.Hide()
-        self.add_new_computer_panel.Hide()
+        self.manage_computers_panel.Hide()
         self.new_shortcut_panel.GetSizer().Layout()
         self.new_shortcut_panel.GetParent().Layout()
 
@@ -249,7 +252,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
     def show_current_shortcut_panel(self):
         self.main_panel.Hide()
         self.new_shortcut_panel.Hide()
-        self.add_new_computer_panel.Hide()
+        self.manage_computers_panel.Hide()
         self.current_shortcuts_panel.Show()
         self.current_shortcuts_panel.GetSizer().Layout()
         self.current_shortcuts_panel.GetParent().Layout()
@@ -341,7 +344,11 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def delete_all_of_the_computer_shortcuts(self, event):
-        if self.delete_confirmation_from_user('Delete', DELETE_ALL_SHORTCUTS_CONFORMATION_MESSAGE):
+        if self.__input_status['remove_computer']:
+            conformation_result = self.delete_confirmation_from_user('Delete', 'Are You Sure You Want To Delete The Computer')
+        else:
+            conformation_result = self.delete_confirmation_from_user('Delete', DELETE_ALL_SHORTCUTS_CONFORMATION_MESSAGE)
+        if conformation_result:
             self.__input_status['delete all'] = True
             for shortcuts_number in range(self.__row_selection_number):
                 self.select_shortcut_to_delete(shortcuts_number+1)
@@ -374,28 +381,65 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #===============================================================================
     def show_add_new_computer_menu(self, event):
         self.show_add_new_computer_panel()
-        self.show_loading_screen()
-#-------------------------------------------------------------------------------
+        self.add_computer_information_to_the_remove_table()
 
+#-------------------------------------------------------------------------------
     def show_loading_screen(self):
         loading_screen = subprocess.Popen(['python', 'loading_screen.py'])
         self.__client.find_computers_in_the_network()
         self.add_computer_information_to_the_add_table()
         loading_screen.terminate()
 
+#-------------------------------------------------------------------------------
     def show_add_new_computer_panel(self):
         self.new_shortcut_panel.Hide()
         self.main_panel.Hide()
         self.current_shortcuts_panel.Hide()
-        self.add_new_computer_panel.Show()
-        self.add_new_computer_panel.GetSizer().Layout()
-        self.add_new_computer_panel.GetParent().Layout()
+        self.manage_computers_panel.Show()
+        self.manage_computers_panel.GetSizer().Layout()
+        self.manage_computers_panel.GetParent().Layout()
+
+#-------------------------------------------------------------------------------
+    def search_computers_in_network(self, event):
+        self.show_loading_screen()
+
+#-------------------------------------------------------------------------------
+    def add_computer_information_to_the_remove_table(self):
+        self.remove_computer_listbox.Set([])
+        self.__remove_computer_list_for_getting_user_selection = []
+        for computer_name in self.__saved_computer_list:
+            if computer_name != 'My Computer':
+                self.__remove_computer_list_for_getting_user_selection.append(computer_name)
+
+        for computer in self.__remove_computer_list_for_getting_user_selection:
+            # self.remove_computer_list_control.AppendItem(computer)
+            self.remove_computer_listbox.Set(self.__remove_computer_list_for_getting_user_selection)
+
+#-------------------------------------------------------------------------------
+    def delete_computer_from_saved_list(self, event):
+        self.__input_status['remove_computer'] = True
+        self.__current_shortcuts_selected_computer_name = self.__selected_computer_name_to_remove
+        self.delete_all_of_the_computer_shortcuts('')
+        self.__input_status['new computer'] = True  # update the new computer status so the choice list will update
+        self.__saved_computer_list.__delitem__(self.__selected_computer_name_to_remove)
+        self.save_added_computers_previous_activity()
+        self.__input_status['remove_computer'] = False
+        print self.__selected_computer_name_to_add
+
+#-------------------------------------------------------------------------------
+    def choose_computer_name_and_ip_to_remove_from_list(self, event):
+        print '#############################################'
+        # if self.__remove_computer_list_for_getting_user_selection[self.remove_computer_list_control.GetSelectedRow()][0]:
+        if self.__remove_computer_list_for_getting_user_selection[self.remove_computer_listbox.GetSelection()]:
+            self.__selected_computer_name_to_remove = self.__remove_computer_list_for_getting_user_selection[self.remove_computer_listbox.GetSelection()].title()
+
+        print self.__selected_computer_name_to_remove
 
 #-------------------------------------------------------------------------------
     def add_computer_information_to_the_add_table(self):
-        self.__computer_list_for_getting_user_selection = []
+        self.__add_computer_list_for_getting_user_selection = []
         for computer_name in self.__client.get_computer_information():
-            self.__computer_list_for_getting_user_selection.append([[computer_name, self.__client.get_computer_information()[computer_name][0]], self.__client.get_computer_information()[computer_name][1]])
+            self.__add_computer_list_for_getting_user_selection.append([[computer_name, self.__client.get_computer_information()[computer_name][0]], self.__client.get_computer_information()[computer_name][1]])
 
         saved_computers_mac_list = []
         for key in self.__saved_computer_list:
@@ -406,28 +450,29 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
         list_of_computers_to_remove = []
 
-        for computer in self.__computer_list_for_getting_user_selection:
+        for computer in self.__add_computer_list_for_getting_user_selection:
             if computer[1] not in saved_computers_mac_list:
                 self.add_new_computer_list_control.AppendItem(computer[0])
             else:
                 list_of_computers_to_remove.append(computer)
 
-        for computer in list_of_computers_to_remove:
-            self.__computer_list_for_getting_user_selection.remove(computer)
+        for computer in list_of_computers_to_remove:   # remove already saved computers from the name and ip from the arp questions
+            self.__add_computer_list_for_getting_user_selection.remove(computer)
 
 #-------------------------------------------------------------------------------
     def add_new_computer_to_the_list(self, event):
-        self.__saved_computer_list[self.__selected_computer_name] = [self.__client.get_computer_information()[self.__selected_computer_name], CURRENT_SHORTCUTS_TEMPLATE, FILES_ENDING_COUNTER_TEMPLATE]
+        self.__saved_computer_list[self.__selected_computer_name_to_add] = [self.__client.get_computer_information()[self.__selected_computer_name_to_add], CURRENT_SHORTCUTS_TEMPLATE, FILES_ENDING_COUNTER_TEMPLATE]
         self.save_added_computers_previous_activity()
         self.__input_status['new computer'] = True  # update the new computer status so the choice list will update
-        print self.__saved_computer_list
+        print self.__selected_computer_name_to_add
 
 #-------------------------------------------------------------------------------
-    def choose_computer_name_and_ip(self, event):
-        if self.__computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0]:
-            self.__selected_computer_name = self.__computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0][0].title()
+    def choose_computer_name_and_ip_to_add_to_list(self, event):
+        print '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
+        if self.__add_computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0]:
+            self.__selected_computer_name_to_add = self.__add_computer_list_for_getting_user_selection[self.add_new_computer_list_control.GetSelectedRow()][0][0].title()
 
-        print self.__selected_computer_name
+        print self.__selected_computer_name_to_add
 
 #-------------------------------------------------------------------------------
     def save_added_computers_previous_activity(self):
@@ -445,7 +490,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.main_panel.Show()
         self.current_shortcuts_panel.Hide()
         self.new_shortcut_panel.Hide()
-        self.add_new_computer_panel.Hide()
+        self.manage_computers_panel.Hide()
 
     def update_user_data(self, event):
         # self.__shortcuts_user.save_user_activity()
