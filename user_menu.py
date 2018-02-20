@@ -28,6 +28,7 @@ FILES_ENDING_COUNTER_TEMPLATE = {'folder': 0, 'url': 0, 'file': 0, 'cmd': 0, 'se
 REMOTE_URL_ARGUMENT_REMARK = ' Please enter full url  example: www.google.com'
 REMOTE_FOLDER_ARGUMENT_REMARK = 'Enter path to folder'
 REMOTE_FILE_ARGUMENT_REMARK = 'Enter path to file'
+DELETE_ALL_SHORTCUTS_CONFORMATION_MESSAGE = 'Are You Sure You Want To Delete All'
 
 class Main(shortcut_menu_wx_skeleton.MainFrame):
     #constructor
@@ -329,14 +330,24 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__input_status['row number to delete'] = False
 
 #-------------------------------------------------------------------------------
+    def delete_confirmation_from_user(self, conformation_title, conformation_message):
+        root = Tk()
+        root.withdraw()
+        result = tkMessageBox.askquestion(conformation_title, conformation_message, icon='warning')
+        if result == 'yes':
+            return True
+        else:
+            return False
+
+#-------------------------------------------------------------------------------
     def delete_all_of_the_computer_shortcuts(self, event):
-        self.__input_status['delete all'] = True
-        for shortcuts_number in range(self.__row_selection_number):
-            self.select_shortcut_to_delete(shortcuts_number+1)
-            self.delete_a_shortcut_from_the_grid('')
+        if self.delete_confirmation_from_user('Delete', DELETE_ALL_SHORTCUTS_CONFORMATION_MESSAGE):
+            self.__input_status['delete all'] = True
+            for shortcuts_number in range(self.__row_selection_number):
+                self.select_shortcut_to_delete(shortcuts_number+1)
+                self.delete_a_shortcut_from_the_grid('')
 
-        self.__input_status['delete all'] = False
-
+            self.__input_status['delete all'] = False
 
 #-------------------------------------------------------------------------------
     def get_computer_to_show_shortcuts(self, event):
