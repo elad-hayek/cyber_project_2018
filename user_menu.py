@@ -45,7 +45,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__remote_computer_argument = ''
         self.__current_shortcuts_selected_computer_name = 'My Computer'
         self.__selected_file_name_to_delete = {'file name': '', 'action': ''}
-        self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False, 'new computer': False, 'remote argument': False}
+        self.__input_status = {'sequence': False, 'action': False, 'row number to delete': False, 'new computer': False, 'remote argument': False, 'delete all': False}
         self.__shortcut_argument_activation = {'open folder': self.open_remote_folder, 'open url': self.open_remote_url, 'open file': self.open_remote_file, 'open cmd': self.no_needed_argument, 'open settings': self.no_needed_argument}
         self.check_if_first_time()
 
@@ -290,10 +290,15 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
                 self.delete_number_choice.Append(str(number + 1))
 
 #-------------------------------------------------------------------------------
-    def select_shortcut_to_delete(self, event):
+    def select_shortcut_to_delete(self, event, delete_all_row_number=0):
         print self.__row_selection_number
-        action = self.computer_shortcuts_grid.GetCellValue(self.delete_number_choice.GetSelection(), 0)
-        sequence = self.computer_shortcuts_grid.GetCellValue(self.delete_number_choice.GetSelection(), 2)
+        if not delete_all_row_number:
+            row_number_selected = delete_all_row_number
+        else:
+            row_number_selected = self.delete_number_choice.GetSelection()
+
+        action = self.computer_shortcuts_grid.GetCellValue(row_number_selected, 0)
+        sequence = self.computer_shortcuts_grid.GetCellValue(row_number_selected, 2)
         sequence = sequence.split('+')
         for file_name in self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action]:
             if self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1][action][file_name][1] == sequence:
@@ -311,15 +316,27 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
     def delete_a_shortcut_from_the_grid(self, event):
         self.check_if_row_number_to_delete_was_selected()
         print self.__input_status['row number to delete']
+        if self.__input_status['delete all']:
+            self.__input_status['row number to delete'] = True
         if self.__input_status['row number to delete']:
             self.__shortcuts_user.delete_shortcut(self.__selected_file_name_to_delete['action'], self.__selected_file_name_to_delete['file name'], self.__saved_computer_list[self.__current_shortcuts_selected_computer_name][1])
             self.save_added_computers_previous_activity()
             self.clear_shortcuts_grid()
             self.add_shortcuts_to_shortcut_grid()
             self.add_options_to_delete_list()
-            self.__input_status['row number to delete'] = False
         else:
             self.open_error_dialog(DELETE_BUTTON_ERROR)
+        self.__input_status['row number to delete'] = False
+
+#-------------------------------------------------------------------------------
+    def delete_all_of_the_computer_shortcuts(self, event):
+        self.__input_status['delete all'] = True
+        for shortcuts_number in range(self.__row_selection_number):
+            self.select_shortcut_to_delete(shortcuts_number+1)
+            self.delete_a_shortcut_from_the_grid('')
+
+        self.__input_status['delete all'] = False
+
 
 #-------------------------------------------------------------------------------
     def get_computer_to_show_shortcuts(self, event):
