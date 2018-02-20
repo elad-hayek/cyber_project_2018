@@ -205,10 +205,20 @@ class MainFrame ( wx.Frame ):
 		
 		choose_and_delete_sizer.Add( self.delete_number_choice, 0, wx.ALL, 5 )
 		
+		delete_buttons_sizer = wx.GridSizer( 0, 2, 0, 0 )
+		
 		self.delete_button = wx.Button( self.current_shortcuts_panel, wx.ID_ANY, u"Delete", wx.DefaultPosition, wx.Size( 150,50 ), 0 )
 		self.delete_button.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
 		
-		choose_and_delete_sizer.Add( self.delete_button, 0, wx.ALL, 10 )
+		delete_buttons_sizer.Add( self.delete_button, 0, wx.ALL, 10 )
+		
+		self.delete_all_button = wx.Button( self.current_shortcuts_panel, wx.ID_ANY, u"Delete All", wx.DefaultPosition, wx.Size( 150,50 ), 0 )
+		self.delete_all_button.SetFont( wx.Font( 14, 74, 90, 90, False, "Arial" ) )
+		
+		delete_buttons_sizer.Add( self.delete_all_button, 0, wx.ALL, 10 )
+		
+		
+		choose_and_delete_sizer.Add( delete_buttons_sizer, 1, wx.EXPAND, 5 )
 		
 		
 		current_shortcuts_sizer.Add( choose_and_delete_sizer, 1, wx.EXPAND, 5 )
@@ -323,6 +333,7 @@ class MainFrame ( wx.Frame ):
 		self.computer_choice.Bind( wx.EVT_CHOICE, self.get_computer_to_show_shortcuts )
 		self.delete_number_choice.Bind( wx.EVT_CHOICE, self.select_shortcut_to_delete )
 		self.delete_button.Bind( wx.EVT_BUTTON, self.delete_a_shortcut_from_the_grid )
+		self.delete_all_button.Bind( wx.EVT_BUTTON, self.delete_all_of_the_computer_shortcuts )
 		self.Bind( wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.choose_computer_name_and_ip, id = wx.ID_ANY )
 		self.add_new_computer_button.Bind( wx.EVT_BUTTON, self.add_new_computer_to_the_list )
 	
@@ -374,6 +385,9 @@ class MainFrame ( wx.Frame ):
 		event.Skip()
 	
 	def delete_a_shortcut_from_the_grid( self, event ):
+		event.Skip()
+	
+	def delete_all_of_the_computer_shortcuts( self, event ):
 		event.Skip()
 	
 	def choose_computer_name_and_ip( self, event ):
