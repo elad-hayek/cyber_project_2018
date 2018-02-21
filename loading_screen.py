@@ -2,6 +2,8 @@
 from Tkinter import *
 from PIL import Image, ImageTk
 
+GIF_FILE_NAME = 'loading.gif'
+
 class MyLabel(Label):
     def __init__(self, master, filename):
         im = Image.open(filename)
@@ -45,7 +47,7 @@ def main():
     root = Tk()
     root.overrideredirect(1)
     root.eval('tk::PlaceWindow %s center' % root.winfo_pathname(root.winfo_id()))
-    anim = MyLabel(root, 'loading.gif')
+    anim = MyLabel(root, GIF_FILE_NAME)
     anim.pack()
     root.mainloop()
 
