@@ -22,6 +22,8 @@ REMOTE_SERVER_CONNECTION_ERROR = 'There was a problem with the connection'
 SEQUENCE_ERROR = 'Not a legal sequence'
 ACTION_ERROR = 'Choose a action'
 DELETE_BUTTON_ERROR = 'Row number was not selected'
+COMPUTER_ALREADY_ADDED_ERROR = 'the computer was already added'
+NAME_IS_ALREADY_TAKEN_ERROR = 'The Name Is Already Used'
 WINDOWS_KEY_REPRESENTATION = 'LWin'
 CURRENT_SHORTCUTS_TEMPLATE = {'open folder': {}, 'open url': {}, 'open file': {}, 'open cmd': {}, 'open settings': {}}
 FILES_ENDING_COUNTER_TEMPLATE = {'folder': 0, 'url': 0, 'file': 0, 'cmd': 0, 'settings': 0}
@@ -29,7 +31,8 @@ REMOTE_URL_ARGUMENT_REMARK = ' Please enter full url  example: www.google.com'
 REMOTE_FOLDER_ARGUMENT_REMARK = 'Enter path to folder'
 REMOTE_FILE_ARGUMENT_REMARK = 'Enter path to file'
 DELETE_ALL_SHORTCUTS_CONFORMATION_MESSAGE = 'Are You Sure You Want To Delete All'
-DELETE_COMPUTER_INFORMATION_CONFORMATION_MESSAGE = 'Are You Sure You Want To Delete The Computer'
+DELETE_COMPUTER_INFORMATION_CONFORMATION_MESSAGE = 'Are You Sure You Want To Remove The Computer\nAll Of Its Data Will Be Erased'
+COMPUTER_NAME_CONFORMATION_FROM_USER_MESSAGE = 'Are You Sure\nThe Currnt Name Will Be Saved'
 
 class Main(shortcut_menu_wx_skeleton.MainFrame):
     #constructor
@@ -43,6 +46,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__add_computer_list_for_getting_user_selection = []
         self.__remove_computer_list_for_getting_user_selection = []
         self.__computer_name_list = []
+        self.__computer_mac_list = []
         self.__selected_computer_name = ''
         self.__selected_computer_name_to_add = ''
         self.__selected_computer_name_to_remove = ''
@@ -227,9 +231,11 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         root.withdraw()
         tkMessageBox.showerror("Error", error)
 
+    def get_saved_computers_name_list(self):
+        self.__computer_name_list = [key for key in self.__saved_computer_list.keys()]
 #-------------------------------------------------------------------------------
     def add_computers_to_choose_computer_list(self):
-        self.__computer_name_list = [key for key in self.__saved_computer_list.keys()]
+        self.get_saved_computers_name_list()
 
         if self.choose_computer_for_action.IsEmpty() or self.__input_status['computer status for write shortcuts']:
             self.choose_computer_for_action.Clear()
@@ -334,7 +340,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         self.__input_status['row number to delete'] = False
 
 #-------------------------------------------------------------------------------
-    def delete_confirmation_from_user(self, conformation_title, conformation_message):
+    def confirmation_from_user(self, conformation_title, conformation_message):
         root = Tk()
         root.withdraw()
         result = tkMessageBox.askquestion(conformation_title, conformation_message, icon='warning')
@@ -346,9 +352,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def delete_all_of_the_computer_shortcuts(self, event):
         if self.__input_status['remove_computer']:
-            conformation_result = self.delete_confirmation_from_user('Delete', DELETE_COMPUTER_INFORMATION_CONFORMATION_MESSAGE)
+            conformation_result = self.confirmation_from_user('Delete', DELETE_COMPUTER_INFORMATION_CONFORMATION_MESSAGE)
         else:
-            conformation_result = self.delete_confirmation_from_user('Delete', DELETE_ALL_SHORTCUTS_CONFORMATION_MESSAGE)
+            conformation_result = self.confirmation_from_user('Delete', DELETE_ALL_SHORTCUTS_CONFORMATION_MESSAGE)
         if conformation_result:
             self.__input_status['delete all'] = True
             for shortcuts_number in range(self.__row_selection_number):
@@ -367,7 +373,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 #-------------------------------------------------------------------------------
     def add_computers_to_computer_choice(self):
-        self.__computer_name_list = [key for key in self.__saved_computer_list.keys()]
+        self.get_saved_computers_name_list()
 
         if self.computer_choice.IsEmpty() or self.__input_status['computers status for current shortcuts']:
             self.computer_choice.Clear()
@@ -439,22 +445,26 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         print self.__selected_computer_name_to_remove
 
 #-------------------------------------------------------------------------------
+    def get_saved_computers_mac_list(self):
+        self.__computer_mac_list = []
+        for key in self.__saved_computer_list:
+            if key != 'My Computer':
+                self.__computer_mac_list.append(self.__saved_computer_list[key][0][1])
+
+#-------------------------------------------------------------------------------
     def add_computer_information_to_the_add_table(self):
         self.__add_computer_list_for_getting_user_selection = []
         for computer_name in self.__client.get_computer_information():
             self.__add_computer_list_for_getting_user_selection.append([[computer_name, self.__client.get_computer_information()[computer_name][0]], self.__client.get_computer_information()[computer_name][1]])
 
-        saved_computers_mac_list = []
-        for key in self.__saved_computer_list:
-            if key != 'My Computer':
-                saved_computers_mac_list.append(self.__saved_computer_list[key][0][1])
+        self.get_saved_computers_mac_list()
 
         self.add_new_computer_list_control.DeleteAllItems()
 
         list_of_computers_to_remove = []
 
         for computer in self.__add_computer_list_for_getting_user_selection:
-            if computer[1] not in saved_computers_mac_list:
+            if computer[1] not in self.__computer_mac_list:    # add computers that aren't saved already
                 self.add_new_computer_list_control.AppendItem(computer[0])
             else:
                 list_of_computers_to_remove.append(computer)
@@ -463,13 +473,36 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             self.__add_computer_list_for_getting_user_selection.remove(computer)
 
 #-------------------------------------------------------------------------------
+    def change_computer_name(self):
+        self.__argument_functions.ask_text_from_user('open Name')   # ask user to give name to computer
+        if self.__argument_functions.get_argument():       # check if user gave name
+            self.get_saved_computers_name_list()
+            name = self.__argument_functions.get_argument().title()
+            if name not in self.__computer_name_list:       # checks if the name is already taken
+                self.__argument_functions.set_argument('')
+                return name
+            else:
+                self.open_error_dialog(NAME_IS_ALREADY_TAKEN_ERROR)      # warns if the name is already used
+                self.__argument_functions.set_argument('')
+                return self.change_computer_name()
+        else:
+            if not self.confirmation_from_user('warning', COMPUTER_NAME_CONFORMATION_FROM_USER_MESSAGE):  # if not warn him and and use recursive function.
+                return self.change_computer_name()
+            else:
+                return self.__selected_computer_name_to_add
+
+#-------------------------------------------------------------------------------
     def add_new_computer_to_the_list(self, event):
-        self.__saved_computer_list[self.__selected_computer_name_to_add] = [self.__client.get_computer_information()[self.__selected_computer_name_to_add], CURRENT_SHORTCUTS_TEMPLATE, FILES_ENDING_COUNTER_TEMPLATE]
-        self.save_added_computers_previous_activity()
-        self.__input_status['computers status for current shortcuts'] = True  # update the new computer status so the choice list will update
-        self.__input_status['computer status for write shortcuts'] = True  # update the new computer status so the write new shortcuts computer list will update
-        self.add_computer_information_to_the_remove_table()
-        print self.__selected_computer_name_to_add
+        self.get_saved_computers_mac_list()
+        if self.__client.get_computer_information()[self.__selected_computer_name_to_add][1] not in self.__computer_mac_list:
+            self.__saved_computer_list[self.change_computer_name()] = [self.__client.get_computer_information()[self.__selected_computer_name_to_add], CURRENT_SHORTCUTS_TEMPLATE, FILES_ENDING_COUNTER_TEMPLATE]
+            self.save_added_computers_previous_activity()
+            self.__input_status['computers status for current shortcuts'] = True  # update the new computer status so the choice list will update
+            self.__input_status['computer status for write shortcuts'] = True  # update the new computer status so the write new shortcuts computer list will update
+            self.add_computer_information_to_the_remove_table()
+            print self.__selected_computer_name_to_add
+        else:
+            self.open_error_dialog(COMPUTER_ALREADY_ADDED_ERROR)
 
 #-------------------------------------------------------------------------------
     def choose_computer_name_and_ip_to_add_to_list(self, event):
