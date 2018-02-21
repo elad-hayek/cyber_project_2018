@@ -216,13 +216,10 @@ class ShortCuts:
         """
 
         sequence_format_list = self.check_sequence_length()
-        if self.__computer_name == 'My Computer' and not self.__remote_computer_activation:
+        if self.__computer_name == 'My Computer':   # for shortcuts written to my computer
             string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates[shortcut_name] % self.__argument.get_argument() + '\n}'
 
-        elif self.__computer_name == 'My Computer' and self.__remote_computer_activation:
-            string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates[shortcut_name] % self.__argument.get_argument().split('$$')[1] + '\n}'
-
-        else:
+        else:  # for shortcuts that the user wrote for remote computer
             string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates['open connection to activate remote shortcut'].format(*self.__argument.get_argument().split('$$')) + '\n}'
         return string_to_write
 
@@ -294,8 +291,8 @@ class ShortCuts:
         :type file_name = string
         """
         if self.__remote_computer_activation:
-            if self.__argument.get_argument().split('$$')[1] == '??':
-                 self.__argument.set_argument('')
+            if self.__argument.get_argument().split('$$')[1] == ';;':
+                self.__argument.set_argument('')
             else:
                 self.__argument.set_argument(self.__argument.get_argument().split('$$')[1])
         self.__current_shortcuts[shortcut_type][file_name] = (self.__argument.get_argument(), self.__shortcut_sequence, self.__shortcut_script_path)

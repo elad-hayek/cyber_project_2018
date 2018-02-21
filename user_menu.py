@@ -29,6 +29,7 @@ REMOTE_URL_ARGUMENT_REMARK = ' Please enter full url  example: www.google.com'
 REMOTE_FOLDER_ARGUMENT_REMARK = 'Enter path to folder'
 REMOTE_FILE_ARGUMENT_REMARK = 'Enter path to file'
 DELETE_ALL_SHORTCUTS_CONFORMATION_MESSAGE = 'Are You Sure You Want To Delete All'
+DELETE_COMPUTER_INFORMATION_CONFORMATION_MESSAGE = 'Are You Sure You Want To Delete The Computer'
 
 class Main(shortcut_menu_wx_skeleton.MainFrame):
     #constructor
@@ -150,7 +151,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
     def no_needed_argument(self):
         print 'no argument needed'
-        self.__argument_functions.set_argument('??')
+        self.__argument_functions.set_argument(';;')  # sets the argument to ;; because the hot key script will think its a remark
         self.set_remote_computer_argument()
 
     def set_remote_computer_argument(self):
@@ -345,7 +346,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #-------------------------------------------------------------------------------
     def delete_all_of_the_computer_shortcuts(self, event):
         if self.__input_status['remove_computer']:
-            conformation_result = self.delete_confirmation_from_user('Delete', 'Are You Sure You Want To Delete The Computer')
+            conformation_result = self.delete_confirmation_from_user('Delete', DELETE_COMPUTER_INFORMATION_CONFORMATION_MESSAGE)
         else:
             conformation_result = self.delete_confirmation_from_user('Delete', DELETE_ALL_SHORTCUTS_CONFORMATION_MESSAGE)
         if conformation_result:

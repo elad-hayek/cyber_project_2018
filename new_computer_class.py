@@ -62,7 +62,6 @@ class Server():
         self.get_added_computers_previous_activity()
         self.__shortcut_builder.set_users_choice(action)
         self.__shortcut_builder.set_shortcut_sequence(sequence)
-        argument = '1$$'+argument
         self.__shortcut_builder.write_new_shortcut('My Computer', self.__saved_computer_list['My Computer'][1], self.__saved_computer_list['My Computer'][2], argument)
         self.__saved_computer_list['My Computer'][1] = self.__shortcut_builder.get_current_shortcuts()
         self.__saved_computer_list['My Computer'][2] = self.__shortcut_builder.get_file_ending_counter()
