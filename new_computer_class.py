@@ -132,12 +132,15 @@ class Client():
 
 #-------------------------------------------------------------------------------
     def check_if_remote_server_is_on(self, server_ip, connection_type):
+        try:
             if self.connect_to_server(server_ip, CONNECTION_TYPE[connection_type]):
                 print 'connection was successful'
                 return True
             else:
                 print 'connection failed'
                 return False
+        except socket.error, e:
+            return False
 
 #-------------------------------------------------------------------------------
     def get_computer_information(self):

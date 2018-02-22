@@ -114,7 +114,6 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         else:
             return self.connect_to_server_and_pass_arguments()
 
-
 #-------------------------------------------------------------------------------
     def connect_to_server_and_pass_arguments(self):
         if self.__client.check_if_remote_server_is_on(self.__saved_computer_list[self.__selected_computer_name][0][0], 0):
@@ -389,6 +388,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 #===============================================================================
     def show_add_new_computer_menu(self, event):
         self.show_add_new_computer_panel()
+        self.add_new_computer_list_control.DeleteAllItems()
         self.add_computer_information_to_the_remove_table()
 
 #-------------------------------------------------------------------------------

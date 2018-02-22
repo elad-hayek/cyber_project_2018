@@ -18,9 +18,6 @@ def main():
     client.connect_to_server(ip, SERVER_ACTING_PORT)
     client.activate_the_shortcut_on_the_computer(action, argument)
 
-    with open('a.txt', 'w') as f:
-        f.write(client.receive_information_from_the_server())
-
     client.close_client()
 
 
