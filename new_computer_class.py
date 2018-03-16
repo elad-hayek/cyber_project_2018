@@ -8,6 +8,8 @@ import re
 import socket
 import os
 import pickle
+import copy
+from ast import literal_eval
 
 
 MAC_REGULAR_EXPRESSION = '([a-fA-F0-9]{2}[:|\-]?){6}'
@@ -118,16 +120,9 @@ class Client():
     def find_computers_in_the_network(self):
         arp_question = Popen(['python', 'get_ip_and_mac.py', BROADCAST], stdout=PIPE)
         result = arp_question.communicate()[0]
-        for addr in result.split():
-            self.__raw_computer_information.append([addr.split('$$')[0], addr.split('$$')[1]])
-
-        print self.__raw_computer_information
-        for computer in self.__raw_computer_information:
-            computer_name = socket.getfqdn(computer[0])
-            self.__computer_information[computer_name.title()] = computer
-
-        del self.__raw_computer_information[:]  # clear raw computer information
-                                                # ip and mac
+        print result
+        result = literal_eval(result)  # reverse the repr to dict
+        self.__computer_information = copy.deepcopy(result)
         print self.__computer_information
 
 #-------------------------------------------------------------------------------

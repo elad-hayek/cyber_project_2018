@@ -11,8 +11,8 @@ def main():
     mac = sys.argv[3]
 
     arp_question = Popen(['python', 'get_ip_and_mac.py', mac], stdout=PIPE)
-    result = arp_question.communicate()[0].strip()
-    ip = result.split('$$')[0]
+    result = arp_question.communicate()[0]
+    ip = result
 
     client = Client()
     client.connect_to_server(ip, SERVER_ACTING_PORT)
