@@ -3,6 +3,7 @@ import re
 import socket
 import threading
 
+
 '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'# *..:..:..:..:..:..'
 '([a-fA-F0-9]{2}[:|\-]?){6}'
 
@@ -10,6 +11,7 @@ IP_REGEX = '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
 MAC_REGEX = '([a-fA-F0-9]{2}[:|\-]?){6}'
 information_dict = {}
 list_counter = 0
+new_entry = True
 
 
 def scan_network():
@@ -34,8 +36,17 @@ def scan_network():
                     net_bios_name = information_list[1].title()
                     print(information_list)
 
-                information_dict[net_bios_name] = [ip_list[list_counter], mac_list[list_counter]]
+                for key in information_dict:
+                    if information_dict[key] == [ip_list[list_counter], mac_list[list_counter]]:
+                        global new_entry
+                        new_entry = False
+
+                if new_entry:
+                    information_dict[net_bios_name] = [ip_list[list_counter], mac_list[list_counter]]
                 list_counter += 1
+                new_entry = True
+
+    new_entry = True
     list_counter = 0
 
     print(information_dict)
