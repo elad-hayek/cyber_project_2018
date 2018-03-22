@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+"""
+Description:    connects the the main server and gets the computers' information
+                that are in the network.
+
+name:           Elad Hayek
+date:           22.3.18
+file name:      get_ip_and_mac.py
+"""
 
 from new_computer_class import Client
 import sys
@@ -7,6 +15,9 @@ from ast import literal_eval
 BROADCAST = 'ff:ff:ff:ff:ff:ff'
 
 def main():
+    """
+    connects the main server and returns the data
+    """
     mac = sys.argv[1]
     # mac = '54:35 d:30:99:13:95'
     # mac = BROADCAST
