@@ -809,6 +809,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
 
 def main():
+    """
+    opens the wx frame and runs the program
+    """
     app = wx.App(False)
 
     #create an object of CalcFrame
