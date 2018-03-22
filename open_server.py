@@ -13,6 +13,7 @@ file name:      open_server.py
 from new_computer_class import *
 import sys
 
+
 def main():
     """
     opens the server and passes the information for processing.
@@ -25,7 +26,9 @@ def main():
             shortcut_information = server.receive_information_from_client()
             server.pass_information_to_client('ok')
             if int(server_type) == 0:
-                server.make_the_shortcut_file(shortcut_information[0], shortcut_information[1], shortcut_information[2])
+                server.make_the_shortcut_file(shortcut_information[0],
+                                              shortcut_information[1],
+                                              shortcut_information[2])
             server.disconnect_client()
 
     except Exception, e:
