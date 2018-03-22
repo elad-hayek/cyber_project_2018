@@ -13,10 +13,9 @@ from subprocess import *
 from new_computer_class import *
 
 
-
 def main():
     """
-    gets the remote server ip address and sends it the relevant information
+    gets the remote server ip add
     """
     action = sys.argv[1]
     argument = sys.argv[2]
@@ -38,7 +37,6 @@ def main():
         f.write(client.receive_information_from_the_server())
 
     client.close_client()
-
 
 
 if __name__ == '__main__':
