@@ -12,6 +12,10 @@ def main():
     argument = sys.argv[2]
     mac = sys.argv[3]
 
+    # action = 'open cmd'
+    # argument = ';;'
+    # mac = '54:35:30:99:13:95'
+
     arp_question = Popen(['python', 'get_ip_and_mac.py', mac], stdout=PIPE)
     result = arp_question.communicate()[0]
     ip = result.strip()

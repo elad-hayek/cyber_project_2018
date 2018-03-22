@@ -193,6 +193,21 @@ class ShortCuts:
     def write_new_shortcut(self, computer_name, computer_current_shortcuts, computer_files_ending_counter, argument=''):
         """
         activate the correct shortcut function from the actions dictionary
+
+        :arg computer_name = the chosen computer name
+        :type computer_name = string
+
+        :arg computer_current_shortcuts = the dictionary with the computer
+        current shortcuts information.
+        :type computer_current_shortcuts = dictionary
+
+        :arg computer_files_ending_counter = the dictionary with the file ending
+        counters.
+        :type computer_files_ending_counter = dictionary
+
+        :arg argument = the remote argument that was added by user or added
+        remotely.
+        :type argument = string
         """
         if argument:
             self.__remote_computer_activation = True
@@ -242,7 +257,7 @@ class ShortCuts:
         return sequence_format_list
 #-------------------------------------------------------------------------------
 
-    def delete_shortcut(self, shortcut_type, file_name, computer_current_shortcut):
+    def delete_shortcut(self, shortcut_type, file_name, computer_current_shortcuts):
         """
         deletes a shortcut file and end it's process
 
@@ -251,8 +266,12 @@ class ShortCuts:
 
         :arg file_name = the shortcut file name
         :type file_name = string
+
+        :arg computer_current_shortcuts = the dictionary with the computer
+        current shortcuts information.
+        :type computer_current_shortcuts = dictionary
         """
-        self.__current_shortcuts = computer_current_shortcut
+        self.__current_shortcuts = computer_current_shortcuts
         file_to_delete = self.__current_shortcuts[shortcut_type][file_name][2]
         self.activate_ahk_files(CLOSE_PROCESS_BY_NAME_PATH, file_name)
         os.remove(file_to_delete)
@@ -330,6 +349,9 @@ class GetArgument:
 
         :arg action = the action the user chose
         :type action = string
+
+        :arg marks = additional marks for the user
+        :type marks = string
         """
 
         frame = wx.Frame(None, -1, action)
