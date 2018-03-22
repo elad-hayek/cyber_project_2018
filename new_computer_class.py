@@ -10,9 +10,7 @@ file name:      new_computer_class.py
 
 from socket_class import Sockets
 from shortcuts import ShortCuts
-import _multiprocessing
 from subprocess import Popen, PIPE
-import re
 import socket
 import os
 import pickle
@@ -44,17 +42,20 @@ class Server():
         self.__shortcut_builder = ShortCuts()
         self.__server_socket = Sockets()
         self.__client_socket = Sockets()
-        self.__server_socket.open_server(SERVER_IP, CONNECTION_TYPE[connection_type])
+        self.__server_socket.open_server(SERVER_IP, CONNECTION_TYPE[
+            connection_type])
         print 'server is up'
         self.connect_to_client()
 
-
+# -----------------------------------------------------------------------------
     def connect_to_client(self):
         """
         connects to client
         """
-        self.__client_socket, client_address = self.__server_socket.client_connection()
+        self.__client_socket, client_address =\
+            self.__server_socket.client_connection()
 
+# -----------------------------------------------------------------------------
     def receive_information_from_client(self):
         """
         receives data from the client and process it. If it's for the acting
@@ -69,12 +70,14 @@ class Server():
         else:
             return data.split('$$')
 
+# -----------------------------------------------------------------------------
     def pass_information_to_client(self, data):
         """
         sends information to the client
         """
         self.__server_socket.write_to_client(data, self.__client_socket)
 
+# -----------------------------------------------------------------------------
     def get_added_computers_previous_activity(self):
         """
         extracts data from the data file
@@ -82,6 +85,7 @@ class Server():
         json_save_file = open(ADDED_COMPUTERS_DATA_FILE_NAME, 'r')
         self.__saved_computer_list = pickle.load(json_save_file)
 
+# -----------------------------------------------------------------------------
     def save_added_computers_previous_activity(self):
         """
         saves data to the data file
@@ -90,6 +94,7 @@ class Server():
         pickle.dump(self.__saved_computer_list, json_save_file)
         json_save_file.close()
 
+# -----------------------------------------------------------------------------
     def make_the_shortcut_file(self, action, sequence, argument):
         """
         creates the remote shortcut locally
@@ -107,12 +112,16 @@ class Server():
         self.__shortcut_builder.set_users_choice(action)
         self.__shortcut_builder.set_shortcut_sequence(sequence)
         argument = '1$$'+argument  # adds 1$$ so the argument split will work
-        self.__shortcut_builder.write_new_shortcut('My Computer', self.__saved_computer_list['My Computer'][1], self.__saved_computer_list['My Computer'][2], argument)
-        self.__saved_computer_list['My Computer'][1] = self.__shortcut_builder.get_current_shortcuts()
-        self.__saved_computer_list['My Computer'][2] = self.__shortcut_builder.get_file_ending_counter()
+        self.__shortcut_builder.write_new_shortcut(
+            'My Computer', self.__saved_computer_list['My Computer'][1],
+            self.__saved_computer_list['My Computer'][2], argument)
+        self.__saved_computer_list['My Computer'][1] =\
+            self.__shortcut_builder.get_current_shortcuts()
+        self.__saved_computer_list['My Computer'][2] =\
+            self.__shortcut_builder.get_file_ending_counter()
         self.save_added_computers_previous_activity()
 
-
+# -----------------------------------------------------------------------------
     def activate_the_shortcut_on_the_computer(self, data):
         """
         actives the remote shortcut on the computer when the acting server gets
@@ -123,22 +132,22 @@ class Server():
         """
         action = data[0]
         argument = data[1]
-        os.system('python activate_shortcuts.py '+'"'+action+'" "'+argument+'"')
+        os.system(
+            'python activate_shortcuts.py '+'"'+action+'" "'+argument+'"')
 
+# -----------------------------------------------------------------------------
     def disconnect_client(self):
         """
         disconnects the client form the server
         """
         self.__client_socket.close()
 
+# -----------------------------------------------------------------------------
     def close_server(self):
         """
         closes the server
         """
         self.__server_socket.close()
-
-
-
 
 
 class Client():
@@ -150,7 +159,7 @@ class Client():
         self.__computer_information = {}
         self.__raw_computer_information = []
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def connect_to_server(self, ip, port):
         """
         connects to the server
@@ -168,7 +177,7 @@ class Client():
             print e
             return False
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def receive_information_from_the_server(self):
         """
         receives information from the server
@@ -176,7 +185,7 @@ class Client():
         data = self.__client_socket.read_from_server()
         return data
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def send_request_to_the_server(self, action, argument, sequence=' '):
         """
         sends a create new shortcut information
@@ -184,7 +193,7 @@ class Client():
         data_to_send = action+'$$'+sequence+'$$'+argument
         self.__client_socket.write_to_server(data_to_send)
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def activate_the_shortcut_on_the_computer(self, action, argument):
         """
         sends a activate shortcut information
@@ -192,19 +201,20 @@ class Client():
         data_to_send = action+'$$'+argument+'@@@'
         self.__client_socket.write_to_server(data_to_send)
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def find_computers_in_the_network(self):
         """
         finds all of the responsive computers on the network
         """
-        arp_question = Popen(['python', 'get_ip_and_mac.py', BROADCAST], stdout=PIPE)
+        arp_question = Popen(['python', 'get_ip_and_mac.py', BROADCAST],
+                             stdout=PIPE)
         result = arp_question.communicate()[0]
         print result
         result = literal_eval(result)  # reverse the repr to dict
         self.__computer_information = copy.deepcopy(result)
         print self.__computer_information
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def check_if_remote_server_is_on(self, server_ip, connection_type):
         """
         checks if the remote server is on
@@ -216,30 +226,29 @@ class Client():
         :type connection_type = int
         """
         try:
-            if self.connect_to_server(server_ip, CONNECTION_TYPE[connection_type]):
+            if self.connect_to_server(server_ip, CONNECTION_TYPE[
+                    connection_type]):
                 print 'connection was successful'
                 return True
             else:
                 print 'connection failed'
                 return False
-        except socket.error, e:
+        except socket.error:
             return False
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def get_computer_information(self):
         """
         returns the computer information from the main server
         """
         return self.__computer_information
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def close_client(self):
         """
         closes the client
         """
         self.__client_socket.close()
-
-
 
 
 def main():
@@ -259,8 +268,6 @@ def main():
             server.make_the_shortcut_file(a[0], a[1], a[2])
         server.disconnect_client()
         server.close_server()
-
-
 
 
 if __name__ == '__main__':
