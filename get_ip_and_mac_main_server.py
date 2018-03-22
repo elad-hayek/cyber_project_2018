@@ -1,10 +1,16 @@
+"""
+Description:    Searches the network for responsive computers and returns their
+                information
+
+name:           Elad Hayek
+date:           22.3.18
+file name:      get_ip_and_mac_main_server.py
+"""
+
 import os
 import re
 import socket
 import threading
-
-'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'# *..:..:..:..:..:..'
-'([a-fA-F0-9]{2}[:|\-]?){6}'
 
 IP_REGEX = '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
 MAC_REGEX = '([a-fA-F0-9]{2}[:|\-]?){6}'
@@ -13,6 +19,9 @@ list_counter = 0
 
 
 def scan_network():
+    """
+    scans the network for computers and finds their information
+    """
     arp_request = os.system('arp-scan 192.168.1.0/24 > arp_scan.txt')
     with open('arp_scan.txt', 'r') as arp_scan_file:
         data = arp_scan_file.read()
@@ -42,6 +51,9 @@ def scan_network():
 
 
 def run_network_scan():
+    """
+    runs the scan network function indefinitely
+    """
     while 1:
         scan_network()
 
