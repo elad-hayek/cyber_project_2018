@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Description:    creates a shortcut using AutoHotKey syntax. It creates a file
-                for each shortcut entry from the user and activates the process.
+                for each shortcut entry from the user and activates the
+                process.
                 It adds the shortcut to a database and saves it to a json file
                 for later retrieval. It also deletes shortcuts, checks argument
                 input and present a message accordingly.
@@ -24,7 +25,8 @@ CLOSE_PROCESS_BY_NAME_PATH = 'close_process.ahk'
 
 HOT_KEYS_PROGRAM_PATH = 'AutoHotkey.exe'
 
-SCRIPTS_PATH = r'C:\Users\%s\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup'
+SCRIPTS_PATH = r'C:\Users\%s\AppData\Roaming' \
+               r'\Microsoft\Windows\Start Menu\Programs\Startup'
 
 
 HOT_KEYS_TEMPLATE = """~*{5}::
@@ -47,19 +49,28 @@ class ShortCuts:
                                       'open settings': 'Run, control %s',
                                       'open cmd': 'Run, cmd %s',
                                       'open file': 'Run, %s',
-                                      'open connection to activate remote shortcut': 'Run, python activate_remote_data.py "{0}" "{1}" "{2}"'}
+                                      'open connection to activate'
+                                      ' remote shortcut':
+                                      'Run, python activate_remote_data.py'
+                                      ' "{0}" "{1}" "{2}"'}
 
-        self.__current_shortcuts = {'open folder': {}, 'open url': {}, 'open file': {},
-                                    'open cmd': {}, 'open settings': {}}
+        self.__current_shortcuts = {'open folder': {}, 'open url': {},
+                                    'open file': {}, 'open cmd': {},
+                                    'open settings': {}}
 
-        self.__files_ending_counter = {'folder': 0, 'url': 0, 'file': 0, 'cmd': 0, 'settings': 0}
+        self.__files_ending_counter = {'folder': 0, 'url': 0, 'file': 0,
+                                       'cmd': 0, 'settings': 0}
 
         self.__user_choice = ''
 
-        self.__shortcut_function_activation = {'open folder': self.open_folder, 'open url': self.open_url, 'open settings': self.open_settings, 'open cmd': self.open_cmd, 'open file': self.open_file}
+        self.__shortcut_function_activation = {'open folder': self.open_folder,
+                                               'open url': self.open_url,
+                                               'open settings':
+                                               self.open_settings,
+                                               'open cmd': self.open_cmd,
+                                               'open file': self.open_file}
 
-
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def open_folder(self):
         """
         uses the run_action_sequence_for_shortcut to open a folder shortcut
@@ -73,7 +84,7 @@ class ShortCuts:
             else:
                 self.run_action_sequence_for_shortcut('folder')
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def open_url(self):
         """
         uses the run_action_sequence_for_shortcut to open a URL shortcut
@@ -87,21 +98,22 @@ class ShortCuts:
             else:
                 self.run_action_sequence_for_shortcut('url')
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def open_settings(self):
         """
-        uses the run_action_sequence_for_shortcut to open a control panel shortcut
+        uses the run_action_sequence_for_shortcut to open a control panel
+        shortcut
         """
         self.run_action_sequence_for_shortcut('settings')
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def open_cmd(self):
         """
         uses the run_action_sequence_for_shortcut to open a cmd shortcut
         """
         self.run_action_sequence_for_shortcut('cmd')
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def open_file(self):
         """
         uses the run_action_sequence_for_shortcut to open a file shortcut
@@ -116,17 +128,18 @@ class ShortCuts:
                 self.run_action_sequence_for_shortcut('file')
 
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def get_shortcut_sequence(self):
         """
         returns the last entered shortcut sequence
         """
         return self.__shortcut_sequence
-#-------------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
     def set_remote_computer_activation_flag(self, state):
         self.__remote_computer_activation = state
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def set_users_choice(self, choice):
         """
         sets the users choice of action
@@ -136,14 +149,14 @@ class ShortCuts:
         """
         self.__user_choice = choice
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def get_users_choice(self):
         """
         returns the action the user chose
         """
         return self.__user_choice
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def set_shortcut_sequence(self, user_sequence):
         """
         sets the shortcut sequence
@@ -154,7 +167,7 @@ class ShortCuts:
         self.__shortcut_sequence = user_sequence
         self.__shortcut_sequence = self.__shortcut_sequence.split('+')
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def set_shortcut_argument(self, argument):
         """
         sets the user argument
@@ -164,17 +177,22 @@ class ShortCuts:
         """
         self.__argument.set_argument(argument)
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def run_action_sequence_for_shortcut(self, shortcut_type):
         """
-        run the series of action to create a shortcut file and activate the shortcut
+        run the series of action to create a shortcut file and activate the
+        shortcut
 
         :arg shortcut_type = the action the user chose
         :type shortcut_type = string
 
         """
-        self.__shortcut_script_path = SCRIPTS_PATH+'\\'+self.__computer_name+'_'+shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk'
-        self.__shortcut_script_path = self.__shortcut_script_path % getpass.getuser()
+        self.__shortcut_script_path =\
+            SCRIPTS_PATH+'\\'+self.__computer_name+'_'+shortcut_type+str(
+                self.__files_ending_counter[shortcut_type])+'.ahk'
+
+        self.__shortcut_script_path = self.__shortcut_script_path % getpass.\
+            getuser()
         print self.__shortcut_script_path
         ahk_file = open(self.__shortcut_script_path, 'w')
 
@@ -183,14 +201,17 @@ class ShortCuts:
 
         self.activate_ahk_files(self.__shortcut_script_path)
 
-        self.add_to_history('open '+shortcut_type, self.__computer_name+'_'+shortcut_type+str(self.__files_ending_counter[shortcut_type])+'.ahk')
+        self.add_to_history('open '+shortcut_type,
+                            self.__computer_name+'_'+shortcut_type+str(
+                                self.__files_ending_counter[
+                                    shortcut_type])+'.ahk')
 
         self.__files_ending_counter[shortcut_type] += 1
 
+# -----------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
-
-    def write_new_shortcut(self, computer_name, computer_current_shortcuts, computer_files_ending_counter, argument=''):
+    def write_new_shortcut(self, computer_name, computer_current_shortcuts,
+                           computer_files_ending_counter, argument=''):
         """
         activate the correct shortcut function from the actions dictionary
 
@@ -201,8 +222,8 @@ class ShortCuts:
         current shortcuts information.
         :type computer_current_shortcuts = dictionary
 
-        :arg computer_files_ending_counter = the dictionary with the file ending
-        counters.
+        :arg computer_files_ending_counter = the dictionary with the file
+        ending counters.
         :type computer_files_ending_counter = dictionary
 
         :arg argument = the remote argument that was added by user or added
@@ -214,13 +235,14 @@ class ShortCuts:
             self.set_shortcut_argument(argument)
         else:
             self.__remote_computer_activation = False
-        self.__files_ending_counter = copy.deepcopy(computer_files_ending_counter)
+        self.__files_ending_counter = copy.deepcopy(
+            computer_files_ending_counter)
         self.__current_shortcuts = copy.deepcopy(computer_current_shortcuts)
         self.__computer_name = computer_name
         self.__shortcut_function_activation[self.__user_choice]()
         self.set_shortcut_argument('')
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
     def write_to_file(self, shortcut_name):
         """
@@ -231,17 +253,29 @@ class ShortCuts:
         """
 
         sequence_format_list = self.check_sequence_length()
-        if self.__computer_name == 'My Computer' and not self.__remote_computer_activation:   # for shortcuts manually written by the user to my computer
-            string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates[shortcut_name] % self.__argument.get_argument() + '\n}'
+        if self.__computer_name == 'My Computer' and not\
+                self.__remote_computer_activation:
+                # for shortcuts manually written by the user to my computer
+            string_to_write = HOT_KEYS_TEMPLATE.format(
+                *sequence_format_list)+'\n{'+self.__shortcuts_templates[
+                    shortcut_name] % self.__argument.get_argument() + '\n}'
 
-        elif self.__computer_name == 'My Computer' and self.__remote_computer_activation:      # for shortcuts that been written remotely to my computer
-            string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates[shortcut_name] % self.__argument.get_argument().split('$$')[1] + '\n}'
+        elif self.__computer_name == 'My Computer' and\
+                self.__remote_computer_activation:
+                # for shortcuts that been written remotely to my computer
+            string_to_write = HOT_KEYS_TEMPLATE.format(
+                *sequence_format_list)+'\n{'+self.__shortcuts_templates[
+                    shortcut_name] % self.__argument.get_argument().split(
+                        '$$')[1] + '\n}'
 
         else:  # for shortcuts that the user wrote for remote computer
-            string_to_write = HOT_KEYS_TEMPLATE.format(*sequence_format_list)+'\n{'+ self.__shortcuts_templates['open connection to activate remote shortcut'].format(*self.__argument.get_argument().split('$$')) + '\n}'
+            string_to_write = HOT_KEYS_TEMPLATE.format(
+                *sequence_format_list)+'\n{'+self.__shortcuts_templates[
+                    'open connection to activate remote shortcut'].format(
+                        *self.__argument.get_argument().split('$$')) + '\n}'
         return string_to_write
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
     def check_sequence_length(self):
         """
@@ -249,15 +283,16 @@ class ShortCuts:
         """
         sequence_format_list = self.__shortcut_sequence[:]
 
-        # if the sequence is shorter than 6 fill the blanks with the last letter
+    # if the sequence is shorter than 6 fill the blanks with the last letter
         if len(sequence_format_list) < 6:
             for i in range(6-len(sequence_format_list)):
                 sequence_format_list.append(sequence_format_list[-1])
 
         return sequence_format_list
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
-    def delete_shortcut(self, shortcut_type, file_name, computer_current_shortcuts):
+    def delete_shortcut(self, shortcut_type, file_name,
+                        computer_current_shortcuts):
         """
         deletes a shortcut file and end it's process
 
@@ -276,7 +311,7 @@ class ShortCuts:
         self.activate_ahk_files(CLOSE_PROCESS_BY_NAME_PATH, file_name)
         os.remove(file_to_delete)
         self.__current_shortcuts[shortcut_type].__delitem__(file_name)
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
     def get_current_shortcuts(self):
         """
@@ -287,7 +322,7 @@ class ShortCuts:
     def get_file_ending_counter(self):
         return self.__files_ending_counter
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
     def activate_ahk_files(self, file_path, argument=''):
         """
@@ -300,7 +335,7 @@ class ShortCuts:
         :type argument = string
         """
         subprocess.Popen([HOT_KEYS_PROGRAM_PATH, file_path, argument])
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
     def add_to_history(self, shortcut_type, file_name):
         """
@@ -316,10 +351,14 @@ class ShortCuts:
             if self.__argument.get_argument().split('$$')[1] == ';;':
                 self.__argument.set_argument('')
             else:
-                self.__argument.set_argument(self.__argument.get_argument().split('$$')[1])
-        self.__current_shortcuts[shortcut_type][file_name] = (self.__argument.get_argument(), self.__shortcut_sequence, self.__shortcut_script_path)
+                self.__argument.set_argument(
+                    self.__argument.get_argument().split('$$')[1])
 
-#-------------------------------------------------------------------------------
+        self.__current_shortcuts[shortcut_type][file_name] = (
+            self.__argument.get_argument(), self.__shortcut_sequence,
+            self.__shortcut_script_path)
+
+# -----------------------------------------------------------------------------
     def save_user_activity(self):
         """
         saves the users shortcuts to a json file for later entry
@@ -329,7 +368,7 @@ class ShortCuts:
         pickle.dump(self.__files_ending_counter, json_save_file)
         json_save_file.close()
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def get_user_previous_activity(self):
         """
         retrieve the user information from the json file
@@ -342,7 +381,8 @@ class ShortCuts:
 class GetArgument:
     def __init__(self):
         self.___argument = ''
-#-------------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
     def ask_text_from_user(self, action, marks=''):
         """
         opens a text dialog for argument entry from user
@@ -358,7 +398,9 @@ class GetArgument:
         frame.SetDimensions(0, 0, 200, 50)
 
         # Create text input
-        dlg = wx.TextEntryDialog(frame, 'Enter '+action.split()[1].upper()+'\n'+marks, 'Text Entry')
+        dlg = wx.TextEntryDialog(frame,
+                                 'Enter '+action.split()[1].upper()+'\n'+marks,
+                                 'Text Entry')
         if dlg.ShowModal() == wx.ID_OK:
             self.___argument = dlg.GetValue()
             dlg.Destroy()
@@ -368,7 +410,7 @@ class GetArgument:
             dlg.Destroy()
             self.___argument = dlg.GetValue()
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def open_error_dialog(self, error):
         """
         opens an error message
@@ -380,36 +422,39 @@ class GetArgument:
         root.withdraw()
         tkMessageBox.showerror("Error", error)
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def choose_folder_manager(self):
         """
         opens a folders manager for the user to choose a folder
         """
         root = Tk()
         root.withdraw()
-        root.filename = tkFileDialog.askdirectory(mustexist=True, parent=root, initialdir='/', title='Select your pictures folder')
+        root.filename = tkFileDialog.askdirectory(mustexist=True, parent=root,
+                                                  initialdir='/',
+                                                  title='Select a folder')
         self.___argument = root.filename
         self.___argument = root.filename
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def choose_file_manager(self):
         """
         opens a files manager for the user to choose a file
         """
         root = Tk()
         root.withdraw()
-        root.filename = tkFileDialog.askopenfilename(initialdir="/", title="Select file")
+        root.filename = tkFileDialog.askopenfilename(initialdir="/",
+                                                     title="Select file")
         self.___argument = root.filename
         self.___argument = root.filename
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def get_argument(self):
         """
         returns the user chosen argument
         """
         return self.___argument
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
     def set_argument(self, argument):
         """
         sets the user argument
@@ -422,7 +467,6 @@ class GetArgument:
 
 def main():
     pass
-
 
 
 if __name__ == '__main__':
