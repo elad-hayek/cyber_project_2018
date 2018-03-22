@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Description:    creates the bat and vbs files that will activate the servers
-                every time the computer starts and does so hidden from the user.
+                every time the computer starts and does so hidden from the
+                user.
 
 name:           Elad Hayek
 date:           22.3.18
@@ -12,7 +13,9 @@ import os
 import getpass
 import subprocess
 
-CREATING_SCRIPTS_PATH = 'C:\\Users\\'+getpass.getuser()+'\\AppData\\Roaming\Microsoft\\Windows\\Start Menu\Programs\\Startup'
+CREATING_SCRIPTS_PATH =\
+    'C:\\Users\\'+getpass.getuser()+'\\AppData\\Roaming\Microsoft\\Windows\\' \
+                                    'Start Menu\Programs\\Startup'
 
 LISTENING_SERVER_BAT_SCRIPT = """
 @echo off
@@ -73,10 +76,10 @@ class Create_bat_and_vbs_files:
         """
         creates the listening server vbs file
         """
-        with open(CREATING_SCRIPTS_PATH+LISTENING_SERVER_VBS_SCRIPT_NAME, 'w') as vbs_file:
+        with open(CREATING_SCRIPTS_PATH+LISTENING_SERVER_VBS_SCRIPT_NAME, 'w')\
+                as vbs_file:
             vbs_file.write(LISTENING_SERVER_VBS_SCRIPT % os.getcwd())
         print 'created listening vbs'
-
 
     def create_acting_server_bat(self):
         """
@@ -90,7 +93,8 @@ class Create_bat_and_vbs_files:
         """
         creates the acting server vbs file
         """
-        with open(CREATING_SCRIPTS_PATH+ACTING_SERVER_VBS_SCRIPT_NAME, 'w') as vbs_file:
+        with open(CREATING_SCRIPTS_PATH+ACTING_SERVER_VBS_SCRIPT_NAME, 'w')\
+                as vbs_file:
             vbs_file.write(ACTING_SERVER_VBS_SCRIPT % os.getcwd())
         print 'created acting vbs'
 
@@ -105,8 +109,12 @@ class Create_bat_and_vbs_files:
         """
         activates the servers
         """
-        subprocess.Popen(['cscript.exe', CREATING_SCRIPTS_PATH+LISTENING_SERVER_VBS_SCRIPT_NAME])
+        subprocess.Popen([
+            'cscript.exe',
+            CREATING_SCRIPTS_PATH+LISTENING_SERVER_VBS_SCRIPT_NAME])
         print 'activated listening bat'
 
-        subprocess.Popen(['cscript.exe', CREATING_SCRIPTS_PATH+ACTING_SERVER_VBS_SCRIPT_NAME])
+        subprocess.Popen([
+            'cscript.exe',
+            CREATING_SCRIPTS_PATH+ACTING_SERVER_VBS_SCRIPT_NAME])
         print 'activated acting bat'
