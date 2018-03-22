@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+"""
+Description:    Opens the loading animation
+
+name:           Elad Hayek
+date:           22.3.18
+file name:      loading_screen.py
+"""
+
 from Tkinter import *
 from PIL import Image, ImageTk
 
@@ -6,6 +14,15 @@ GIF_FILE_NAME = 'loading.gif'
 
 class MyLabel(Label):
     def __init__(self, master, filename):
+        """
+        creates the animation
+
+        :arg master = the Tk main window
+        :type master = tk window
+
+        :arg filename = the gif file name
+        :type filename = string
+        """
         im = Image.open(filename)
         seq = []
         try:
@@ -36,6 +53,9 @@ class MyLabel(Label):
         self.cancel = self.after(self.delay, self.play)
 
     def play(self):
+        """
+        passes frame by frame to run the animation
+        """
         self.config(image=self.frames[self.idx])
         self.idx += 1
         if self.idx == len(self.frames):
@@ -44,6 +64,9 @@ class MyLabel(Label):
 
 
 def main():
+    """
+    calls MyLabel class and runs the animation
+    """
     root = Tk()
     root.overrideredirect(1)
     root.eval('tk::PlaceWindow %s center' % root.winfo_pathname(root.winfo_id()))
