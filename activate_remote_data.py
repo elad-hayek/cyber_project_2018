@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+"""
+Description:    receives information from a saved ahk file and sends the order
+                for a remote acting server
+
+name:           Elad Hayek
+date:           22.3.18
+file name:      activate_remote_data.py
+"""
 
 import sys
 from subprocess import *
@@ -7,7 +15,9 @@ from new_computer_class import *
 
 
 def main():
-
+    """
+    gets the remote server ip address and sends it the relevant information
+    """
     action = sys.argv[1]
     argument = sys.argv[2]
     mac = sys.argv[3]
