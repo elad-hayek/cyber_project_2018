@@ -127,7 +127,6 @@ class ShortCuts:
             else:
                 self.run_action_sequence_for_shortcut('file')
 
-
 # -----------------------------------------------------------------------------
     def get_shortcut_sequence(self):
         """
