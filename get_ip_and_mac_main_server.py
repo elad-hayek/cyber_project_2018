@@ -33,7 +33,7 @@ def scan_network():
         print(ip_list)
         for entry in ip_list:
             print(entry)
-            name_request = os.system('nbtscan '+ entry+' > name_request.txt')
+            name_request = os.system('nbtscan '+entry+' > name_request.txt')
             with open('name_request.txt', 'r') as name_request_file:
                 information = name_request_file.read().splitlines()
                 global list_counter
@@ -43,7 +43,8 @@ def scan_network():
                     net_bios_name = information_list[1].title()
                     print(information_list)
 
-                information_dict[net_bios_name] = [ip_list[list_counter], mac_list[list_counter]]
+                information_dict[net_bios_name] = [ip_list[list_counter],
+                                                   mac_list[list_counter]]
                 list_counter += 1
     list_counter = 0
 
@@ -73,4 +74,3 @@ try:
 except:
     print('error')
     server.close()
-
