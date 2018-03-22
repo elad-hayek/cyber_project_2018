@@ -18,7 +18,10 @@ class ActivateShortcuts():
         """
         self.__action = ''
         self.__argument = ''
-        self.__remote_shortcut_activation = {'open folder': self.open_folder, 'open url': self.open_url, 'open file': self.open_file, 'open cmd': self.open_cmd, 'open settings': self.open_settings}
+        self.__remote_shortcut_activation = {
+            'open folder': self.open_folder, 'open url': self.open_url,
+            'open file': self.open_file, 'open cmd': self.open_cmd,
+            'open settings': self.open_settings}
 
     def open_folder(self):
         """
@@ -79,7 +82,6 @@ def main():
     if sys.argv[2]:
         activate_shortcut.set_argument(sys.argv[2])
     activate_shortcut.activate_action()
-
 
 
 if __name__ == '__main__':
