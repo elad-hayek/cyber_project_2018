@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Description:    connects the the main server and gets the computers' information
-                that are in the network.
+Description:    connects the the main server and gets the computers'
+                information that are in the network.
 
 name:           Elad Hayek
 date:           22.3.18
@@ -13,6 +13,7 @@ import sys
 from ast import literal_eval
 
 BROADCAST = 'ff:ff:ff:ff:ff:ff'
+
 
 def main():
     """
@@ -32,9 +33,6 @@ def main():
             if mac in data[key]:
                 print data[key][0]
     client.close_client()
-
-
-
 
 
 if __name__ == '__main__':
