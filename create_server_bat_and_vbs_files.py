@@ -5,7 +5,7 @@ Description:    creates the bat and vbs files that will activate the servers
 
 name:           Elad Hayek
 date:           22.3.18
-file name:      new_computer_class.py
+file name:      create_server_bat_and_vbs_files.py
 """
 
 import os
