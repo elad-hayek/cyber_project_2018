@@ -973,8 +973,8 @@
                                             <event name="OnLeftDClick"></event>
                                             <event name="OnLeftDown"></event>
                                             <event name="OnLeftUp"></event>
-                                            <event name="OnListBox"></event>
-                                            <event name="OnListBoxDClick">add_special_key_to_the_sequence</event>
+                                            <event name="OnListBox">add_special_key_to_the_sequence</event>
+                                            <event name="OnListBoxDClick"></event>
                                             <event name="OnMiddleDClick"></event>
                                             <event name="OnMiddleDown"></event>
                                             <event name="OnMiddleUp"></event>

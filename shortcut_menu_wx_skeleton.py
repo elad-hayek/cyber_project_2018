@@ -378,7 +378,7 @@ class MainFrame ( wx.Frame ):
 		self.new_shortcut_button.Bind( wx.EVT_BUTTON, self.add_new_shortcut_menu )
 		self.current_shortcuts_button.Bind( wx.EVT_BUTTON, self.show_current_shortcuts_menu )
 		self.main_add_new_computer_button.Bind( wx.EVT_BUTTON, self.show_add_new_computer_menu )
-		self.special_keys_list.Bind( wx.EVT_LISTBOX_DCLICK, self.add_special_key_to_the_sequence )
+		self.special_keys_list.Bind( wx.EVT_LISTBOX, self.add_special_key_to_the_sequence )
 		self.choose_computer_for_action.Bind( wx.EVT_CHOICE, self.choose_a_computer_for_action )
 		self.shortcuts_choices.Bind( wx.EVT_CHOICE, self.save_user_choice )
 		self.sequence_text_control.Bind( wx.EVT_TEXT, self.check_sequence_input )
