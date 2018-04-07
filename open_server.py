@@ -24,6 +24,10 @@ def main():
         while 1:
             server.connect_to_client()
             shortcut_information = server.receive_information_from_client()
+
+            with open('server_received_information.txt', 'w') as f:
+                f.write(repr(shortcut_information))
+
             server.pass_information_to_client('ok')
             if int(server_type) == 0:
                 server.make_the_shortcut_file(shortcut_information[0],
@@ -32,7 +36,7 @@ def main():
             server.disconnect_client()
 
     except Exception, e:
-        with open('a.txt', 'w') as f:
+        with open('open_server_error.txt', 'w') as f:
             f.write(repr(e))
         server.close_server()
 
