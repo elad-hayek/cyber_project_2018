@@ -61,16 +61,16 @@ def run_network_scan():
 scan_network_thread = threading.Thread(target=run_network_scan)
 scan_network_thread.start()
 
+server = socket.socket()
+server.bind(('0.0.0.0', 8835))
+print('server is up')
 try:
-    server = socket.socket()
-    server.bind(('0.0.0.0', 8835))
-    print('server is up')
     while 1:
         server.listen(1)
         client, addr = server.accept()
         print('connected')
         client.send(repr(information_dict).encode())
         client.close()
-except:
-    print('error')
+except socket.error, e:
+    print(e)
     server.close()
