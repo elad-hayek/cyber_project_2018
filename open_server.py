@@ -12,6 +12,7 @@ file name:      open_server.py
 
 from new_computer_class import *
 import sys
+import os.path
 
 
 def main():
@@ -28,7 +29,16 @@ def main():
             with open('server_received_information.txt', 'w') as f:
                 f.write(repr(shortcut_information))
 
-            server.pass_information_to_client('ok')
+            if shortcut_information[0] == 'open folder' \
+                    or shortcut_information[0] == 'open file':
+                if not os.path.exists(shortcut_information[2]):
+                    server.pass_information_to_client('not found')
+                else:
+                    server.pass_information_to_client('ok')
+
+            else:
+                server.pass_information_to_client('ok')
+
             if int(server_type) == 0:
                 server.make_the_shortcut_file(shortcut_information[0],
                                               shortcut_information[1],

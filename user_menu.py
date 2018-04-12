@@ -208,7 +208,12 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
                     self.__shortcuts_user.get_users_choice(),
                     self.__remote_computer_argument.split('$$')[1], '+'.join(
                         self.__shortcuts_user.get_shortcut_sequence()))
-                print self.__client.receive_information_from_the_server()
+                if self.__client.receive_information_from_the_server() \
+                        == 'not found':
+                    self.open_error_dialog('Path not found')
+                    self.__client.close_client()
+                    self.__client = Client()
+                    return False
             self.__client.close_client()
             self.__client = Client()
             return True
