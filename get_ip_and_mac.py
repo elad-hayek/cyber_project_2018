@@ -23,7 +23,7 @@ def main():
     # mac = '54:35 d:30:99:13:95'
     # mac = BROADCAST
     client = Client()
-    client.connect_to_server('192.168.1.29', 8828)
+    client.connect_to_server('192.168.1.33', 8828)
     data = client.receive_information_from_the_server()
     data = literal_eval(data)
     if mac == BROADCAST:
