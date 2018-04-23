@@ -45,7 +45,6 @@ class Server():
         self.__server_socket.open_server(SERVER_IP, CONNECTION_TYPE[
             connection_type])
         print 'server is up'
-        self.connect_to_client()
 
 # -----------------------------------------------------------------------------
     def connect_to_client(self):
