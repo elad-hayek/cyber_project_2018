@@ -26,7 +26,7 @@ ADDED_COMPUTERS_DATA_FILE_NAME = 'added_computers_data.json'
 SPECIAL_CHARACTERS_LIST = ['windows', 'alt', 'control', 'shift', 'space',
                            'backspace', 'enter']
 SHORTCUT_OPTIONS = ['open folder', 'open url', 'open file', 'open cmd',
-                    'open settings']
+                    'open settings', 'shutdown']
 SHORTCUT_GRID_LABELS = {0: 'Action', 1: 'Argument', 2: 'Sequence'}
 CHOOSE_COMPUTER_ERROR = 'Choose a computer'
 REMOTE_SERVER_CONNECTION_ERROR = 'There was a problem with the connection'
@@ -38,9 +38,9 @@ NAME_IS_ALREADY_TAKEN_ERROR = 'The Name Is Already Used'
 WINDOWS_KEY_REPRESENTATION = 'LWin'
 CURRENT_SHORTCUTS_TEMPLATE = {'open folder': {}, 'open url': {},
                               'open file': {}, 'open cmd': {},
-                              'open settings': {}}
+                              'open settings': {}, 'shutdown': {}}
 FILES_ENDING_COUNTER_TEMPLATE = {'folder': 0, 'url': 0, 'file': 0, 'cmd': 0,
-                                 'settings': 0}
+                                 'settings': 0, 'shutdown': 0}
 REMOTE_URL_ARGUMENT_REMARK = ' Please enter full url  example: www.google.com'
 REMOTE_FOLDER_ARGUMENT_REMARK = 'Enter path to folder'
 REMOTE_FILE_ARGUMENT_REMARK = 'Enter path to file'
@@ -91,7 +91,8 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             'open url': self.open_remote_url,
             'open file': self.open_remote_file,
             'open cmd': self.no_needed_argument,
-            'open settings': self.no_needed_argument}
+            'open settings': self.no_needed_argument,
+            'shutdown': self.no_needed_argument}
         self.check_if_first_time()
 
 # -----------------------------------------------------------------------------

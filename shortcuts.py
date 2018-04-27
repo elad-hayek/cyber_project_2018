@@ -33,6 +33,7 @@ HOT_KEYS_TEMPLATE = """~*{5}::
 if GetKeyState("{0}") & GetKeyState("{1}") & GetKeyState("{2}")
  & GetKeyState("{3}")& GetKeyState("{4}")"""
 
+ACTIONS_WITHOUT_OPEN = ['shutdown']
 
 class ShortCuts:
     def __init__(self):
@@ -41,10 +42,12 @@ class ShortCuts:
         """
         self.__argument = GetArgument()
         self.__remote_computer_activation = False
+        self.__add_open = 'open '
         self.__shortcut_sequence = ''
         self.__computer_name = ''
         self.__shortcut_script_path = ''
-        self.__shortcuts_templates = {'open folder': 'Run, %s',
+        self.__shortcuts_templates = {'shutdown': 'Shutdown, 1 %s',
+                                      'open folder': 'Run, %s',
                                       'open url': 'Run, chrome.exe %s',
                                       'open settings': 'Run, control %s',
                                       'open cmd': 'Run, cmd %s',
@@ -56,10 +59,10 @@ class ShortCuts:
 
         self.__current_shortcuts = {'open folder': {}, 'open url': {},
                                     'open file': {}, 'open cmd': {},
-                                    'open settings': {}}
+                                    'open settings': {}, 'shutdown': {}}
 
         self.__files_ending_counter = {'folder': 0, 'url': 0, 'file': 0,
-                                       'cmd': 0, 'settings': 0}
+                                       'cmd': 0, 'settings': 0, 'shutdown': 0}
 
         self.__user_choice = ''
 
@@ -68,7 +71,15 @@ class ShortCuts:
                                                'open settings':
                                                self.open_settings,
                                                'open cmd': self.open_cmd,
-                                               'open file': self.open_file}
+                                               'open file': self.open_file,
+                                               'shutdown': self.shutdown}
+
+# -----------------------------------------------------------------------------
+    def shutdown(self):
+        """
+        uses the run_action_sequence_for_shortcut to shutdown the computer
+        """
+        self.run_action_sequence_for_shortcut('shutdown')
 
 # -----------------------------------------------------------------------------
     def open_folder(self):
@@ -195,17 +206,20 @@ class ShortCuts:
         print self.__shortcut_script_path
         ahk_file = open(self.__shortcut_script_path, 'w')
 
-        ahk_file.write(self.write_to_file('open '+shortcut_type))
+        if shortcut_type in ACTIONS_WITHOUT_OPEN:
+            self.__add_open = ''
+        ahk_file.write(self.write_to_file(self.__add_open+shortcut_type))
         ahk_file.close()
 
         self.activate_ahk_files(self.__shortcut_script_path)
 
-        self.add_to_history('open '+shortcut_type,
+        self.add_to_history(self.__add_open+shortcut_type,
                             self.__computer_name+'_'+shortcut_type+str(
                                 self.__files_ending_counter[
                                     shortcut_type])+'.ahk')
 
         self.__files_ending_counter[shortcut_type] += 1
+        self.__add_open = 'open '
 
 # -----------------------------------------------------------------------------
 
