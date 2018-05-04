@@ -552,14 +552,20 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
 
         action = self.computer_shortcuts_grid.GetCellValue(
             row_number_selected, 0)
+        argument = self.computer_shortcuts_grid.GetCellValue(
+            row_number_selected, 1)
         sequence = self.computer_shortcuts_grid.GetCellValue(
             row_number_selected, 2)
+
         sequence = sequence.split('+')
         for file_name in self.__saved_computer_list[
                 self.__current_shortcuts_selected_computer_name][1][action]:
             if self.__saved_computer_list[
                 self.__current_shortcuts_selected_computer_name][1][
-                    action][file_name][1] == sequence:
+                    action][file_name][1] == sequence and \
+                    self.__saved_computer_list[
+                        self.__current_shortcuts_selected_computer_name][1][
+                    action][file_name][0] == argument:
                 self.__selected_file_name_to_delete['file name'] = file_name
                 self.__selected_file_name_to_delete['action'] = action
                 print self.__selected_file_name_to_delete
