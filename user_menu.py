@@ -544,10 +544,11 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         :type = int
         """
         print self.__row_selection_number
-        if not delete_all_row_number:
+        if self.__input_status['delete all']:
             row_number_selected = delete_all_row_number
         else:
             row_number_selected = self.delete_number_choice.GetSelection()
+            print row_number_selected
 
         action = self.computer_shortcuts_grid.GetCellValue(
             row_number_selected, 0)
@@ -635,7 +636,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         if conformation_result:
             self.__input_status['delete all'] = True
             for shortcuts_number in range(self.__row_selection_number):
-                self.select_shortcut_to_delete(shortcuts_number+1)
+                self.select_shortcut_to_delete('')
                 self.delete_a_shortcut_from_the_grid('')
 
             self.__input_status['delete all'] = False
