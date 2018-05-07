@@ -11,6 +11,20 @@ file name:      activate_remote_data.py
 import sys
 from subprocess import *
 from new_computer_class import *
+import linecache
+
+def print_exception():
+    """
+    return an extended description of the error
+    """
+    exc_type, exc_obj, tb = sys.exc_info()
+    f = tb.tb_frame
+    lineno = tb.tb_lineno
+    filename = f.f_code.co_filename
+    linecache.checkcache(filename)
+    line = linecache.getline(filename, lineno, f.f_globals)
+    return 'EXCEPTION IN ({}, LINE {} "{}"): {}'.format(
+        filename, lineno, line.strip(), exc_obj)
 
 
 def main():
@@ -30,13 +44,15 @@ def main():
     ip = result.strip()
 
     client = Client()
-    client.connect_to_server(ip, SERVER_ACTING_PORT)
-    client.activate_the_shortcut_on_the_computer(action, argument)
+    try:
+        client.connect_to_server(ip, SERVER_ACTING_PORT)
+        client.activate_the_shortcut_on_the_computer(action, argument)
 
-    with open('activate_remote_data_response.txt', 'w') as f:
-        f.write(client.receive_information_from_the_server())
+    except socket.error:
+        with open('acting client error.txt', 'w') as f:
+            f.write(print_exception())
 
-    client.close_client()
+        client.close_client()
 
 
 if __name__ == '__main__':
