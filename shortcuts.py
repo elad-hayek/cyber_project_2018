@@ -33,7 +33,8 @@ HOT_KEYS_TEMPLATE = """~*{5}::
 if GetKeyState("{0}") & GetKeyState("{1}") & GetKeyState("{2}")
  & GetKeyState("{3}")& GetKeyState("{4}")"""
 
-ACTIONS_WITHOUT_OPEN = ['shutdown']
+ACTIONS_WITHOUT_OPEN = ['shutdown', 'restart']
+
 
 class ShortCuts:
     def __init__(self):
@@ -46,7 +47,8 @@ class ShortCuts:
         self.__shortcut_sequence = ''
         self.__computer_name = ''
         self.__shortcut_script_path = ''
-        self.__shortcuts_templates = {'shutdown': 'Shutdown, 1 %s',
+        self.__shortcuts_templates = {'restart': 'Shutdown, 2 %s',
+                                      'shutdown': 'Shutdown, 1 %s',
                                       'open folder': 'Run, %s',
                                       'open url': 'Run, chrome.exe %s',
                                       'open settings': 'Run, control %s',
@@ -59,10 +61,12 @@ class ShortCuts:
 
         self.__current_shortcuts = {'open folder': {}, 'open url': {},
                                     'open file': {}, 'open cmd': {},
-                                    'open settings': {}, 'shutdown': {}}
+                                    'open settings': {}, 'shutdown': {},
+                                    'restart': {}}
 
         self.__files_ending_counter = {'folder': 0, 'url': 0, 'file': 0,
-                                       'cmd': 0, 'settings': 0, 'shutdown': 0}
+                                       'cmd': 0, 'settings': 0, 'shutdown': 0,
+                                       'restart': 0}
 
         self.__user_choice = ''
 
@@ -72,7 +76,14 @@ class ShortCuts:
                                                self.open_settings,
                                                'open cmd': self.open_cmd,
                                                'open file': self.open_file,
-                                               'shutdown': self.shutdown}
+                                               'shutdown': self.shutdown,
+                                               'restart': self.restart}
+
+    def restart(self):
+        """
+        uses the run_action_sequence_for_shortcut to restart the computer
+        """
+        self.run_action_sequence_for_shortcut('restart')
 
 # -----------------------------------------------------------------------------
     def shutdown(self):

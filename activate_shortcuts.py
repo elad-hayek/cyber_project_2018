@@ -21,7 +21,14 @@ class ActivateShortcuts():
         self.__remote_shortcut_activation = {
             'open folder': self.open_folder, 'open url': self.open_url,
             'open file': self.open_file, 'open cmd': self.open_cmd,
-            'open settings': self.open_settings, 'shutdown': self.shutdown}
+            'open settings': self.open_settings, 'shutdown': self.shutdown,
+            'restart': self.restart}
+
+    def restart(self):
+        """
+        restarts the computer
+        """
+        os.system('shutdown -r')
 
     def shutdown(self):
         """
