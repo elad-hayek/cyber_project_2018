@@ -17,7 +17,7 @@ from Tkinter import *
 import tkMessageBox
 from new_computer_class import Client
 import pickle
-import subprocess
+from subprocess import *
 from create_server_bat_and_vbs_files import *
 # import threading
 
@@ -201,9 +201,14 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         connects the remote server and passes the shortcut information for the
         creation of a remote shortcut.
         """
-        if self.__client.check_if_remote_server_is_on(
-                self.__saved_computer_list[
-                    self.__selected_computer_name][0][0], 0):
+        arp_question = Popen(['python', 'get_ip_and_mac.py',
+                              self.__saved_computer_list[
+                                  self.__selected_computer_name][0][1]],
+                             stdout=PIPE)
+        result = arp_question.communicate()[0]
+        ip = result.strip()
+        print ip
+        if self.__client.check_if_remote_server_is_on(ip, 0):
             self.__input_status['remote argument'] = True
             self.get_argument_from_server()
             if self.__argument_functions.get_argument():
