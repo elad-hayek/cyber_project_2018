@@ -158,6 +158,12 @@ class ShortCuts:
 
 # -----------------------------------------------------------------------------
     def set_remote_computer_activation_flag(self, state):
+        """
+        sets the remote activation flag to true or false
+
+        :arg state = the state of the flag (true or false)
+        :type state = bool
+        """
         self.__remote_computer_activation = state
 
 # -----------------------------------------------------------------------------
