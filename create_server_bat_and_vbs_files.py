@@ -66,13 +66,6 @@ class Create_bat_and_vbs_files:
             self.create_acting_server_bat()
             self.create_acting_server_vbs()
             self.activate_servers()
-            self.copy_the_autohotkey_program_to_startup()
-
-    def copy_the_autohotkey_program_to_startup(self):
-        """
-        copy the autohotkey program to the startup folder
-        """
-        shutil.copy2(AUTOHOTKEY_PROGRAM_PATH, CREATING_SCRIPTS_PATH)
 
     def crate_listening_server_bat(self):
         """
