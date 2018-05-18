@@ -13,6 +13,8 @@ import sys
 from ast import literal_eval
 
 BROADCAST = 'ff:ff:ff:ff:ff:ff'
+SERVER_IP = '192.168.1.53'
+SERVER_PORT = 8840
 
 
 def main():
@@ -23,7 +25,7 @@ def main():
     # mac = '54:35 d:30:99:13:95'
     # mac = BROADCAST
     client = Client()
-    client.connect_to_server('192.168.1.53', 8840)
+    client.connect_to_server(SERVER_IP, SERVER_PORT)
     data = client.receive_information_from_the_server()
     data = literal_eval(data)
     if mac == BROADCAST:
