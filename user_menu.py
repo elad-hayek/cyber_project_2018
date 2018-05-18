@@ -105,6 +105,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         """
         if os.path.isfile(ADDED_COMPUTERS_DATA_FILE_NAME):
             self.get_added_computers_previous_activity()
+        else:
+            with open(ADDED_COMPUTERS_DATA_FILE_NAME, 'w') as f:
+                pass
 
 # -----------------------------------------------------------------------------
     def add_new_shortcut_menu(self, event):
