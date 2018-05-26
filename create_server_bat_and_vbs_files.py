@@ -12,7 +12,6 @@ file name:      create_server_bat_and_vbs_files.py
 import os
 import getpass
 import subprocess
-import shutil
 
 AUTOHOTKEY_PROGRAM_PATH = 'AutoHotKey.exe'
 
