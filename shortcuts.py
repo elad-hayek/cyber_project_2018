@@ -29,7 +29,8 @@ SCRIPTS_PATH = r'C:\Users\%s\AppData\Roaming' \
                r'\Microsoft\Windows\Start Menu\Programs\Startup'
 
 
-HOT_KEYS_TEMPLATE = """~*{5}::
+HOT_KEYS_TEMPLATE = """#NoTrayIcon
+~*{5}::
 if GetKeyState("{0}") & GetKeyState("{1}") & GetKeyState("{2}")
  & GetKeyState("{3}")& GetKeyState("{4}")"""
 
