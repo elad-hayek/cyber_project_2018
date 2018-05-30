@@ -350,7 +350,11 @@ class ShortCuts:
         """
         return self.__current_shortcuts
 
+# -----------------------------------------------------------------------------
     def get_file_ending_counter(self):
+        """
+        returns the files ending counters dictionary
+        """
         return self.__files_ending_counter
 
 # -----------------------------------------------------------------------------
@@ -388,25 +392,6 @@ class ShortCuts:
         self.__current_shortcuts[shortcut_type][file_name] = (
             self.__argument.get_argument(), self.__shortcut_sequence,
             self.__shortcut_script_path)
-
-# -----------------------------------------------------------------------------
-    def save_user_activity(self):
-        """
-        saves the users shortcuts to a json file for later entry
-        """
-        json_save_file = open('user_data.json', 'w')
-        pickle.dump(self.__current_shortcuts, json_save_file)
-        pickle.dump(self.__files_ending_counter, json_save_file)
-        json_save_file.close()
-
-# -----------------------------------------------------------------------------
-    def get_user_previous_activity(self):
-        """
-        retrieve the user information from the json file
-        """
-        json_save_file = open('user_data.json', 'r')
-        self.__current_shortcuts = pickle.load(json_save_file)
-        self.__files_ending_counter = pickle.load(json_save_file)
 
 
 class GetArgument:

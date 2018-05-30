@@ -496,6 +496,7 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         """
         adds shortcuts to the shortcut grid from the saved data
         """
+        self.get_added_computers_previous_activity()
         print self.__saved_computer_list
         row = 0
         for action in self.__saved_computer_list[

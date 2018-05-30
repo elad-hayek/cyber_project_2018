@@ -13,8 +13,8 @@ import sys
 from ast import literal_eval
 
 BROADCAST = 'ff:ff:ff:ff:ff:ff'
-SERVER_IP = '192.168.1.53'
-SERVER_PORT = 8840
+SERVER_IP = '192.168.1.30'
+SERVER_PORT = 8835
 
 
 def main():
