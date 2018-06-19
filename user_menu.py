@@ -397,6 +397,9 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         elif self.sequence_text_control.GetValue()[-1] == '+':
             self.__input_status['sequence'] = False
 
+        elif '' in sequence:
+            self.__input_status['sequence'] = False
+
         else:
             for sequence_entry in sequence:
                 if len(sequence_entry) > 1:
