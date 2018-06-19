@@ -35,6 +35,8 @@ ACTION_ERROR = 'Choose a action'
 DELETE_BUTTON_ERROR = 'Row number was not selected'
 COMPUTER_ALREADY_ADDED_ERROR = 'the computer was already added'
 NAME_IS_ALREADY_TAKEN_ERROR = 'The Name Is Already Used'
+NAME_MUST_BE_ENGLISH_ERROR = 'Name must be in english'
+INFORMATION_MUST_BE_IN_ENGLISH_ERROR = 'All information must be in english'
 WINDOWS_KEY_REPRESENTATION = 'LWin'
 CURRENT_SHORTCUTS_TEMPLATE = {'open folder': {}, 'open url': {},
                               'open file': {}, 'open cmd': {},
@@ -143,39 +145,41 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         :arg event = the event from clicking the add new shortcut button
         :type event = wx._core.CommandEvent
         """
-        print '+'.join(self.__shortcuts_user.get_shortcut_sequence()),\
-            '---sequence---'
-        print self.__selected_computer_name, '---computer---'
+        try:
+            print '+'.join(self.__shortcuts_user.get_shortcut_sequence()),\
+                '---sequence---'
+            print self.__selected_computer_name, '---computer---'
 
-        if self.__input_status['sequence'] and self.__input_status['action'] \
-                and self.__selected_computer_name:
-            if self.check_what_computer_was_chosen():
-                self.__shortcuts_user.write_new_shortcut(
-                    self.__selected_computer_name, self.__saved_computer_list[
-                        self.__selected_computer_name][1],
-                    self.__saved_computer_list[
-                        self.__selected_computer_name][2],
-                    self.__remote_computer_argument)
-                self.__remote_computer_argument = ''
-                self.__saved_computer_list[self.__selected_computer_name][1] =\
-                    self.__shortcuts_user.get_current_shortcuts()
-                self.__saved_computer_list[self.__selected_computer_name][2] =\
-                    self.__shortcuts_user.get_file_ending_counter()
-                self.save_added_computers_previous_activity()
+            if self.__input_status['sequence'] and self.__input_status['action'] \
+                    and self.__selected_computer_name:
+                if self.check_what_computer_was_chosen():
+                    self.__shortcuts_user.write_new_shortcut(
+                        self.__selected_computer_name, self.__saved_computer_list[
+                            self.__selected_computer_name][1],
+                        self.__saved_computer_list[
+                            self.__selected_computer_name][2],
+                        self.__remote_computer_argument)
+                    self.__remote_computer_argument = ''
+                    self.__saved_computer_list[self.__selected_computer_name][1] =\
+                        self.__shortcuts_user.get_current_shortcuts()
+                    self.__saved_computer_list[self.__selected_computer_name][2] =\
+                        self.__shortcuts_user.get_file_ending_counter()
+                    self.save_added_computers_previous_activity()
 
-        elif not self.__input_status['sequence'] \
-                and self.__input_status['action']:
-            self.open_error_dialog(SEQUENCE_ERROR)
+            elif not self.__input_status['sequence'] \
+                    and self.__input_status['action']:
+                self.open_error_dialog(SEQUENCE_ERROR)
 
-        elif self.__input_status['sequence'] \
-                and not self.__input_status['action'] \
-                or not self.__input_status['sequence'] \
-                and not self.__input_status['action']:
-            self.open_error_dialog(ACTION_ERROR)
+            elif self.__input_status['sequence'] \
+                    and not self.__input_status['action'] \
+                    or not self.__input_status['sequence'] \
+                    and not self.__input_status['action']:
+                self.open_error_dialog(ACTION_ERROR)
 
-        elif not self.__selected_computer_name:
-            self.open_error_dialog(CHOOSE_COMPUTER_ERROR)
-
+            elif not self.__selected_computer_name:
+                self.open_error_dialog(CHOOSE_COMPUTER_ERROR)
+        except UnicodeEncodeError:
+            self.open_error_dialog(INFORMATION_MUST_BE_IN_ENGLISH_ERROR)
 # -----------------------------------------------------------------------------
     def update_my_computer_data(self):
         """
@@ -865,10 +869,18 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
         if self.__argument_functions.get_argument():
             self.get_saved_computers_name_list()
             name = self.__argument_functions.get_argument().title()
+            # test if name is in english
+            try:
+                name.encode(encoding='utf-8').decode('ascii')
+            except UnicodeDecodeError:
+                self.open_error_dialog(NAME_MUST_BE_ENGLISH_ERROR)
+                return self.change_computer_name()
+
             # checks if the name is already taken
             if name not in self.__computer_name_list:
                 self.__argument_functions.set_argument('')
                 return name
+
             else:
                 # warns if the name is already used
                 self.open_error_dialog(NAME_IS_ALREADY_TAKEN_ERROR)
