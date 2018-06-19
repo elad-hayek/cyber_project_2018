@@ -404,6 +404,11 @@ class Main(shortcut_menu_wx_skeleton.MainFrame):
             for sequence_entry in sequence:
                 if len(sequence_entry) > 1:
                     self.check_sequence_special_keys(sequence_entry)
+        try:
+            self.sequence_text_control.GetValue().encode(
+                encoding='utf-8').decode('ascii')
+        except UnicodeDecodeError:
+            self.__input_status['sequence'] = False
 
 # -----------------------------------------------------------------------------
     def check_sequence_special_keys(self, sequence_entry):
